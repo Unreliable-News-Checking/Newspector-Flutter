@@ -3,11 +3,11 @@ import 'dart:collection';
 import 'package:newspector_flutter/models/news_group.dart';
 
 
-class BetGroupStore {
+class NewsGroupStore {
   int _counter;
   HashMap<String, NewsGroup> _betGroups;
 
-  BetGroupStore() {
+  NewsGroupStore() {
     _counter = 0;
     _betGroups = HashMap<String, NewsGroup>();
   }
