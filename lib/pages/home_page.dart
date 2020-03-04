@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/pages/news_group_page.dart';
+
+import 'news_article_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,13 +19,7 @@ class _HomePageState extends State<HomePage> {
         child: NewsFeedContainer(),
       ),
       appBar: AppBar(
-        leading: FlatButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            // Navigator.of(context, rootNavigator: true)
-            // .push(createRoute(CreateNewBetPage()));
-          },
-        ),
+        title: Text("Newspector"),
       ),
     );
   }
@@ -67,44 +64,70 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5),
-      child: Stack(
+      child: Column(
         children: <Widget>[
-          SizedBox(
-            height: 200,
-            child: PageView.builder(
-              itemCount: 5,
-              controller: _controller,
-              itemBuilder: (BuildContext context, int itemIndex) {
-                return _buildCarouselItem(context, itemIndex);
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: DotsIndicator(
-              controller: _controller,
-              itemCount: 5,
-              color: Colors.blue,
-              onPageSelected: (page) {
-                _controller.animateToPage(
-                  page,
-                  duration: _kDuration,
-                  curve: _kCurve,
-                );
-              },
-            ),
+          Stack(
+            children: <Widget>[
+              SizedBox(
+                height: 200,
+                child: PageView.builder(
+                  itemCount: 5,
+                  controller: _controller,
+                  itemBuilder: (BuildContext context, int itemIndex) {
+                    return _buildNewsGroupItem(context, itemIndex);
+                  },
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: DotsIndicator(
+                  controller: _controller,
+                  itemCount: 5,
+                  color: Colors.blue,
+                  onPageSelected: (page) {
+                    _controller.animateToPage(
+                      page,
+                      duration: _kDuration,
+                      curve: _kCurve,
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  child: FlatButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        // return NewsGroupPage();
+                        return NewsGroupPage();
+                      }));
+                    },
+                    child: Text("Full Coverage"),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCarouselItem(BuildContext context, int itemIndex) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.0),
+  Widget _buildNewsGroupItem(BuildContext context, int itemIndex) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          // return NewsGroupPage();
+          return NewsArticlePage();
+        }));
+      },
       child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4.0),
         decoration: BoxDecoration(
           color: Colors.grey,
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
@@ -127,9 +150,9 @@ class DotsIndicator extends AnimatedWidget {
   final ValueChanged<int> onPageSelected;
   final Color color;
 
-  static const double _dotSize = 6.0;
+  static const double _dotSize = 4.0;
   static const double _maxDotZoom = 2.0;
-  static const double _dotSpacing = 25.0;
+  static const double _dotSpacing = 16.0;
 
   Widget _buildDot(int index) {
     double selectedness = Curves.easeOut.transform(
@@ -143,6 +166,7 @@ class DotsIndicator extends AnimatedWidget {
 
     return Container(
       width: _dotSpacing,
+      padding: EdgeInsets.all(2.5),
       child: Center(
         child: Material(
           color: color,
