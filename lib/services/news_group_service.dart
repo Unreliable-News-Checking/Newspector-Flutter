@@ -6,8 +6,6 @@ class NewsGroupService {
   static NewsGroupStore betGroupStore = NewsGroupStore();
 
   static NewsGroup createFreshBetGroup(String id) {
-    return betGroupStore.createFreshBetGroup(id);
+    return betGroupStore.createFreshNewsGroup(id);
   }
-
-
 }
