@@ -1,4 +1,3 @@
-import 'package:newspector_flutter/pages/create_new_bet_page.dart';
 import 'package:newspector_flutter/pages/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       ),
       home: NavigationFrame(),
       routes: {
-        '/create_bet': (context) => CreateNewBetPage(),
+        // '/create_bet': (context) => CreateNewBetPage(),
       },
     );
   }
