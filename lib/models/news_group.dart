@@ -7,4 +7,7 @@ class NewsGroup {
   List<NewsArticle> newsArticles;
 
   NewsGroup(this.id);
+
+  NewsGroup.fromAttributes(
+      this.id, this.category, this.mainNewsArticle, this.newsArticles);
 }

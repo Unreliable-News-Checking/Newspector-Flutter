@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/services/news_article_service.dart';
 
 class NewsArticlePage extends StatefulWidget {
   @override
@@ -40,14 +41,18 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
 
   @override
   Widget build(BuildContext context) {
-    // NewsArticle newsArticle = NewsArticleStore.
+    NewsArticle newsArticle =
+        NewsArticleService.getNewsArticle(widget.newsArticleID);
 
     return Container(
       color: Colors.blue,
       child: Column(
         children: <Widget>[
-          Text("Generic News Title"),
-          Text("More Information"),
+          Text(newsArticle.headline),
+          Text(newsArticle.link),
+          Text(newsArticle.newsSource.name),
+          Text(newsArticle.date.toString()),
+          Text(newsArticle.analysisResult),
         ],
       ),
     );

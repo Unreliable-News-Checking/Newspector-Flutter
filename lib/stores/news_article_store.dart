@@ -1,21 +1,23 @@
 import 'dart:collection';
-import 'package:newspector_flutter/models/news_group.dart';
-
+import 'package:newspector_flutter/models/news_article.dart';
 
 class NewsArticleStore {
   int _counter;
-  HashMap<String, NewsGroup> _betGroups;
+  HashMap<String, NewsArticle> _newsArticles;
 
   NewsArticleStore() {
     _counter = 0;
-    _betGroups = HashMap<String, NewsGroup>();
+    _newsArticles = HashMap<String, NewsArticle>();
   }
 
-  NewsGroup createFreshNewsArticle(String id) {
-    var id = generateRandomId();
-    var betGroup = NewsGroup(id);
-    _betGroups.addEntries([MapEntry<String, NewsGroup>(id, betGroup)]);
-    return betGroup;
+  NewsArticle getNewsArticle(String id) {
+    return _newsArticles[id];
+  }
+
+  NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
+    var newsArticleID = newsArticle.id;
+    _newsArticles[newsArticleID] = newsArticle;
+    return newsArticle;
   }
 
   String generateRandomId() {

@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/models/news_feed.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
 
 import 'news_article_page.dart';
 
@@ -12,16 +14,96 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  NewsFeed newsFeed;
+  ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: NewsFeedContainer(),
+    //
+
+    if (NewsFeedService.hasFeed()) {
+      newsFeed = NewsFeedService.getNewsFeed();
+      return homeScaffold();
+    }
+
+    return FutureBuilder(
+      future: NewsFeedService.updateAndGetNewsFeed(
+        pageSize: 10,
+        lastTimeStamp: "",
       ),
-      appBar: AppBar(
-        title: Text("Newspector"),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            newsFeed = snapshot.data;
+            return homeScaffold();
+            break;
+          default:
+            return loadingScaffold();
+        }
+      },
+    );
+  }
+
+  Widget loadingScaffold() {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
       ),
     );
+  }
+
+  Widget homeScaffold() {
+    return Scaffold(
+      body: CupertinoScrollbar(
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics:
+              BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
+          slivers: <Widget>[
+            SliverAppBar(),
+            refreshControl(),
+            SliverPadding(
+              padding: MediaQuery.of(context)
+                  .removePadding(
+                    removeTop: true,
+                  )
+                  .padding,
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  Container(
+                    margin: EdgeInsets.all(30),
+                    alignment: Alignment.center,
+                    child: Text("NO POSTS"),
+                  ),
+                ]),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget refreshControl() {
+    return CupertinoSliverRefreshControl(
+      onRefresh: () {
+        return getRefreshedFeed();
+      },
+    );
+  }
+
+  // this fetches an updated user async
+  // called when user tries to refresh the page
+  Future<void> getRefreshedFeed() async {
+    newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+      pageSize: 10,
+      lastTimeStamp: DateTime.now(),
+    );
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
 
@@ -103,7 +185,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        // return NewsGroupPage();
                         return NewsGroupPage();
                       }));
                     },

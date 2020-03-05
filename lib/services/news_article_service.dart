@@ -1,13 +1,15 @@
-
-import 'package:newspector_flutter/models/news_group.dart';
-import 'package:newspector_flutter/stores/news_group_store.dart';
+import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/stores/news_article_store.dart';
 
 class NewsArticleService {
-  static NewsGroupStore betGroupStore = NewsGroupStore();
+  //firebase stuff here too
+  static NewsArticleStore newsArticleStore = NewsArticleStore();
 
-  static NewsGroup createFreshBetGroup(String id) {
-    return betGroupStore.createFreshNewsGroup(id);
+  static NewsArticle getNewsArticle(String id) {
+    return newsArticleStore.getNewsArticle(id);
   }
 
-
+  static NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
+    return newsArticleStore.updateOrAddNewsArticle(newsArticle);
+  }
 }
