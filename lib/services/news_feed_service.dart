@@ -54,7 +54,7 @@ class NewsFeedService {
     }
 
     _feed.newsGroups = _newsGroups;
-
+    newsFeed = _feed;
     return _feed;
   }
 }
