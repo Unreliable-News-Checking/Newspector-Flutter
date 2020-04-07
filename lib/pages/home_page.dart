@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
-import 'package:newspector_flutter/widgets/news_feed_container.dart';
+import 'package:newspector_flutter/widgets/home_page/news_feed_container.dart';
 
 class HomePage extends StatefulWidget {
   @override
