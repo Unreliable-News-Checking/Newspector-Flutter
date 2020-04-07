@@ -4,6 +4,10 @@ import 'package:newspector_flutter/stores/news_group_store.dart';
 class NewsGroupService {
   static NewsGroupStore newsGroupStore = NewsGroupStore();
 
+  static NewsGroup getNewsGroup(String id) {
+    return newsGroupStore.getNewsGroup(id);
+  }
+
   static NewsGroup updateOrAddNewsGroup(NewsGroup newsArticle) {
     return newsGroupStore.updateOrAddNewsArticle(newsArticle);
   }
