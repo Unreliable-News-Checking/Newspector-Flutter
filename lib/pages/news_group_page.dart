@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/widgets/news_group_page/news_article_container.dart'
+    as nac;
 
 class NewsGroupPage extends StatefulWidget {
   final String newsGroupID;
@@ -48,14 +51,16 @@ class _NewsGroupFeedState extends State<NewsGroupFeed> {
     );
   }
 
-  Widget _buildNewsGroupFeedItem(BuildContext context, int itemIndex) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      color: Colors.red,
-      height: 100,
-      child: Center(
-        child: Text("News no: $itemIndex"),
-      ),
+  Widget _buildNewsGroupFeedItem(BuildContext context, int index) {
+    return nac.NewsArticleContainer(
+      newsArticleID: _newsGroup.getNewsArticle(index).id,
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NewsArticlePage(
+            newsArticleID: _newsGroup.getNewsArticle(index).id,
+          );
+        }));
+      },
     );
   }
 }
