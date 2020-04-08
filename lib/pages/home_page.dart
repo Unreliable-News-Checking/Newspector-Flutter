@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: appBar(),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   // shown when there is no news in the feed
   Widget emptyScaffold() {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: appBar(),
       body: Container(
         margin: EdgeInsets.all(30),
         alignment: Alignment.center,
@@ -67,13 +67,14 @@ class _HomePageState extends State<HomePage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
+      appBar: appBar(),
       body: CupertinoScrollbar(
         child: CustomScrollView(
           controller: _scrollController,
           physics:
               BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
           slivers: <Widget>[
-            SliverAppBar(),
+            // SliverAppBar(),
             refreshControl(),
             NewsFeedContainer(newsFeed: newsFeed),
           ],
@@ -87,6 +88,12 @@ class _HomePageState extends State<HomePage> {
       onRefresh: () {
         return getRefreshedFeed();
       },
+    );
+  }
+
+  Widget appBar() {
+    return AppBar(
+      title: Text("Newspector"),
     );
   }
 
