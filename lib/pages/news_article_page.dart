@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 
 class NewsArticlePage extends StatefulWidget {
   final String newsArticleID;
 
-  NewsArticlePage({Key key, @required this.newsArticleID})
-      : super(key: key);
+  NewsArticlePage({Key key, @required this.newsArticleID}) : super(key: key);
 
   @override
   _NewsArticlePageState createState() => _NewsArticlePageState();
 }
 
 class _NewsArticlePageState extends State<NewsArticlePage> {
+  NewsArticle _newsArticle;
+
   @override
   Widget build(BuildContext context) {
+    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleID);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: appBar(),
       body: Center(
         child: Container(
           child: Column(
@@ -27,6 +30,23 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget appBar() {
+    return AppBar(
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.fullscreen),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return NewsGroupPage(
+                newsGroupID: _newsArticle.newsGroupID,
+              );
+            }));
+          },
+        )
+      ],
     );
   }
 }
