@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
 
 class NewsGroupPage extends StatefulWidget {
+  final String newsGroupID;
+
+  NewsGroupPage({Key key, @required this.newsGroupID}) : super(key: key);
+
   @override
   _NewsGroupPageState createState() => _NewsGroupPageState();
 }
@@ -11,23 +17,30 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        child: NewsGroupFeed(),
+        child: NewsGroupFeed(newsGroupID: widget.newsGroupID),
       ),
     );
   }
 }
 
 class NewsGroupFeed extends StatefulWidget {
+  final String newsGroupID;
+
+  NewsGroupFeed({Key key, @required this.newsGroupID}) : super(key: key);
+
   @override
   _NewsGroupFeedState createState() => _NewsGroupFeedState();
 }
 
 class _NewsGroupFeedState extends State<NewsGroupFeed> {
+  NewsGroup _newsGroup;
   @override
   Widget build(BuildContext context) {
+    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupID);
+
     return Container(
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: _newsGroup.getArticleCount(),
         itemBuilder: (context, itemIndex) {
           return _buildNewsGroupFeedItem(context, itemIndex);
         },
