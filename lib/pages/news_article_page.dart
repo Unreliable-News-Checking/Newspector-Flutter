@@ -17,11 +17,14 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            NewsArticleContainer(newsArticleID: widget.newsArticleID),
-          ],
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              NewsArticleContainer(newsArticleID: widget.newsArticleID),
+            ],
+          ),
         ),
       ),
     );
