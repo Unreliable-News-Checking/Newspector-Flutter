@@ -3,6 +3,11 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 
 class NewsArticlePage extends StatefulWidget {
+  final String newsArticleID;
+
+  NewsArticlePage({Key key, @required this.newsArticleID})
+      : super(key: key);
+
   @override
   _NewsArticlePageState createState() => _NewsArticlePageState();
 }
@@ -15,7 +20,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
       body: Container(
         child: Column(
           children: <Widget>[
-            NewsArticleContainer(newsArticleID: "bos"),
+            NewsArticleContainer(newsArticleID: widget.newsArticleID),
           ],
         ),
       ),
