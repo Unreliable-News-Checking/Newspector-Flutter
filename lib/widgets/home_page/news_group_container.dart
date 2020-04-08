@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/home_page/news_article_container.dart';
+import 'package:newspector_flutter/widgets/home_page/news_article_container.dart'
+    as nac;
 
 class NewsGroupContainer extends StatefulWidget {
   final String newsGroupID;
@@ -62,15 +64,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
                 bottom: 0,
                 right: 0,
                 child: Container(
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return NewsGroupPage();
-                      }));
-                    },
-                    child: Text("Full Coverage"),
-                  ),
+                  child: fullCoverageButton(context),
                 ),
               ),
             ],
@@ -81,23 +75,26 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
-    return GestureDetector(
+    return nac.NewsArticleContainer(
+      newsArticleID: _newsGroup.getNewsArticle(index).id,
       onTap: () {
-        print("tapped on news article with index $index");
-        // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        // return NewsArticlePage();
-        // }));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NewsArticlePage(
+            newsArticleID: _newsGroup.getNewsArticle(index).id,
+          );
+        }));
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.0),
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
-        child: NewsArticleContainer(
-          newsArticleID: _newsGroup.getNewsArticle(index).id,
-        ),
-      ),
+    );
+  }
+
+  Widget fullCoverageButton(BuildContext context) {
+    return FlatButton(
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NewsGroupPage(newsGroupID: _newsGroup.id);
+        }));
+      },
+      child: Text("Full Coverage"),
     );
   }
 }
