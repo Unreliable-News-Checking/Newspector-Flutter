@@ -1,4 +1,4 @@
-package com.example.newspector_flutter
+package com.bit.newspector
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
