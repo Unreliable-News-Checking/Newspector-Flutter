@@ -10,4 +10,12 @@ class NewsGroup {
 
   NewsGroup.fromAttributes(
       this.id, this.category, this.mainNewsArticle, this.newsArticles);
+
+  int getArticleCount() {
+    return newsArticles.length;
+  }
+
+  NewsArticle getNewsArticle(int index) {
+    return newsArticles[index];
+  }
 }

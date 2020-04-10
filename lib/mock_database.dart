@@ -13,6 +13,7 @@ class MockDatabase {
 
   static NewsArticle newsArticle01 = NewsArticle.fromAttributes(
     "na_id_01",
+    "ng_id_01",
     newsSource01,
     "Headline01",
     "link01.com",
@@ -21,6 +22,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle02 = NewsArticle.fromAttributes(
     "na_id_02",
+    "ng_id_01",
     newsSource02,
     "Headline02",
     "link02.com",
@@ -29,6 +31,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle03 = NewsArticle.fromAttributes(
     "na_id_03",
+    "ng_id_01",
     newsSource03,
     "Headline03",
     "link03.com",
@@ -38,6 +41,7 @@ class MockDatabase {
 
   static NewsArticle newsArticle04 = NewsArticle.fromAttributes(
     "na_id_04",
+    "ng_id_02",
     newsSource01,
     "Headline04",
     "link04.com",
@@ -46,6 +50,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle05 = NewsArticle.fromAttributes(
     "na_id_05",
+    "ng_id_02",
     newsSource02,
     "Headline05",
     "link05.com",
@@ -54,6 +59,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle06 = NewsArticle.fromAttributes(
     "na_id_06",
+    "ng_id_02",
     newsSource03,
     "Headline06",
     "link06.com",
@@ -63,6 +69,7 @@ class MockDatabase {
 
   static NewsArticle newsArticle07 = NewsArticle.fromAttributes(
     "na_id_07",
+    "ng_id_03",
     newsSource01,
     "Headline07",
     "link07.com",
@@ -71,6 +78,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle08 = NewsArticle.fromAttributes(
     "na_id_08",
+    "ng_id_03",
     newsSource02,
     "Headline08",
     "link08.com",
@@ -79,6 +87,7 @@ class MockDatabase {
   );
   static NewsArticle newsArticle09 = NewsArticle.fromAttributes(
     "na_id_09",
+    "ng_id_03",
     newsSource03,
     "Headline09",
     "link09.com",

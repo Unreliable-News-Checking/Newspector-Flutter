@@ -10,7 +10,7 @@ class NewsGroupStore {
     _newsGroups = HashMap<String, NewsGroup>();
   }
 
-  NewsGroup getNewsArticle(String id) {
+  NewsGroup getNewsGroup(String id) {
     return _newsGroups[id];
   }
 
