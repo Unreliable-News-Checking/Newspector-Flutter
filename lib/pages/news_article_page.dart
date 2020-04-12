@@ -77,10 +77,10 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
       child: Column(
         children: <Widget>[
           Text(newsArticle.headline),
-          Text(newsArticle.link),
-          Text(newsArticle.newsSource.name),
+          // Text(newsArticle.link),
+          // Text(newsArticle.newsSource.name),
           Text(newsArticle.date.toString()),
-          Text(newsArticle.analysisResult),
+          // Text(newsArticle.analysisResult),
         ],
       ),
     );

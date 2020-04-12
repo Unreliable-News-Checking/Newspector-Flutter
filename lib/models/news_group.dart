@@ -1,21 +1,39 @@
-import 'package:newspector_flutter/models/news_article.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:newspector_flutter/models/news_article.dart';
 
 class NewsGroup {
   String id;
   String category;
   bool followed;
-  List<NewsArticle> newsArticles;
+  List<String> newsArticleIDs;
+  Timestamp date;
 
   NewsGroup(this.id);
 
   NewsGroup.fromAttributes(
-      this.id, this.category, this.newsArticles, this.followed);
+      this.id, this.category, this.newsArticleIDs, this.followed);
 
-  int getArticleCount() {
-    return newsArticles.length;
+  NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
+    id = documentSnapshot.documentID;
+    category = documentSnapshot.data['category'];
+    followed = null;
+    newsArticleIDs = null;
+    date = documentSnapshot.data['date'];
   }
 
-  NewsArticle getNewsArticle(int index) {
-    return newsArticles[index];
+  void addNewsArticles(List<String> newsArticleIDs) {
+    if (this.newsArticleIDs == null) {
+      this.newsArticleIDs = List<String>();
+    }
+    
+    this.newsArticleIDs.addAll(newsArticleIDs);
+  }
+
+  int getArticleCount() {
+    return newsArticleIDs.length;
+  }
+
+  String getNewsArticleID(int index) {
+    return newsArticleIDs[index];
   }
 }

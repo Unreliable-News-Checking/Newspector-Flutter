@@ -53,11 +53,11 @@ class _NewsGroupFeedState extends State<NewsGroupFeed> {
 
   Widget _buildNewsGroupFeedItem(BuildContext context, int index) {
     return nac.NewsArticleContainer(
-      newsArticleID: _newsGroup.getNewsArticle(index).id,
+      newsArticleID: _newsGroup.getNewsArticleID(index),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsArticlePage(
-            newsArticleID: _newsGroup.getNewsArticle(index).id,
+            newsArticleID: _newsGroup.getNewsArticleID(index),
           );
         }));
       },

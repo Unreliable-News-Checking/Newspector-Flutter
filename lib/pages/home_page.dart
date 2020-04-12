@@ -10,14 +10,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  NewsFeed newsFeed;
+  NewsFeed _newsFeed;
   ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     // if there is an existing feed show that
     if (NewsFeedService.hasFeed()) {
-      newsFeed = NewsFeedService.getNewsFeed();
+      _newsFeed = NewsFeedService.getNewsFeed();
       return homeScaffold();
     }
 
@@ -26,12 +26,11 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder(
       future: NewsFeedService.updateAndGetNewsFeed(
         pageSize: 10,
-        lastTimeStamp: "",
       ),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            newsFeed = snapshot.data;
+            _newsFeed = snapshot.data;
             return homeScaffold();
             break;
           default:
@@ -76,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           slivers: <Widget>[
             // SliverAppBar(),
             refreshControl(),
-            NewsFeedContainer(newsFeed: newsFeed),
+            NewsFeedContainer(newsFeed: _newsFeed),
           ],
         ),
       ),
@@ -100,9 +99,8 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: 10,
-      lastTimeStamp: DateTime.now(),
     );
     if (mounted) {
       setState(() {});

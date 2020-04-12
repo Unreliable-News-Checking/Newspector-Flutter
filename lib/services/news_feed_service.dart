@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:newspector_flutter/mock_database.dart';
+import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
+import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'firestore_database_service.dart';
 
 class NewsFeedService {
-  //firebase stuff here too
   static NewsFeed newsFeed;
 
   static NewsFeed getNewsFeed() {
@@ -18,43 +20,70 @@ class NewsFeedService {
 
   static Future<NewsFeed> updateAndGetNewsFeed({
     @required int pageSize,
-    @required var lastTimeStamp,
+    Timestamp lastTimestamp,
   }) async {
-    NewsFeed _feed;
+    NewsFeed feed;
     bool fresh = false;
 
-    //if there is no prior timestamp that means this is a fresh feed
-    if (lastTimeStamp == "") {
+    // if there is no feed or there is no document
+    // a fresh feed is wanted
+    if (lastTimestamp == null || !hasFeed()) {
       fresh = true;
-      lastTimeStamp = DateTime.now();
-    }
-
-    // if there is no prior feed
-    if (!hasFeed()) {
-      fresh = true;
-    }
-
-    // if there is no feed get a new one,
-    // else use the old one
-    if (fresh) {
-      _feed = NewsFeed();
+      feed = NewsFeed();
     } else {
-      _feed = newsFeed;
+      feed = newsFeed;
     }
 
-    //Get the newsArticles and Groups Documents
-    var _newsGroups = await MockDatabase.getNewsGroups();
+    // get the right documents from the database
+    QuerySnapshot newsGroupQuery;
+    if (fresh) {
+      newsGroupQuery = await FirestoreService.getClusters(pageSize);
+    } else {
+      newsGroupQuery = await FirestoreService.getClustersAfterDocument(
+          lastTimestamp, pageSize);
+    }
 
-    //Add the newsArticles and newsGroups to their stores
-    for (var newsGroup in _newsGroups) {
-      for (var newsArticle in newsGroup.newsArticles) {
-        NewsArticleService.updateOrAddNewsArticle(newsArticle);
-      }
+    List<NewsGroup> newsGroups = List<NewsGroup>();
+    List<Future<QuerySnapshot>> newsArticleQueryFutures =
+        List<Future<QuerySnapshot>>();
+
+    // add the existing news groups
+    newsGroups.addAll(feed.newsGroups);
+
+    // 1) get the newsgroups and turn them into models
+    // 2) add them to news group store
+    // 3) start the fetch for the news articles in parallel
+    for (var newsGroupDoc in newsGroupQuery.documents) {
+      NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       NewsGroupService.updateOrAddNewsGroup(newsGroup);
+      newsGroups.add(newsGroup);
+
+      Future<QuerySnapshot> newsArticleQueryFuture =
+          FirestoreService.getNewsInCluster(newsGroup.id, 5);
+
+      newsArticleQueryFutures.add(newsArticleQueryFuture);
     }
 
-    _feed.newsGroups = _newsGroups;
-    newsFeed = _feed;
-    return _feed;
+    // 1) wait for news articles to be fetched
+    // 2) turn them into models
+    // 3) add them to news article store
+    // 4) add the articles to news group
+    var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
+    for (var newsArticleQuery in newsArticleQueries) {
+      List<String> newsArticleIDs = List<String>();
+      String newsGroupID;
+      for (var newsArticleDoc in newsArticleQuery.documents) {
+        NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
+        NewsArticleService.updateOrAddNewsArticle(newsArticle);
+        newsArticleIDs.add(newsArticle.id);
+        newsGroupID = newsArticle.newsGroupID;
+      }
+      NewsGroupService.getNewsGroup(newsGroupID)
+          .addNewsArticles(newsArticleIDs);
+    }
+
+    feed.newsGroups = newsGroups;
+    newsFeed = feed;
+    return feed;
   }
 }

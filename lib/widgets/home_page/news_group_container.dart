@@ -26,6 +26,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   @override
   Widget build(BuildContext context) {
     _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupID);
+    // print(_newsGroup.getArticleCount());
+    // print(_newsGroup.category);
 
     return Container(
       padding: EdgeInsets.all(5),
@@ -76,11 +78,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
     return nac.NewsArticleContainer(
-      newsArticleID: _newsGroup.getNewsArticle(index).id,
+      newsArticleID: _newsGroup.getNewsArticleID(index),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsArticlePage(
-            newsArticleID: _newsGroup.getNewsArticle(index).id,
+            newsArticleID: _newsGroup.getNewsArticleID(index),
           );
         }));
       },
