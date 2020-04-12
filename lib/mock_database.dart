@@ -2,6 +2,7 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 
 import 'models/news_article.dart';
+import 'models/user.dart';
 
 class MockDatabase {
   static NewsSource newsSource01 =
@@ -98,23 +99,32 @@ class MockDatabase {
   static NewsGroup newsGroup01 = NewsGroup.fromAttributes(
     "ng_id_01",
     "sport",
-    newsArticle01,
     [newsArticle01, newsArticle02, newsArticle03],
+    true,
   );
 
   static NewsGroup newsGroup02 = NewsGroup.fromAttributes(
     "ng_id_02",
     "politics",
-    newsArticle04,
     [newsArticle04, newsArticle05, newsArticle06],
+    false,
   );
 
   static NewsGroup newsGroup03 = NewsGroup.fromAttributes(
     "ng_id_03",
     "science",
-    newsArticle07,
     [newsArticle07, newsArticle08, newsArticle09],
+    true,
   );
+
+  static User user =
+      User.fromAttributes("u_01", "nt_01", ["ng_id_01", "ng_id_03"]);
+
+  static Future<User> getUser() async {
+    return Future.delayed(const Duration(milliseconds: 500), () {
+      return user;
+    });
+  }
 
   static List<NewsGroup> newsGroups = [newsGroup01, newsGroup02, newsGroup03];
 

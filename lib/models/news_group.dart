@@ -3,13 +3,13 @@ import 'package:newspector_flutter/models/news_article.dart';
 class NewsGroup {
   String id;
   String category;
-  NewsArticle mainNewsArticle;
+  bool followed;
   List<NewsArticle> newsArticles;
 
   NewsGroup(this.id);
 
   NewsGroup.fromAttributes(
-      this.id, this.category, this.mainNewsArticle, this.newsArticles);
+      this.id, this.category, this.newsArticles, this.followed);
 
   int getArticleCount() {
     return newsArticles.length;

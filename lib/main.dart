@@ -1,3 +1,4 @@
+import 'package:newspector_flutter/pages/followed_page.dart';
 import 'package:newspector_flutter/pages/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class NavigationFrame extends StatelessWidget {
                 title: null,
               ),
               BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.search),
+                icon: Icon(Icons.inbox),
                 title: null,
               ),
               BottomNavigationBarItem(
@@ -61,12 +62,9 @@ class NavigationFrame extends StatelessWidget {
               case 1:
                 return CupertinoTabView(
                   builder: (BuildContext context) {
-                    return CupertinoPageScaffold(
-                      backgroundColor: CupertinoColors.systemGroupedBackground,
-                      child: Text("Search"),
-                    );
+                    return FollowedPage();
                   },
-                  defaultTitle: 'Search',
+                  defaultTitle: 'Followed',
                 );
                 break;
               case 2:
