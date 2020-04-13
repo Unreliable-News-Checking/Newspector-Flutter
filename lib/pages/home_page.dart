@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   NewsFeed _newsFeed;
-  ScrollController _scrollController = ScrollController();
+  var pageSize = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     // get the latest feed and display it
     return FutureBuilder(
       future: NewsFeedService.updateAndGetNewsFeed(
-        pageSize: 10,
+        pageSize: pageSize,
       ),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -51,42 +51,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // shown when there is no news in the feed
-  Widget emptyScaffold() {
-    return Scaffold(
-      appBar: appBar(),
-      body: Container(
-        margin: EdgeInsets.all(30),
-        alignment: Alignment.center,
-        child: Text("NO POSTS"),
-      ),
-    );
-  }
-
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
       appBar: appBar(),
-      body: CupertinoScrollbar(
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics:
-              BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
-          slivers: <Widget>[
-            // SliverAppBar(),
-            refreshControl(),
-            NewsFeedContainer(newsFeed: _newsFeed),
-          ],
-        ),
+      body: NewsFeedContainer(
+        newsFeed: _newsFeed,
+        onRefresh: getRefreshedFeed,
       ),
-    );
-  }
-
-  Widget refreshControl() {
-    return CupertinoSliverRefreshControl(
-      onRefresh: () {
-        return getRefreshedFeed();
-      },
     );
   }
 
@@ -100,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
-      pageSize: 10,
+      pageSize: pageSize,
     );
     if (mounted) {
       setState(() {});
