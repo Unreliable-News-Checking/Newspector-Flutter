@@ -12,11 +12,12 @@ class FollowedPage extends StatefulWidget {
 
 class _FollowedPageState extends State<FollowedPage> {
   User _user;
+  int pageSize = 10;
 
   @override
   Widget build(BuildContext context) {
     // if there is an existing feed show that
-    if (UserService.hasUser()) {
+    if (UserService.hasUserWithFeed()) {
       _user = UserService.getUser();
       return homeScaffold();
     }
@@ -24,7 +25,7 @@ class _FollowedPageState extends State<FollowedPage> {
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: UserService.updateAndGetUser(),
+      future: UserService.updateAndGetUserFeed(pageSize: pageSize),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -69,7 +70,7 @@ class _FollowedPageState extends State<FollowedPage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _user = await UserService.updateAndGetUser();
+    _user = await UserService.updateAndGetUserFeed(pageSize: pageSize);
 
     if (mounted) {
       setState(() {});
@@ -81,7 +82,8 @@ class FollowedFeedContainer extends StatefulWidget {
   final User user;
   final Function onRefresh;
 
-  FollowedFeedContainer({Key key, @required this.user, @required this.onRefresh})
+  FollowedFeedContainer(
+      {Key key, @required this.user, @required this.onRefresh})
       : super(key: key);
   @override
   _FollowedFeedContainerState createState() => _FollowedFeedContainerState();

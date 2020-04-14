@@ -73,6 +73,18 @@ class FirestoreService {
     return querySnapshot;
   }
 
+  static Future<DocumentSnapshot> getUser(String userID) async {
+    DocumentSnapshot userSnapshot =
+        await db.collection('users').document(userID).get();
+    return userSnapshot;
+  }
+
+  static Future<DocumentSnapshot> getCluster(String clusterID) async {
+    DocumentSnapshot userSnapshot =
+        await db.collection('clusters').document(clusterID).get();
+    return userSnapshot;
+  }
+
   static Future<QuerySnapshot> getUsers(int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('users')
@@ -98,8 +110,8 @@ class FirestoreService {
   // Burdan aşağıdakiler iki aşamalı olucak (UserFollowsCluster) documentları dönüyor,
   // onların içindeki ID ler ile gerekli document listini döndürücem
   // Kısa sürede yazılmazsa hatırlatın
-  
-  static Future<QuerySnapshot> getFollowedClusters(
+
+  static Future<QuerySnapshot> gerUserFollowsClusters(
       String userID, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('userfollowscluster')
@@ -111,13 +123,13 @@ class FirestoreService {
     return querySnapshot;
   }
 
-  static Future<QuerySnapshot> getFollowedClustersAfterDocument(
-      String userID, DocumentSnapshot document, int pageLimit) async {
+  static Future<QuerySnapshot> getUserFollowsClusterAfterTimestamp(
+      String userID, Timestamp lastTimestamp, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('userfollowscluster')
         .where('user_id', isEqualTo: userID)
         .orderBy("date", descending: true)
-        .startAfter([document])
+        .startAfter([lastTimestamp])
         .limit(pageLimit)
         .getDocuments();
 
