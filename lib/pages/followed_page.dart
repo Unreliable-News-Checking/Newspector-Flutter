@@ -12,7 +12,6 @@ class FollowedPage extends StatefulWidget {
 
 class _FollowedPageState extends State<FollowedPage> {
   User _user;
-  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,27 +53,10 @@ class _FollowedPageState extends State<FollowedPage> {
   Widget homeScaffold() {
     return Scaffold(
       appBar: appBar(),
-      body: CupertinoScrollbar(
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics:
-              BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
-          slivers: <Widget>[
-            refreshControl(),
-            FollowedFeedContainer(
-              user: _user,
-            ),
-          ],
-        ),
+      body: FollowedFeedContainer(
+        user: _user,
+        onRefresh: getRefreshedFeed,
       ),
-    );
-  }
-
-  Widget refreshControl() {
-    return CupertinoSliverRefreshControl(
-      onRefresh: () {
-        return getRefreshedFeed();
-      },
     );
   }
 
@@ -97,34 +79,57 @@ class _FollowedPageState extends State<FollowedPage> {
 
 class FollowedFeedContainer extends StatefulWidget {
   final User user;
-  FollowedFeedContainer({Key key, @required this.user}) : super(key: key);
+  final Function onRefresh;
+
+  FollowedFeedContainer({Key key, @required this.user, @required this.onRefresh})
+      : super(key: key);
   @override
   _FollowedFeedContainerState createState() => _FollowedFeedContainerState();
 }
 
 class _FollowedFeedContainerState extends State<FollowedFeedContainer> {
+  ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: MediaQuery.of(context)
-          .removePadding(
-            removeTop: true,
-          )
-          .padding,
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return Container(
-              margin: EdgeInsets.all(30),
-              alignment: Alignment.center,
-              child: ngc.NewsGroupContainer(
-                newsGroupID: widget.user.getFollowedNewsGroupID(index),
+    return CupertinoScrollbar(
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics:
+            BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
+        slivers: <Widget>[
+          refreshControl(),
+          SliverPadding(
+            padding: MediaQuery.of(context)
+                .removePadding(
+                  removeTop: true,
+                )
+                .padding,
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return Container(
+                    margin: EdgeInsets.all(30),
+                    alignment: Alignment.center,
+                    child: ngc.NewsGroupContainer(
+                      newsGroupID: widget.user.getFollowedNewsGroupID(index),
+                    ),
+                  );
+                },
+                childCount: widget.user.getFollowedGroupCount(),
               ),
-            );
-          },
-          childCount: widget.user.getFollowedGroupCount(),
-        ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget refreshControl() {
+    return CupertinoSliverRefreshControl(
+      onRefresh: () {
+        return widget.onRefresh();
+      },
     );
   }
 }
