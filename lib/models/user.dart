@@ -1,5 +1,7 @@
 // import 'news_group.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String id;
   String notificationToken;
@@ -12,6 +14,12 @@ class User {
     this.id = id;
     this.notificationToken = notificationToken;
     this.followedGroupIDs = followedGroupIDs;
+  }
+
+  User.fromDocument(DocumentSnapshot documentSnapshot) {
+    id = documentSnapshot.documentID;
+    notificationToken = null;
+    followedGroupIDs = null;
   }
 
   int getFollowedGroupCount() {

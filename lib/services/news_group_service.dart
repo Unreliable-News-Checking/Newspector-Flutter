@@ -8,7 +8,7 @@ class NewsGroupService {
     return newsGroupStore.getNewsGroup(id);
   }
 
-  static NewsGroup updateOrAddNewsGroup(NewsGroup newsArticle) {
-    return newsGroupStore.updateOrAddNewsArticle(newsArticle);
+  static NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
+    return newsGroupStore.updateOrAddNewsArticle(newsGroup);
   }
 }
