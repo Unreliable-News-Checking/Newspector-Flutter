@@ -9,9 +9,9 @@ import 'package:newspector_flutter/widgets/home_page/news_article_container.dart
     as nac;
 
 class NewsGroupContainer extends StatefulWidget {
-  final String newsGroupID;
+  final String newsGroupId;
 
-  NewsGroupContainer({Key key, @required this.newsGroupID}) : super(key: key);
+  NewsGroupContainer({Key key, @required this.newsGroupId}) : super(key: key);
 
   @override
   _NewsGroupContainerState createState() => _NewsGroupContainerState();
@@ -25,7 +25,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   @override
   Widget build(BuildContext context) {
-    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupID);
+    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
     // print(_newsGroup.getArticleCount());
     // print(_newsGroup.category);
 
@@ -78,11 +78,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
     return nac.NewsArticleContainer(
-      newsArticleID: _newsGroup.getNewsArticleID(index),
+      newsArticleId: _newsGroup.getNewsArticleId(index),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsArticlePage(
-            newsArticleID: _newsGroup.getNewsArticleID(index),
+            newsArticleId: _newsGroup.getNewsArticleId(index),
           );
         }));
       },
@@ -93,7 +93,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     return FlatButton(
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsGroupPage(newsGroupID: _newsGroup.id);
+          return NewsGroupPage(newsGroupId: _newsGroup.id);
         }));
       },
       child: Text("Full Coverage"),

@@ -5,35 +5,35 @@ class NewsGroup {
   String id;
   String category;
   bool followed;
-  List<String> newsArticleIDs;
+  List<String> newsArticleIds;
   Timestamp date;
 
   NewsGroup(this.id);
 
   NewsGroup.fromAttributes(
-      this.id, this.category, this.newsArticleIDs, this.followed);
+      this.id, this.category, this.newsArticleIds, this.followed);
 
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
     category = documentSnapshot.data['category'];
     followed = null;
-    newsArticleIDs = null;
+    newsArticleIds = null;
     date = documentSnapshot.data['date'];
   }
 
-  void addNewsArticles(List<String> newsArticleIDs) {
-    if (this.newsArticleIDs == null) {
-      this.newsArticleIDs = List<String>();
+  void addNewsArticles(List<String> newsArticleIds) {
+    if (this.newsArticleIds == null) {
+      this.newsArticleIds = List<String>();
     }
     
-    this.newsArticleIDs.addAll(newsArticleIDs);
+    this.newsArticleIds.addAll(newsArticleIds);
   }
 
   int getArticleCount() {
-    return newsArticleIDs.length;
+    return newsArticleIds.length;
   }
 
-  String getNewsArticleID(int index) {
-    return newsArticleIDs[index];
+  String getNewsArticleId(int index) {
+    return newsArticleIds[index];
   }
 }

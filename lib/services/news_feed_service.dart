@@ -70,16 +70,16 @@ class NewsFeedService {
     // 4) add the articles to news group
     var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
     for (var newsArticleQuery in newsArticleQueries) {
-      List<String> newsArticleIDs = List<String>();
-      String newsGroupID;
+      List<String> newsArticleIds = List<String>();
+      String newsGroupId;
       for (var newsArticleDoc in newsArticleQuery.documents) {
         NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
         NewsArticleService.updateOrAddNewsArticle(newsArticle);
-        newsArticleIDs.add(newsArticle.id);
-        newsGroupID = newsArticle.newsGroupID;
+        newsArticleIds.add(newsArticle.id);
+        newsGroupId = newsArticle.newsGroupId;
       }
-      NewsGroupService.getNewsGroup(newsGroupID)
-          .addNewsArticles(newsArticleIDs);
+      NewsGroupService.getNewsGroup(newsGroupId)
+          .addNewsArticles(newsArticleIds);
     }
 
     feed.newsGroups = newsGroups;

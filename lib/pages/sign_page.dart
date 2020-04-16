@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/services/sign_in_service.dart' as signInService;
+import 'package:newspector_flutter/services/sign_in_service.dart' as sign_in_service;
 
 class SignPage extends StatefulWidget {
   @override
@@ -29,7 +29,10 @@ class _SignPageState extends State<SignPage> {
   }
 
   Future<void> signIn() async {
-    var fireBaseUser = await signInService.signInWithGoogle();
+    var fireBaseUser = await sign_in_service.signInWithGoogle();
+
+    // need to add a method here to check if the user exist in the
+    // database and do the appropriate thing
     print("User $fireBaseUser Signed in");
   }
 }

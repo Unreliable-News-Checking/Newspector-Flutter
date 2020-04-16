@@ -9,9 +9,9 @@ import 'package:newspector_flutter/services/news_group_service.dart';
 import 'news_article_service.dart';
 
 class UserService {
-  static String userFirebaseID;
+  static String userFirebaseId;
   static User user;
-  static String tempUserID = "9wXJ42FG2wzhRgPbuFl2";
+  static String tempUserId = "9wXJ42FG2wzhRgPbuFl2";
 
   static User getUser() {
     return user;
@@ -22,11 +22,11 @@ class UserService {
   }
 
   static bool hasUserWithFeed() {
-    return hasUser() && user.followedGroupIDs != null;
+    return hasUser() && user.followedGroupIds != null;
   }
 
   static Future<User> updateAndGetUser() async {
-    var userSnapshot = await FirestoreService.getUser(tempUserID);
+    var userSnapshot = await FirestoreService.getUser(tempUserId);
     var _user = User.fromDocument(userSnapshot);
     user = _user;
     return _user;
@@ -36,7 +36,7 @@ class UserService {
     @required int pageSize,
     Timestamp lastTimestamp,
   }) async {
-    List<String> newsGroupIDs = List<String>();
+    List<String> newsGroupIds = List<String>();
     User _user;
     bool refreshWanted = false;
 
@@ -56,7 +56,7 @@ class UserService {
     // if there is a feed and no refresh is wanted,
     // save the existing feed
     if (hasUserWithFeed() && !refreshWanted) {
-      newsGroupIDs.addAll(user.followedGroupIDs);
+      newsGroupIds.addAll(user.followedGroupIds);
     }
 
     // get the user follows cluster documents
@@ -97,7 +97,7 @@ class UserService {
     for (var newsGroupDoc in newsGroupDocuments) {
       NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       NewsGroupService.updateOrAddNewsGroup(newsGroup);
-      newsGroupIDs.add(newsGroup.id);
+      newsGroupIds.add(newsGroup.id);
 
       Future<QuerySnapshot> newsArticleQueryFuture =
           FirestoreService.getNewsInCluster(newsGroup.id, 5);
@@ -115,18 +115,22 @@ class UserService {
       var newsArticleQuery = newsArticleQueries[i];
       var newsArticleGroupId = newsArticleGroupIds[i];
 
-      List<String> newsArticleIDs = List<String>();
+      List<String> newsArticleIds = List<String>();
       for (var newsArticleDoc in newsArticleQuery.documents) {
         NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
         NewsArticleService.updateOrAddNewsArticle(newsArticle);
-        newsArticleIDs.add(newsArticle.id);
+        newsArticleIds.add(newsArticle.id);
       }
       NewsGroupService.getNewsGroup(newsArticleGroupId)
-          .addNewsArticles(newsArticleIDs);
+          .addNewsArticles(newsArticleIds);
     }
 
-    user.followedGroupIDs = newsGroupIDs;
+    user.followedGroupIds = newsGroupIds;
     user = _user;
     return _user;
+  }
+
+  static void assingUser(User user) {
+    UserService.user = user;
   }
 }

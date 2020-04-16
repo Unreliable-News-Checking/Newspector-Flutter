@@ -39,7 +39,7 @@ class _NewsFeedContainerState extends State<NewsFeedContainer> {
                     margin: EdgeInsets.all(30),
                     alignment: Alignment.center,
                     child: NewsGroupContainer(
-                      newsGroupID: widget.newsFeed.getNewsGroup(index).id,
+                      newsGroupId: widget.newsFeed.getNewsGroup(index).id,
                     ),
                   );
                 },

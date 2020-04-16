@@ -3,10 +3,10 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 
 class NewsArticleContainer extends StatefulWidget {
-  final String newsArticleID;
+  final String newsArticleId;
   final Function onTap;
 
-  NewsArticleContainer({Key key, @required this.newsArticleID, @required this.onTap})
+  NewsArticleContainer({Key key, @required this.newsArticleId, @required this.onTap})
       : super(key: key);
 
   @override
@@ -18,11 +18,11 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
 
   @override
   Widget build(BuildContext context) {
-    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleID);
+    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
 
     return GestureDetector(
       onTap: () {
-        print("tapped on news article with index ${widget.newsArticleID}");
+        print("tapped on news article with index ${widget.newsArticleId}");
         widget.onTap();
       },
       child: Container(

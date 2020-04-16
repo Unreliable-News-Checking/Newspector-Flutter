@@ -5,28 +5,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class User {
   String id;
   String notificationToken;
-  List<String> followedGroupIDs;
+  List<String> followedGroupIds;
 
   User();
 
   User.fromAttributes(
-      String id, String notificationToken, List<String> followedGroupIDs) {
+      String id, String notificationToken, List<String> followedGroupIds) {
     this.id = id;
     this.notificationToken = notificationToken;
-    this.followedGroupIDs = followedGroupIDs;
+    this.followedGroupIds = followedGroupIds;
   }
 
   User.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
     notificationToken = null;
-    followedGroupIDs = null;
+    followedGroupIds = null;
   }
 
   int getFollowedGroupCount() {
-    return followedGroupIDs.length;
+    return followedGroupIds.length;
   }
 
-  String getFollowedNewsGroupID(int index) {
-    return followedGroupIDs[index];
+  String getFollowedNewsGroupId(int index) {
+    return followedGroupIds[index];
   }
 }

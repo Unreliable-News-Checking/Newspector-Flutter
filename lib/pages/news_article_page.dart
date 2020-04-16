@@ -4,9 +4,9 @@ import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 
 class NewsArticlePage extends StatefulWidget {
-  final String newsArticleID;
+  final String newsArticleId;
 
-  NewsArticlePage({Key key, @required this.newsArticleID}) : super(key: key);
+  NewsArticlePage({Key key, @required this.newsArticleId}) : super(key: key);
 
   @override
   _NewsArticlePageState createState() => _NewsArticlePageState();
@@ -17,7 +17,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleID);
+    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
     return Scaffold(
       appBar: appBar(),
       body: Center(
@@ -25,7 +25,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              NewsArticleContainer(newsArticleID: widget.newsArticleID),
+              NewsArticleContainer(newsArticleId: widget.newsArticleId),
             ],
           ),
         ),
@@ -41,7 +41,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return NewsGroupPage(
-                newsGroupID: _newsArticle.newsGroupID,
+                newsGroupId: _newsArticle.newsGroupId,
               );
             }));
           },
@@ -52,9 +52,9 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
 }
 
 class NewsArticleContainer extends StatefulWidget {
-  final String newsArticleID;
+  final String newsArticleId;
   NewsArticleContainer({
-    @required this.newsArticleID,
+    @required this.newsArticleId,
   });
 
   @override
@@ -70,7 +70,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
   @override
   Widget build(BuildContext context) {
     NewsArticle newsArticle =
-        NewsArticleService.getNewsArticle(widget.newsArticleID);
+        NewsArticleService.getNewsArticle(widget.newsArticleId);
 
     return Container(
       color: Colors.blue,

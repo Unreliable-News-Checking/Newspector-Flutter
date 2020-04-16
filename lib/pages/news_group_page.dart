@@ -6,9 +6,9 @@ import 'package:newspector_flutter/widgets/news_group_page/news_article_containe
     as nac;
 
 class NewsGroupPage extends StatefulWidget {
-  final String newsGroupID;
+  final String newsGroupId;
 
-  NewsGroupPage({Key key, @required this.newsGroupID}) : super(key: key);
+  NewsGroupPage({Key key, @required this.newsGroupId}) : super(key: key);
 
   @override
   _NewsGroupPageState createState() => _NewsGroupPageState();
@@ -20,16 +20,16 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        child: NewsGroupFeed(newsGroupID: widget.newsGroupID),
+        child: NewsGroupFeed(newsGroupId: widget.newsGroupId),
       ),
     );
   }
 }
 
 class NewsGroupFeed extends StatefulWidget {
-  final String newsGroupID;
+  final String newsGroupId;
 
-  NewsGroupFeed({Key key, @required this.newsGroupID}) : super(key: key);
+  NewsGroupFeed({Key key, @required this.newsGroupId}) : super(key: key);
 
   @override
   _NewsGroupFeedState createState() => _NewsGroupFeedState();
@@ -39,7 +39,7 @@ class _NewsGroupFeedState extends State<NewsGroupFeed> {
   NewsGroup _newsGroup;
   @override
   Widget build(BuildContext context) {
-    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupID);
+    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
 
     return Container(
       child: ListView.builder(
@@ -53,11 +53,11 @@ class _NewsGroupFeedState extends State<NewsGroupFeed> {
 
   Widget _buildNewsGroupFeedItem(BuildContext context, int index) {
     return nac.NewsArticleContainer(
-      newsArticleID: _newsGroup.getNewsArticleID(index),
+      newsArticleId: _newsGroup.getNewsArticleId(index),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsArticlePage(
-            newsArticleID: _newsGroup.getNewsArticleID(index),
+            newsArticleId: _newsGroup.getNewsArticleId(index),
           );
         }));
       },

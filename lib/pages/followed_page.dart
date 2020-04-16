@@ -114,7 +114,7 @@ class _FollowedFeedContainerState extends State<FollowedFeedContainer> {
                     margin: EdgeInsets.all(30),
                     alignment: Alignment.center,
                     child: ngc.NewsGroupContainer(
-                      newsGroupID: widget.user.getFollowedNewsGroupID(index),
+                      newsGroupId: widget.user.getFollowedNewsGroupId(index),
                     ),
                   );
                 },

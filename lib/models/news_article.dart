@@ -3,7 +3,7 @@ import 'package:newspector_flutter/models/news_source.dart';
 
 class NewsArticle {
   String id;
-  String newsGroupID;
+  String newsGroupId;
   // List<NewsArticle> history;
   NewsSource newsSource;
   String headline;
@@ -13,13 +13,13 @@ class NewsArticle {
 
   NewsArticle();
 
-  NewsArticle.fromAttributes(this.id, this.newsGroupID, this.newsSource,
+  NewsArticle.fromAttributes(this.id, this.newsGroupId, this.newsSource,
       this.headline, this.link, this.date, this.analysisResult);
 
   NewsArticle.fromDocument(DocumentSnapshot documentSnapshot)
   {
     id = documentSnapshot.documentID;
-    newsGroupID = documentSnapshot.data['cluster_id'];
+    newsGroupId = documentSnapshot.data['cluster_id'];
     // history = null;
     newsSource = null;
     headline = documentSnapshot.data['text'];
