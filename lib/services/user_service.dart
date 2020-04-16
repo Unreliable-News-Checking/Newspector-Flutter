@@ -9,6 +9,7 @@ import 'package:newspector_flutter/services/news_group_service.dart';
 import 'news_article_service.dart';
 
 class UserService {
+  static String userFirebaseID;
   static User user;
   static String tempUserID = "9wXJ42FG2wzhRgPbuFl2";
 
