@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/services/sign_in_service.dart' as sign_in_service;
+import 'package:newspector_flutter/pages/main_navigation_frame.dart';
+import 'package:newspector_flutter/services/sign_in_service.dart'
+    as sign_in_service;
 
 class SignPage extends StatefulWidget {
   @override
@@ -14,15 +16,16 @@ class _SignPageState extends State<SignPage> {
         title: Text("Sign In"),
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text("Google Signin"),
-            GoogleSignInButton(
-              onPressed: signIn,
-            ),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Google Signin"),
+              GoogleSignInButton(
+                onPressed: signIn,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -30,6 +33,10 @@ class _SignPageState extends State<SignPage> {
 
   Future<void> signIn() async {
     var fireBaseUser = await sign_in_service.signInWithGoogle();
+    Navigator.of(context, rootNavigator: true)
+        .pushReplacement(MaterialPageRoute(builder: (context) {
+      return MainNavigationFrame();
+    }));
 
     // need to add a method here to check if the user exist in the
     // database and do the appropriate thing

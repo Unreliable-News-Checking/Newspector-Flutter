@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
   String id;
+  String firebaseId;
   String notificationToken;
   List<String> followedGroupIds;
 
@@ -20,6 +21,11 @@ class User {
     id = documentSnapshot.documentID;
     notificationToken = null;
     followedGroupIds = null;
+  }
+
+  User.fromMap(Map<String, dynamic> userData, String documentId) {
+    this.id = documentId;
+    this.firebaseId = userData['uid'];
   }
 
   int getFollowedGroupCount() {

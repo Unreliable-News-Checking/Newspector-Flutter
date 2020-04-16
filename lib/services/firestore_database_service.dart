@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:newspector_flutter/models/user.dart';
 
 class FirestoreService {
   static Firestore db = Firestore.instance;
@@ -91,6 +92,21 @@ class FirestoreService {
     DocumentSnapshot userSnapshot =
         await db.collection('users').document(userId).get();
     return userSnapshot;
+  }
+
+  static Future<User> createUser(String firebaseUserId) async {
+    Map<String, dynamic> data = Map<String, dynamic>();
+    data['uid'] = firebaseUserId;
+
+    DocumentReference postToBeAddedReference =
+        Firestore.instance.collection('users').document();
+
+    db
+        .collection('users')
+        .document(postToBeAddedReference.documentID)
+        .setData(data);
+    User user = User.fromMap(data, postToBeAddedReference.documentID);
+    return user;
   }
 
   static Future<DocumentSnapshot> getCluster(String clusterId) async {

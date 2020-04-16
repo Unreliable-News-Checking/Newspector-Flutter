@@ -11,7 +11,6 @@ import 'news_article_service.dart';
 class UserService {
   static String userFirebaseId;
   static User user;
-  static String tempUserId = "9wXJ42FG2wzhRgPbuFl2";
 
   static User getUser() {
     return user;
@@ -26,7 +25,8 @@ class UserService {
   }
 
   static Future<User> updateAndGetUser() async {
-    var userSnapshot = await FirestoreService.getUser(tempUserId);
+    var userSnapshot =
+        await FirestoreService.getUserWithFirebaseId(userFirebaseId);
     var _user = User.fromDocument(userSnapshot);
     user = _user;
     return _user;

@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlutterLogo(),
           ],
