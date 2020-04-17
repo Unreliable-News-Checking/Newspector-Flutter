@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   NewsFeed _newsFeed;
   var pageSize = 6;
+  var loadMoreVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
         newsFeed: _newsFeed,
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
+        loadMoreVisible: loadMoreVisible,
       ),
     );
   }
@@ -75,6 +77,7 @@ class _HomePageState extends State<HomePage> {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
+    loadMoreVisible = true;
     if (mounted) {
       setState(() {});
     }
@@ -83,10 +86,19 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
+    var lastDocumentId = _newsFeed.getLastNewsGroup().id;
+
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
-      lastDocumentId: _newsFeed.getLastNewsGroup().id,
+      lastDocumentId: lastDocumentId,
     );
+
+    if (lastDocumentId == _newsFeed.getLastNewsGroup().id) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
+
     print(_newsFeed.getGroupCount());
     if (mounted) {
       setState(() {});

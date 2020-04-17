@@ -7,12 +7,14 @@ class NewsFeedContainer extends StatefulWidget {
   final NewsFeed newsFeed;
   final Function onRefresh;
   final Function onBottomReached;
+  final bool loadMoreVisible;
 
   NewsFeedContainer({
     Key key,
     @required this.newsFeed,
     @required this.onRefresh,
     @required this.onBottomReached,
+    @required this.loadMoreVisible,
   }) : super(key: key);
 
   @override
@@ -32,7 +34,6 @@ class _NewsFeedContainerState extends State<NewsFeedContainer> {
 
         if (!loadNewData) return true;
 
-        print('reached bottom');
         onBottomReached();
 
         return true;
@@ -44,28 +45,9 @@ class _NewsFeedContainerState extends State<NewsFeedContainer> {
               BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
           slivers: <Widget>[
             refreshControl(),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Container(
-                    margin: EdgeInsets.all(30),
-                    alignment: Alignment.center,
-                    child: NewsGroupContainer(
-                      newsGroupId: widget.newsFeed.getNewsGroup(index).id,
-                    ),
-                  );
-                },
-                childCount: widget.newsFeed.getGroupCount(),
-              ),
-            ),
+            newsGroupList(),
             SliverToBoxAdapter(
-              child: Container(
-                height: 50,
-                color: Colors.transparent,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              child: loadMoreContainer(),
             ),
           ],
         ),
@@ -76,6 +58,35 @@ class _NewsFeedContainerState extends State<NewsFeedContainer> {
   Widget refreshControl() {
     return CupertinoSliverRefreshControl(
       onRefresh: widget.onRefresh,
+    );
+  }
+
+  Widget newsGroupList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Container(
+            margin: EdgeInsets.all(30),
+            alignment: Alignment.center,
+            child: NewsGroupContainer(
+              newsGroupId: widget.newsFeed.getNewsGroup(index).id,
+            ),
+          );
+        },
+        childCount: widget.newsFeed.getGroupCount(),
+      ),
+    );
+  }
+
+  Widget loadMoreContainer() {
+    if (!widget.loadMoreVisible) return Container();
+
+    return Container(
+      height: 50,
+      color: Colors.transparent,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
