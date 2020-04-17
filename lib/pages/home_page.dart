@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   NewsFeed _newsFeed;
-  var pageSize = 10;
+  var pageSize = 6;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
       body: NewsFeedContainer(
         newsFeed: _newsFeed,
         onRefresh: getRefreshedFeed,
+        onBottomReached: fetchAdditionalNewsGroups,
       ),
     );
   }
@@ -74,6 +75,19 @@ class _HomePageState extends State<HomePage> {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // this fetches an updated user async
+  // called when user tries to refresh the page
+  Future<void> fetchAdditionalNewsGroups() async {
+    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+      pageSize: pageSize,
+      lastDocumentId: _newsFeed.getLastNewsGroup().id,
+    );
+    print(_newsFeed.getGroupCount());
     if (mounted) {
       setState(() {});
     }

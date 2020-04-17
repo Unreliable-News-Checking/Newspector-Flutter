@@ -43,6 +43,9 @@ class MyApp extends StatelessWidget {
 
   Widget loadPage() {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Newspector"),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

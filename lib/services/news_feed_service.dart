@@ -20,35 +20,47 @@ class NewsFeedService {
 
   static Future<NewsFeed> updateAndGetNewsFeed({
     @required int pageSize,
-    Timestamp lastTimestamp,
+    String lastDocumentId,
   }) async {
+    List<NewsGroup> newsGroups = List<NewsGroup>();
     NewsFeed feed;
-    bool fresh = false;
+    bool refreshWanted = false;
 
-    // if there is no feed or there is no document
-    // a fresh feed is wanted
-    if (lastTimestamp == null || !hasFeed()) {
-      fresh = true;
+    // if there is no timestamp a refresh is wanted
+    if (lastDocumentId == null) {
+      refreshWanted = true;
+    }
+
+    // If there is no feed, fetch the user first
+    // if there is a feed, but refresh is wanted, fetch the updated feed
+    if (!hasFeed() || refreshWanted) {
       feed = NewsFeed();
     } else {
       feed = newsFeed;
     }
 
+    // if there is a feed and no refresh is wanted,
+    // save the existing feed
+    if (hasFeed() && !refreshWanted) {
+      newsGroups.addAll(feed.newsGroups);
+    }
+
     // get the right documents from the database
     QuerySnapshot newsGroupQuery;
-    if (fresh) {
+    if (refreshWanted) {
       newsGroupQuery = await FirestoreService.getClusters(pageSize);
     } else {
       newsGroupQuery = await FirestoreService.getClustersAfterDocument(
-          lastTimestamp, pageSize);
+          lastDocumentId, pageSize);
     }
 
-    List<NewsGroup> newsGroups = List<NewsGroup>();
+    print(
+        "returned documents length after $lastDocumentId: ${newsGroupQuery.documents.length}");
+
     List<Future<QuerySnapshot>> newsArticleQueryFutures =
         List<Future<QuerySnapshot>>();
 
     // add the existing news groups
-    newsGroups.addAll(feed.newsGroups);
 
     // 1) get the newsgroups and turn them into models
     // 2) add them to news group store

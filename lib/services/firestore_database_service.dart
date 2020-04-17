@@ -38,11 +38,14 @@ class FirestoreService {
   }
 
   static Future<QuerySnapshot> getClustersAfterDocument(
-      Timestamp lastTimestamp, int pageLimit) async {
+      String lastDocumentId, int pageLimit) async {
+    var lastDocument =
+        await db.collection('clusters').document(lastDocumentId).get();
+    
     QuerySnapshot querySnapshot = await db
         .collection('clusters')
         .orderBy("date", descending: true)
-        .startAfter([lastTimestamp])
+        .startAfterDocument(lastDocument)
         .limit(pageLimit)
         .getDocuments();
 

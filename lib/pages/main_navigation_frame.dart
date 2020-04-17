@@ -13,7 +13,10 @@ class MainNavigationFrame extends StatelessWidget {
       child: DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle,
         child: CupertinoTabScaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.white,
           tabBar: CupertinoTabBar(
+            backgroundColor: Colors.white,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.home),
