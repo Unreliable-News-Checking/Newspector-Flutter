@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/profile_page.dart';
 
-import 'followed_page.dart';
+import 'following_page.dart';
 import 'home_page.dart';
 
 class MainNavigationFrame extends StatelessWidget {
@@ -46,7 +46,7 @@ class MainNavigationFrame extends StatelessWidget {
               case 1:
                 return CupertinoTabView(
                   builder: (BuildContext context) {
-                    return FollowedPage();
+                    return FollowingPage();
                   },
                   defaultTitle: 'Followed',
                 );

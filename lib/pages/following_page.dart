@@ -4,12 +4,12 @@ import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 
-class FollowedPage extends StatefulWidget {
+class FollowingPage extends StatefulWidget {
   @override
-  _FollowedPageState createState() => _FollowedPageState();
+  _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FollowedPageState extends State<FollowedPage> {
+class _FollowingPageState extends State<FollowingPage> {
   User _user;
   int pageSize = 10;
 
