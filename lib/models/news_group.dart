@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:newspector_flutter/models/news_article.dart';
 
 class NewsGroup {
   String id;

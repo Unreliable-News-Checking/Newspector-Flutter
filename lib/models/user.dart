@@ -1,5 +1,3 @@
-// import 'news_group.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
