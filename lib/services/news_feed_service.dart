@@ -42,7 +42,7 @@ class NewsFeedService {
     // if there is a feed and no refresh is wanted,
     // save the existing feed
     if (hasFeed() && !refreshWanted) {
-      newsGroups.addAll(feed.newsGroups);
+      newsGroups.addAll(feed.items);
     }
 
     // get the right documents from the database
@@ -94,7 +94,7 @@ class NewsFeedService {
           .addNewsArticles(newsArticleIds);
     }
 
-    feed.newsGroups = newsGroups;
+    feed.items = newsGroups;
     newsFeed = feed;
     return feed;
   }

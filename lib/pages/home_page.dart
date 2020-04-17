@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
-import 'package:newspector_flutter/widgets/home_page/news_feed_container.dart';
+import 'package:newspector_flutter/widgets/feed_container.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   NewsFeed _newsFeed;
-  var pageSize = 6;
+  var pageSize = 3;
   var loadMoreVisible = true;
 
   @override
@@ -56,8 +56,8 @@ class _HomePageState extends State<HomePage> {
   Widget homeScaffold() {
     return Scaffold(
       appBar: appBar(),
-      body: NewsFeedContainer(
-        newsFeed: _newsFeed,
+      body: FeedContainer(
+        feed: _newsFeed,
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
         loadMoreVisible: loadMoreVisible,
@@ -86,20 +86,20 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
-    var lastDocumentId = _newsFeed.getLastNewsGroup().id;
+    var lastDocumentId = _newsFeed.getLastItem().id;
 
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
     );
 
-    if (lastDocumentId == _newsFeed.getLastNewsGroup().id) {
+    if (lastDocumentId == _newsFeed.getLastItem().id) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;
     }
 
-    print(_newsFeed.getGroupCount());
+    print(_newsFeed.getItemCount());
     if (mounted) {
       setState(() {});
     }
