@@ -1,36 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'feed.dart';
+
 class User {
   String id;
   String firebaseId;
   String notificationToken;
-  List<String> followedGroupIds;
+  Feed<String> followingFeed;
 
   User();
 
-  User.fromAttributes(
-      String id, String notificationToken, List<String> followedGroupIds) {
-    this.id = id;
-    this.notificationToken = notificationToken;
-    this.followedGroupIds = followedGroupIds;
-  }
-
   User.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
+    firebaseId = documentSnapshot.data['uid'];
     notificationToken = null;
-    followedGroupIds = null;
+    followingFeed = null;
   }
 
   User.fromMap(Map<String, dynamic> userData, String documentId) {
     this.id = documentId;
     this.firebaseId = userData['uid'];
+    notificationToken = null;
+    followingFeed = null;
   }
 
-  int getFollowedGroupCount() {
-    return followedGroupIds.length;
-  }
-
-  String getFollowedNewsGroupId(int index) {
-    return followedGroupIds[index];
+  void assignFeedToUser(Feed<String> followingFeed) {
+    this.followingFeed = followingFeed;
   }
 }

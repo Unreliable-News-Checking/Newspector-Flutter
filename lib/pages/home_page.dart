@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   Widget homeScaffold() {
     return Scaffold(
       appBar: appBar(),
-      body: FeedContainer(
+      body: FeedContainer<String>(
         feed: _newsFeed,
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
@@ -86,14 +86,14 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
-    var lastDocumentId = _newsFeed.getLastItem().id;
+    var lastDocumentId = _newsFeed.getLastItem();
 
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
     );
 
-    if (lastDocumentId == _newsFeed.getLastItem().id) {
+    if (lastDocumentId == _newsFeed.getLastItem()) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;

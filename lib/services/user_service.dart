@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/models/user.dart';
@@ -21,7 +22,7 @@ class UserService {
   }
 
   static bool hasUserWithFeed() {
-    return hasUser() && user.followedGroupIds != null;
+    return hasUser() && user.followingFeed != null;
   }
 
   static Future<User> updateAndGetUser() async {
@@ -56,7 +57,7 @@ class UserService {
     // if there is a feed and no refresh is wanted,
     // save the existing feed
     if (hasUserWithFeed() && !refreshWanted) {
-      newsGroupIds.addAll(user.followedGroupIds);
+      newsGroupIds.addAll(user.followingFeed.items);
     }
 
     // get the user follows cluster documents
@@ -125,7 +126,8 @@ class UserService {
           .addNewsArticles(newsArticleIds);
     }
 
-    user.followedGroupIds = newsGroupIds;
+    var _followingFeed = Feed<String>.fromItems(newsGroupIds);
+    user.assignFeedToUser(_followingFeed);
     user = _user;
     return _user;
   }

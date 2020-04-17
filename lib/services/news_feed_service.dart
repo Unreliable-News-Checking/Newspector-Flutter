@@ -22,7 +22,7 @@ class NewsFeedService {
     @required int pageSize,
     String lastDocumentId,
   }) async {
-    List<NewsGroup> newsGroups = List<NewsGroup>();
+    List<String> newsGroupIds = List<String>();
     NewsFeed feed;
     bool refreshWanted = false;
 
@@ -42,7 +42,7 @@ class NewsFeedService {
     // if there is a feed and no refresh is wanted,
     // save the existing feed
     if (hasFeed() && !refreshWanted) {
-      newsGroups.addAll(feed.items);
+      newsGroupIds.addAll(feed.items);
     }
 
     // get the right documents from the database
@@ -68,7 +68,7 @@ class NewsFeedService {
     for (var newsGroupDoc in newsGroupQuery.documents) {
       NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       NewsGroupService.updateOrAddNewsGroup(newsGroup);
-      newsGroups.add(newsGroup);
+      newsGroupIds.add(newsGroup.id);
 
       Future<QuerySnapshot> newsArticleQueryFuture =
           FirestoreService.getNewsInCluster(newsGroup.id, 5);
@@ -94,7 +94,7 @@ class NewsFeedService {
           .addNewsArticles(newsArticleIds);
     }
 
-    feed.items = newsGroups;
+    feed.items = newsGroupIds;
     newsFeed = feed;
     return feed;
   }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/widgets/home_page/news_group_container.dart';
 
-class FeedContainer extends StatefulWidget {
-  final Feed feed;
+class FeedContainer<E> extends StatefulWidget {
+  final Feed<E> feed;
   final Function onRefresh;
   final Function onBottomReached;
   final bool loadMoreVisible;
@@ -69,7 +69,7 @@ class _FeedContainerState extends State<FeedContainer> {
             margin: EdgeInsets.all(30),
             alignment: Alignment.center,
             child: NewsGroupContainer(
-              newsGroupId: widget.feed.getItem(index).id,
+              newsGroupId: widget.feed.getItem(index),
             ),
           );
         },

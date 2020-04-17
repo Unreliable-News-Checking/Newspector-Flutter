@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/user_service.dart';
-import 'package:newspector_flutter/widgets/home_page/news_group_container.dart'
-    as ngc;
+import 'package:newspector_flutter/widgets/feed_container.dart';
 
 class FollowedPage extends StatefulWidget {
   @override
@@ -54,9 +53,11 @@ class _FollowedPageState extends State<FollowedPage> {
   Widget homeScaffold() {
     return Scaffold(
       appBar: appBar(),
-      body: FollowedFeedContainer(
-        user: _user,
+      body: FeedContainer(
+        feed: _user.followingFeed,
         onRefresh: getRefreshedFeed,
+        onBottomReached: null,
+        loadMoreVisible: true,
       ),
     );
   }
@@ -78,60 +79,60 @@ class _FollowedPageState extends State<FollowedPage> {
   }
 }
 
-class FollowedFeedContainer extends StatefulWidget {
-  final User user;
-  final Function onRefresh;
+// class FollowedFeedContainer extends StatefulWidget {
+//   final User user;
+//   final Function onRefresh;
 
-  FollowedFeedContainer(
-      {Key key, @required this.user, @required this.onRefresh})
-      : super(key: key);
-  @override
-  _FollowedFeedContainerState createState() => _FollowedFeedContainerState();
-}
+//   FollowedFeedContainer(
+//       {Key key, @required this.user, @required this.onRefresh})
+//       : super(key: key);
+//   @override
+//   _FollowedFeedContainerState createState() => _FollowedFeedContainerState();
+// }
 
-class _FollowedFeedContainerState extends State<FollowedFeedContainer> {
-  ScrollController _scrollController = ScrollController();
+// class _FollowedFeedContainerState extends State<FollowedFeedContainer> {
+//   ScrollController _scrollController = ScrollController();
 
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoScrollbar(
-      child: CustomScrollView(
-        controller: _scrollController,
-        physics:
-            BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
-        slivers: <Widget>[
-          refreshControl(),
-          SliverPadding(
-            padding: MediaQuery.of(context)
-                .removePadding(
-                  removeTop: true,
-                )
-                .padding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Container(
-                    margin: EdgeInsets.all(30),
-                    alignment: Alignment.center,
-                    child: ngc.NewsGroupContainer(
-                      newsGroupId: widget.user.getFollowedNewsGroupId(index),
-                    ),
-                  );
-                },
-                childCount: widget.user.getFollowedGroupCount(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return CupertinoScrollbar(
+//       child: CustomScrollView(
+//         controller: _scrollController,
+//         physics:
+//             BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
+//         slivers: <Widget>[
+//           refreshControl(),
+//           SliverPadding(
+//             padding: MediaQuery.of(context)
+//                 .removePadding(
+//                   removeTop: true,
+//                 )
+//                 .padding,
+//             sliver: SliverList(
+//               delegate: SliverChildBuilderDelegate(
+//                 (context, index) {
+//                   return Container(
+//                     margin: EdgeInsets.all(30),
+//                     alignment: Alignment.center,
+//                     child: ngc.NewsGroupContainer(
+//                       newsGroupId: widget.user.getFollowedNewsGroupId(index),
+//                     ),
+//                   );
+//                 },
+//                 childCount: widget.user.getFollowedGroupCount(),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
-  Widget refreshControl() {
-    return CupertinoSliverRefreshControl(
-      onRefresh: () {
-        return widget.onRefresh();
-      },
-    );
-  }
-}
+//   Widget refreshControl() {
+//     return CupertinoSliverRefreshControl(
+//       onRefresh: () {
+//         return widget.onRefresh();
+//       },
+//     );
+//   }
+// }

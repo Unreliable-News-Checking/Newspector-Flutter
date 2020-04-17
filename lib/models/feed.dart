@@ -5,6 +5,10 @@ class Feed<E> {
     items = List<E>();
   }
 
+  Feed.fromItems(List<E> items) {
+    this.items = items;
+  }
+
   int getItemCount() {
     return items.length;
   }
