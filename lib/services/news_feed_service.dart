@@ -8,14 +8,22 @@ import 'package:newspector_flutter/services/news_group_service.dart';
 import 'firestore_database_service.dart';
 
 class NewsFeedService {
-  static NewsFeed newsFeed;
+  static NewsFeed _newsFeed;
 
   static NewsFeed getNewsFeed() {
-    return newsFeed;
+    return _newsFeed;
   }
 
   static bool hasFeed() {
-    return newsFeed != null;
+    return _newsFeed != null;
+  }
+
+  static void assignFeed(NewsFeed feed) {
+    NewsFeedService._newsFeed = feed;
+  }
+
+  static void clearFeed() {
+    _newsFeed = null;
   }
 
   static Future<NewsFeed> updateAndGetNewsFeed({
@@ -30,11 +38,6 @@ class NewsFeedService {
       refreshWanted = true;
     }
 
-    // If a refresh is wanted create an empty feed
-    if (refreshWanted) {
-      newsFeed = NewsFeed();
-    }
-
     // get the right documents from the database
     QuerySnapshot newsGroupQuery;
     if (refreshWanted) {
@@ -47,13 +50,20 @@ class NewsFeedService {
     List<String> newsGroupIds =
         await addNewsGroupDocumentsToStores(newsGroupQuery.documents);
 
-    newsFeed.addAdditionalItems(newsGroupIds);
+    // if there is no feed create one
+    if (!hasFeed()) {
+      _newsFeed = NewsFeed();
+    }
 
-    return newsFeed;
-  }
+    // if refresh is wanted clear the feed
+    if (refreshWanted) {
+      _newsFeed.clearItems();
+    }
 
-  static void clearFeed() {
-    newsFeed = null;
+    // add the items to feed
+    _newsFeed.addAdditionalItems(newsGroupIds);
+
+    return _newsFeed;
   }
 
   static Future<List<String>> addNewsGroupDocumentsToStores(

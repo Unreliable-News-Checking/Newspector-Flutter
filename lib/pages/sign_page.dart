@@ -40,7 +40,7 @@ class _SignPageState extends State<SignPage> {
 
     // need to add a method here to check if the user exist in the
     // database and do the appropriate thing
-    print("User $fireBaseUser Signed in");
+    print("User ${fireBaseUser.uid} Signed in");
   }
 }
 

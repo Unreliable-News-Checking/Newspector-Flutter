@@ -22,7 +22,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
 
     return GestureDetector(
       onTap: () {
-        print("tapped on news article with index ${widget.newsArticleId}");
+        print("tapped on news article with id ${widget.newsArticleId}");
         widget.onTap();
       },
       child: Container(
