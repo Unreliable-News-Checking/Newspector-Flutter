@@ -7,25 +7,25 @@ import 'news_feed_service.dart';
 
 class UserService {
   static String userFirebaseId;
-  static User user;
+  static User _user;
 
   static User getUser() {
-    return user;
+    return _user;
   }
 
   static bool hasUser() {
-    return user != null;
+    return _user != null;
   }
 
   static bool hasUserWithFeed() {
-    return hasUser() && user.hasFeed();
+    return hasUser() && _user.hasFeed();
   }
 
   static Future<User> updateAndGetUser() async {
     var userSnapshot =
         await FirestoreService.getUserWithFirebaseId(userFirebaseId);
-    user = User.fromDocument(userSnapshot);
-    return user;
+    _user = User.fromDocument(userSnapshot);
+    return _user;
   }
 
   static Future<User> updateAndGetUserFeed({
@@ -50,11 +50,11 @@ class UserService {
     QuerySnapshot userFollowsGroupQuery;
     if (refreshWanted) {
       userFollowsGroupQuery =
-          await FirestoreService.gerUserFollowsClusters(user.id, pageSize);
+          await FirestoreService.gerUserFollowsClusters(_user.id, pageSize);
     } else {
       userFollowsGroupQuery =
           await FirestoreService.getUserFollowsClusterAfterTimestamp(
-              user.id, lastDocumentId, pageSize);
+              _user.id, lastDocumentId, pageSize);
     }
 
     // from the user follows cluster documents,
@@ -71,20 +71,28 @@ class UserService {
     List<String> newsGroupIds =
         await NewsFeedService.addNewsGroupDocumentsToStores(newsGroupDocuments);
 
+    // if there is no feed create one
     if (!hasUserWithFeed()) {
-      user.assignFeedToUser(Feed<String>());
+      _user.followingFeed = Feed<String>();
+      // _user.assignFeedToUser(Feed<String>());
     }
 
-    user.followingFeed.addAdditionalItems(newsGroupIds);
+    // if refresh is wanted clear the feed
+    if (refreshWanted){
+      _user.followingFeed.clearItems();
+    }
 
-    return user;
+    // add the items to feed
+    _user.followingFeed.addAdditionalItems(newsGroupIds);
+
+    return _user;
   }
 
   static void assingUser(User user) {
-    UserService.user = user;
+    UserService._user = user;
   }
 
   static void clearUser() {
-    user = null;
+    _user = null;
   }
 }

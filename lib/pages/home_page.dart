@@ -16,6 +16,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("has feed: ${NewsFeedService.hasFeed()}");
+
     // if there is an existing feed show that
     if (NewsFeedService.hasFeed()) {
       _newsFeed = NewsFeedService.getNewsFeed();
@@ -33,6 +35,7 @@ class _HomePageState extends State<HomePage> {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             _newsFeed = snapshot.data;
+            print("count in future builder ${_newsFeed.getItemCount()}");
             return homeScaffold();
             break;
           default:
@@ -55,6 +58,8 @@ class _HomePageState extends State<HomePage> {
 
   // shown when there is a feed with news groups
   Widget homeScaffold() {
+    print("count: ${_newsFeed.getItemCount()}");
+
     return Scaffold(
       appBar: appBar(),
       body: FeedContainer<String>(
@@ -73,6 +78,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<NewsFeed> getInitialFeed() async {
+    print("get initial feed called");
+    _newsFeed = null;
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
@@ -82,12 +89,17 @@ class _HomePageState extends State<HomePage> {
     } else {
       loadMoreVisible = true;
     }
+
+    print("count in get initial feed: ${_newsFeed.getItemCount()}");
+
     return _newsFeed;
   }
 
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
+    print("get refreshed feed called");
+
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
@@ -106,6 +118,8 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
+    print("fetch additional items called");
+
     var lastDocumentId = _newsFeed.getLastItem();
 
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(

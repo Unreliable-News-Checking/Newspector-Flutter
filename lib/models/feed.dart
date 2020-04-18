@@ -1,27 +1,31 @@
 class Feed<E> {
-  List<E> items;
+  List<E> _items;
 
   Feed() {
-    items = List<E>();
+    _items = List<E>();
   }
 
   Feed.fromItems(List<E> items) {
-    this.items = items;
+    this._items = items;
   }
 
   int getItemCount() {
-    return items.length;
+    return _items.length;
   }
 
   E getItem(int index) {
-    return items[index];
+    return _items[index];
   }
 
   E getLastItem() {
-    return items.last;
+    return _items.last;
   }
 
   void addAdditionalItems(List<E> additionalItems) {
-    items.addAll(additionalItems);
+    _items.addAll(additionalItems);
+  }
+
+  void clearItems() {
+    _items.clear();
   }
 }
