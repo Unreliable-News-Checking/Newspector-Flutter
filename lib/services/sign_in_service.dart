@@ -2,7 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
+
+import 'news_article_service.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -33,6 +37,11 @@ void signOutGoogle() async {
   var googleSignOut = googleSignIn.signOut();
   var firebaseSignOut = _auth.signOut();
   await Future.wait([googleSignOut, firebaseSignOut]);
+
+  NewsArticleService.clearStore();
+  NewsFeedService.clearFeed();
+  NewsGroupService.clearStore();
+  UserService.clearUser();
 }
 
 Future<bool> hasSignedInUser() async {

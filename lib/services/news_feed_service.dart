@@ -22,27 +22,17 @@ class NewsFeedService {
     @required int pageSize,
     String lastDocumentId,
   }) async {
-    List<String> newsGroupIds = List<String>();
-    NewsFeed feed;
     bool refreshWanted = false;
 
     // if there is no timestamp a refresh is wanted
-    if (lastDocumentId == null) {
+    // if there is no feed a refresh is required
+    if (lastDocumentId == null || !hasFeed()) {
       refreshWanted = true;
     }
 
-    // If there is no feed, fetch the user first
-    // if there is a feed, but refresh is wanted, fetch the updated feed
-    if (!hasFeed() || refreshWanted) {
-      feed = NewsFeed();
-    } else {
-      feed = newsFeed;
-    }
-
-    // if there is a feed and no refresh is wanted,
-    // save the existing feed
-    if (hasFeed() && !refreshWanted) {
-      newsGroupIds.addAll(feed.items);
+    // If a refresh is wanted create an empty feed
+    if (refreshWanted) {
+      newsFeed = NewsFeed();
     }
 
     // get the right documents from the database
@@ -54,25 +44,34 @@ class NewsFeedService {
           lastDocumentId, pageSize);
     }
 
-    print(
-        "returned documents length after $lastDocumentId: ${newsGroupQuery.documents.length}");
+    List<String> newsGroupIds =
+        await addNewsGroupDocumentsToStores(newsGroupQuery.documents);
 
+    newsFeed.addAdditionalItems(newsGroupIds);
+
+    return newsFeed;
+  }
+
+  static void clearFeed() {
+    newsFeed = null;
+  }
+
+  static Future<List<String>> addNewsGroupDocumentsToStores(
+      List<DocumentSnapshot> newsGroupDocuments) async {
+    List<String> newsGroupIds = List<String>();
     List<Future<QuerySnapshot>> newsArticleQueryFutures =
         List<Future<QuerySnapshot>>();
-
-    // add the existing news groups
 
     // 1) get the newsgroups and turn them into models
     // 2) add them to news group store
     // 3) start the fetch for the news articles in parallel
-    for (var newsGroupDoc in newsGroupQuery.documents) {
+    for (var newsGroupDoc in newsGroupDocuments) {
       NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       NewsGroupService.updateOrAddNewsGroup(newsGroup);
       newsGroupIds.add(newsGroup.id);
 
       Future<QuerySnapshot> newsArticleQueryFuture =
           FirestoreService.getNewsInCluster(newsGroup.id, 5);
-
       newsArticleQueryFutures.add(newsArticleQueryFuture);
     }
 
@@ -81,21 +80,21 @@ class NewsFeedService {
     // 3) add them to news article store
     // 4) add the articles to news group
     var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
-    for (var newsArticleQuery in newsArticleQueries) {
+    for (var i = 0; i < newsArticleQueries.length; i++) {
+      var newsArticleQuery = newsArticleQueries[i];
+      var newsGroupId = newsGroupIds[i];
       List<String> newsArticleIds = List<String>();
-      String newsGroupId;
+
       for (var newsArticleDoc in newsArticleQuery.documents) {
         NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
         NewsArticleService.updateOrAddNewsArticle(newsArticle);
         newsArticleIds.add(newsArticle.id);
-        newsGroupId = newsArticle.newsGroupId;
       }
+
       NewsGroupService.getNewsGroup(newsGroupId)
           .addNewsArticles(newsArticleIds);
     }
 
-    feed.items = newsGroupIds;
-    newsFeed = feed;
-    return feed;
+    return newsGroupIds;
   }
 }

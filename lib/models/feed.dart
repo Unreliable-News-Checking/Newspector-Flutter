@@ -20,4 +20,8 @@ class Feed<E> {
   E getLastItem() {
     return items.last;
   }
+
+  void addAdditionalItems(List<E> additionalItems) {
+    items.addAll(additionalItems);
+  }
 }

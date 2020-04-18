@@ -11,4 +11,8 @@ class NewsGroupService {
   static NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
     return newsGroupStore.updateOrAddNewsArticle(newsGroup);
   }
+
+  static void clearStore() {
+    newsGroupStore = NewsGroupStore();
+  }
 }

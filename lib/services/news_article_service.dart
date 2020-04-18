@@ -12,4 +12,8 @@ class NewsArticleService {
   static NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
     return newsArticleStore.updateOrAddNewsArticle(newsArticle);
   }
+
+  static void clearStore() {
+    newsArticleStore = NewsArticleStore();
+  }
 }

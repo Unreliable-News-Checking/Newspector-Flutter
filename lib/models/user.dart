@@ -27,4 +27,8 @@ class User {
   void assignFeedToUser(Feed<String> followingFeed) {
     this.followingFeed = followingFeed;
   }
+
+  bool hasFeed() {
+    return followingFeed != null;
+  }
 }

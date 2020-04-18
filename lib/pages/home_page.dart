@@ -77,7 +77,13 @@ class _HomePageState extends State<HomePage> {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
-    loadMoreVisible = true;
+
+    if (_newsFeed.getItemCount() < pageSize) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
+
     if (mounted) {
       setState(() {});
     }
@@ -99,7 +105,6 @@ class _HomePageState extends State<HomePage> {
       loadMoreVisible = true;
     }
 
-    print(_newsFeed.getItemCount());
     if (mounted) {
       setState(() {});
     }

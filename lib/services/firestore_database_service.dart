@@ -41,7 +41,7 @@ class FirestoreService {
       String lastDocumentId, int pageLimit) async {
     var lastDocument =
         await db.collection('clusters').document(lastDocumentId).get();
-    
+
     QuerySnapshot querySnapshot = await db
         .collection('clusters')
         .orderBy("date", descending: true)
@@ -157,12 +157,15 @@ class FirestoreService {
   }
 
   static Future<QuerySnapshot> getUserFollowsClusterAfterTimestamp(
-      String userId, Timestamp lastTimestamp, int pageLimit) async {
+      String userId, String lastDocumentId, int pageLimit) async {
+    var lastDocument =
+        await db.collection('clusters').document(lastDocumentId).get();
+        
     QuerySnapshot querySnapshot = await db
         .collection('userfollowscluster')
         .where('user_id', isEqualTo: userId)
         .orderBy("date", descending: true)
-        .startAfter([lastTimestamp])
+        .startAfterDocument(lastDocument)
         .limit(pageLimit)
         .getDocuments();
 

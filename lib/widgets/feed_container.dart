@@ -29,10 +29,10 @@ class _FeedContainerState extends State<FeedContainer> {
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
-        var loadNewItems = !isLoading &&
+        var reachedBottom =
             scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent;
 
-        if (!loadNewItems) return true;
+        if (!reachedBottom) return true;
 
         onBottomReached();
 
@@ -91,6 +91,9 @@ class _FeedContainerState extends State<FeedContainer> {
   }
 
   void onBottomReached() async {
+    if (!widget.loadMoreVisible) return;
+    if (isLoading) return;
+
     setState(() {
       isLoading = true;
     });

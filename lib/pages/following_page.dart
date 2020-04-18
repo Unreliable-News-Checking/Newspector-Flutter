@@ -12,6 +12,7 @@ class FollowingPage extends StatefulWidget {
 class _FollowingPageState extends State<FollowingPage> {
   User _user;
   int pageSize = 10;
+  var loadMoreVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class _FollowingPageState extends State<FollowingPage> {
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: UserService.updateAndGetUserFeed(pageSize: pageSize),
+      future: getInitialFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -56,8 +57,8 @@ class _FollowingPageState extends State<FollowingPage> {
       body: FeedContainer(
         feed: _user.followingFeed,
         onRefresh: getRefreshedFeed,
-        onBottomReached: null,
-        loadMoreVisible: true,
+        onBottomReached: fetchAdditionalNewsGroups,
+        loadMoreVisible: loadMoreVisible,
       ),
     );
   }
@@ -68,10 +69,49 @@ class _FollowingPageState extends State<FollowingPage> {
     );
   }
 
+  Future<User> getInitialFeed() async {
+    _user = await UserService.updateAndGetUserFeed(pageSize: pageSize);
+
+    if (_user.followingFeed.getItemCount() < pageSize) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
+
+    return _user;
+  }
+
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
     _user = await UserService.updateAndGetUserFeed(pageSize: pageSize);
+
+    if (_user.followingFeed.getItemCount() < pageSize) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // this fetches additional items
+  // called when user reached the bottom of the page
+  Future<void> fetchAdditionalNewsGroups() async {
+    var lastDocumentId = _user.followingFeed.getLastItem();
+
+    _user = await UserService.updateAndGetUserFeed(
+      pageSize: pageSize,
+      lastDocumentId: lastDocumentId,
+    );
+
+    if (lastDocumentId == _user.followingFeed.getLastItem()) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
 
     if (mounted) {
       setState(() {});
