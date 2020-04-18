@@ -72,16 +72,10 @@ class NewsFeedService {
     List<Future<QuerySnapshot>> newsArticleQueryFutures =
         List<Future<QuerySnapshot>>();
 
-    // 1) get the newsgroups and turn them into models
-    // 2) add them to news group store
-    // 3) start the fetch for the news articles in parallel
+    // 1) start the fetch for the news articles in parallel
     for (var newsGroupDoc in newsGroupDocuments) {
-      NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
-      NewsGroupService.updateOrAddNewsGroup(newsGroup);
-      newsGroupIds.add(newsGroup.id);
-
       Future<QuerySnapshot> newsArticleQueryFuture =
-          FirestoreService.getNewsInCluster(newsGroup.id, 5);
+          FirestoreService.getNewsInCluster(newsGroupDoc.documentID, 5);
       newsArticleQueryFutures.add(newsArticleQueryFuture);
     }
 
@@ -89,10 +83,11 @@ class NewsFeedService {
     // 2) turn them into models
     // 3) add them to news article store
     // 4) add the articles to news group
+    // 5 add them to news group store
     var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
     for (var i = 0; i < newsArticleQueries.length; i++) {
       var newsArticleQuery = newsArticleQueries[i];
-      var newsGroupId = newsGroupIds[i];
+      var newsGroupDoc = newsGroupDocuments[i];
       List<String> newsArticleIds = List<String>();
 
       for (var newsArticleDoc in newsArticleQuery.documents) {
@@ -101,8 +96,10 @@ class NewsFeedService {
         newsArticleIds.add(newsArticle.id);
       }
 
-      NewsGroupService.getNewsGroup(newsGroupId)
-          .addNewsArticles(newsArticleIds);
+      NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
+      newsGroup.addNewsArticles(newsArticleIds);
+      NewsGroupService.updateOrAddNewsGroup(newsGroup);
+      newsGroupIds.add(newsGroupDoc.documentID);
     }
 
     return newsGroupIds;
