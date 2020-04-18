@@ -24,4 +24,8 @@ class NewsGroupStore {
     _counter++;
     return (_counter - 1).toString();
   }
+
+  bool hasNewsGroup(String newsGroupId) {
+    return _newsGroups.containsKey(newsGroupId);
+  }
 }

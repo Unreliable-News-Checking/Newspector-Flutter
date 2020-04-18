@@ -11,7 +11,7 @@ class FollowingPage extends StatefulWidget {
 
 class _FollowingPageState extends State<FollowingPage> {
   User _user;
-  int pageSize = 10;
+  int pageSize = 4;
   var loadMoreVisible = true;
 
   @override

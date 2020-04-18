@@ -26,11 +26,12 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
         widget.onTap();
       },
       child: Container(
-        margin: EdgeInsets.all(5),
-        color: Colors.red,
-        height: 100,
+        padding: EdgeInsets.all(10),
+        color: Colors.white,
         child: Center(
-          child: Text(_newsArticle.headline),
+          child: Flexible(
+            child: Text(_newsArticle.headline),
+          ),
         ),
       ),
     );

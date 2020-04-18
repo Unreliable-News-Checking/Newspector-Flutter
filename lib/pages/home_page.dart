@@ -16,7 +16,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     // if there is an existing feed show that
     if (NewsFeedService.hasFeed()) {
       _newsFeed = NewsFeedService.getNewsFeed();
@@ -56,7 +55,6 @@ class _HomePageState extends State<HomePage> {
 
   // shown when there is a feed with news groups
   Widget homeScaffold() {
-
     return Scaffold(
       appBar: appBar(),
       body: FeedContainer<String>(
@@ -86,14 +84,12 @@ class _HomePageState extends State<HomePage> {
       loadMoreVisible = true;
     }
 
-
     return _newsFeed;
   }
 
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
     );
@@ -104,15 +100,12 @@ class _HomePageState extends State<HomePage> {
       loadMoreVisible = true;
     }
 
-    if (mounted) {
-      setState(() {});
-    }
+    if (mounted) setState(() {});
   }
 
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
-
     var lastDocumentId = _newsFeed.getLastItem();
 
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
@@ -126,8 +119,6 @@ class _HomePageState extends State<HomePage> {
       loadMoreVisible = true;
     }
 
-    if (mounted) {
-      setState(() {});
-    }
+    if (mounted) setState(() {});
   }
 }
