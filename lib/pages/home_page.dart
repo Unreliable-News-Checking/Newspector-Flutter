@@ -19,15 +19,16 @@ class _HomePageState extends State<HomePage> {
     // if there is an existing feed show that
     if (NewsFeedService.hasFeed()) {
       _newsFeed = NewsFeedService.getNewsFeed();
+      if (_newsFeed.getItemCount() < pageSize) {
+        loadMoreVisible = false;
+      }
       return homeScaffold();
     }
 
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: NewsFeedService.updateAndGetNewsFeed(
-        pageSize: pageSize,
-      ),
+      future: getInitialFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -69,6 +70,19 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       title: Text("Newspector"),
     );
+  }
+
+  Future<NewsFeed> getInitialFeed() async {
+    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+      pageSize: pageSize,
+    );
+
+    if (_newsFeed.getItemCount() < pageSize) {
+      loadMoreVisible = false;
+    } else {
+      loadMoreVisible = true;
+    }
+    return _newsFeed;
   }
 
   // this fetches an updated user async

@@ -19,6 +19,9 @@ class _FollowingPageState extends State<FollowingPage> {
     // if there is an existing feed show that
     if (UserService.hasUserWithFeed()) {
       _user = UserService.getUser();
+      if (_user.followingFeed.getItemCount() < pageSize) {
+        loadMoreVisible = false;
+      }
       return homeScaffold();
     }
 
