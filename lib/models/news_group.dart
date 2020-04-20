@@ -5,10 +5,10 @@ import 'feed.dart';
 class NewsGroup {
   String id;
   String category;
-  bool followed;
+  Timestamp date;
   // List<String> newsArticleIds;
   Feed newsArticleFeed;
-  Timestamp date;
+  bool followed;
 
   NewsGroup(this.id);
 
@@ -18,9 +18,9 @@ class NewsGroup {
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
     category = documentSnapshot.data['category'];
+    date = documentSnapshot.data['date'];
     followed = null;
     newsArticleFeed = null;
-    date = documentSnapshot.data['date'];
   }
 
   void addNewsArticles(List<String> newsArticleIds) {

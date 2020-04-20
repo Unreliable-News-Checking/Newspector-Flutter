@@ -48,7 +48,7 @@ class NewsGroupService {
     }
 
     if (refreshWanted) {
-      updateAndGetNewsGroup(newsGroupId);
+      await updateAndGetNewsGroup(newsGroupId);
     }
     NewsGroup newsGroup = getNewsGroup(newsGroupId);
 

@@ -21,7 +21,6 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("news group id: ${widget.newsGroupId}");
     if (NewsGroupService.hasNewsGroup(widget.newsGroupId)) {
       _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
       if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
