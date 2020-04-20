@@ -115,6 +115,49 @@ class FirestoreService {
     return user;
   }
 
+  static Future<String> checkUserFollowsClusterDocument(
+      String userId, String newsGroupId) async {
+    var documentsToBeDeleted = await db
+        .collection('userfollowscluster')
+        .where('user_id', isEqualTo: userId)
+        .where('cluster_id', isEqualTo: newsGroupId)
+        .getDocuments();
+
+    if (documentsToBeDeleted.documents.length <= 0) return null;
+
+    var documentToBeDeletedId = documentsToBeDeleted.documents[0].documentID;
+
+    return documentToBeDeletedId;
+  }
+
+  static Future<void> createUserFollowsClusterDocument(
+      String userId, String newsGroupId) async {
+    var documentToBeDeletedId =
+        await checkUserFollowsClusterDocument(userId, newsGroupId);
+
+    if (documentToBeDeletedId != null) return;
+
+    Map<String, dynamic> data = Map<String, dynamic>();
+    data['user_id'] = userId;
+    data['cluster_id'] = newsGroupId;
+    data['date'] = Timestamp.now();
+
+    db.collection('userfollowscluster').add(data);
+  }
+
+  static Future<void> deleteUserFollowsClusterDocument(
+      String userId, String newsGroupId) async {
+    var documentToBeDeletedId =
+        await checkUserFollowsClusterDocument(userId, newsGroupId);
+
+    if (documentToBeDeletedId == null) return;
+
+    db
+        .collection('userfollowscluster')
+        .document(documentToBeDeletedId)
+        .delete();
+  }
+
   static Future<DocumentSnapshot> getCluster(String clusterId) async {
     DocumentSnapshot userSnapshot =
         await db.collection('clusters').document(clusterId).get();

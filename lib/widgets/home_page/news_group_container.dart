@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
@@ -25,6 +26,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kCurve = Curves.ease;
   NewsGroup _newsGroup;
   int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
+  EdgeInsets pageViewItemMargin = EdgeInsets.symmetric(horizontal: 10);
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +74,17 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           Positioned(
             bottom: 0,
             right: 0,
-            child: Container(
-              child: fullCoverageButton(context),
-            ),
+            child: fullCoverageButton(context),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: followButton(),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Text("Followed: ${_newsGroup.followedByUser}"),
           ),
         ],
       ),
@@ -82,24 +92,43 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
-    return nac.NewsArticleContainer(
-      newsArticleId: _newsGroup.getNewsArticleId(index),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsArticlePage(
-            newsArticleId: _newsGroup.getNewsArticleId(index),
-          );
-        }));
-      },
+    return Container(
+      margin: pageViewItemMargin,
+      child: nac.NewsArticleContainer(
+        newsArticleId: _newsGroup.getNewsArticleId(index),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return NewsArticlePage(
+              newsArticleId: _newsGroup.getNewsArticleId(index),
+            );
+          }));
+        },
+      ),
     );
   }
 
   Widget fullCoverageButton(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 15),
+      margin: pageViewItemMargin,
       child: OutlineButton(
         onPressed: goToNewsGroupPage,
         child: Text("Full Coverage"),
+      ),
+    );
+  }
+
+  Widget followButton() {
+    return Container(
+      margin: pageViewItemMargin,
+      child: IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          NewsGroupService.toggleFollowNewsGroup(
+              newsGroupId: _newsGroup.id, followed: _newsGroup.followedByUser);
+          _newsGroup.followedByUser = !_newsGroup.followedByUser;
+
+          if (mounted) setState(() {});
+        },
       ),
     );
   }
@@ -109,7 +138,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       onTap: goToNewsGroupPage,
       child: Container(
         color: Colors.grey,
-        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        margin: pageViewItemMargin,
         child: Center(
           child: Text("Tap to see more"),
         ),

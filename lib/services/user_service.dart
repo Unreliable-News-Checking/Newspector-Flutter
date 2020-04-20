@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
-import 'news_feed_service.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class UserService {
   static String userFirebaseId;
@@ -11,6 +12,21 @@ class UserService {
 
   static User getUser() {
     return _user;
+  }
+
+  static Future<User> getOrFetchUser() async {
+    if (hasUser()) return _user;
+
+    return await updateAndGetUser();
+  }
+
+  static Future<User> getOrFetchUserWithFeed() async {
+    if (hasUserWithFeed()) return _user;
+
+    return await updateAndGetUserFeed(
+      pageSize: app_consts.followingPagePageSize,
+      newsGroupPageSize: app_consts.newsGroupPageSize,
+    );
   }
 
   static bool hasUser() {
@@ -70,7 +86,7 @@ class UserService {
         await Future.wait(clusterDocumentFutures);
 
     List<String> newsGroupIds =
-        await NewsFeedService.addNewsGroupDocumentsToStores(
+        await NewsGroupService.addNewsGroupDocumentsToStores(
             newsGroupDocuments, newsGroupPageSize);
 
     // if there is no feed create one

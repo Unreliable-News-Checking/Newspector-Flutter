@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
+import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/news_group_store.dart';
 
 import 'news_article_service.dart';
@@ -13,6 +14,12 @@ class NewsGroupService {
 
   static NewsGroup getNewsGroup(String id) {
     return _newsGroupStore.getNewsGroup(id);
+  }
+
+  static Future<NewsGroup> getOrFetchNewsGroup(String newsGroupId) async {
+    if (hasNewsGroup(newsGroupId)) return getNewsGroup(newsGroupId);
+
+    return await updateAndGetNewsGroup(newsGroupId);
   }
 
   static NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
@@ -30,6 +37,14 @@ class NewsGroupService {
   static Future<NewsGroup> updateAndGetNewsGroup(String newsGroupId) async {
     var documentSnapshot = await FirestoreService.getCluster(newsGroupId);
     var newsGroup = NewsGroup.fromDocument(documentSnapshot);
+
+    var _user = await UserService.getOrFetchUser();
+    var followedDocumentId =
+        await FirestoreService.checkUserFollowsClusterDocument(
+            _user.id, newsGroupId);
+
+    newsGroup.followedByUser = followedDocumentId != null;
+
     NewsGroupService.updateOrAddNewsGroup(newsGroup);
     return newsGroup;
   }
@@ -86,5 +101,71 @@ class NewsGroupService {
     NewsGroupService.updateOrAddNewsGroup(newsGroup);
 
     return newsGroup;
+  }
+
+  static Future<void> toggleFollowNewsGroup({
+    @required String newsGroupId,
+    @required bool followed,
+  }) async {
+    var _newsGroup = await getOrFetchNewsGroup(newsGroupId);
+    var _user = await UserService.getOrFetchUser();
+
+    if (followed) {
+      await FirestoreService.deleteUserFollowsClusterDocument(
+          _user.id, _newsGroup.id);
+    } else {
+      await FirestoreService.createUserFollowsClusterDocument(
+          _user.id, _newsGroup.id);
+    }
+
+    return;
+  }
+
+  static Future<List<String>> addNewsGroupDocumentsToStores(
+      List<DocumentSnapshot> newsGroupDocuments, int newsGroupPageSize) async {
+    var _user = await UserService.getOrFetchUser();
+    List<String> newsGroupIds = List<String>();
+    List<Future<QuerySnapshot>> newsArticleQueryFutures =
+        List<Future<QuerySnapshot>>();
+
+    // 1) start the fetch for the news articles in parallel
+    for (var newsGroupDoc in newsGroupDocuments) {
+      Future<QuerySnapshot> newsArticleQueryFuture =
+          FirestoreService.getNewsInCluster(
+              newsGroupDoc.documentID, newsGroupPageSize);
+      newsArticleQueryFutures.add(newsArticleQueryFuture);
+    }
+
+    // 1) wait for news articles to be fetched
+    // 2) turn them into models
+    // 3) add them to news article store
+    // 4) add the articles to news group
+    // 5 add them to news group store
+    var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
+    for (var i = 0; i < newsArticleQueries.length; i++) {
+      var newsArticleQuery = newsArticleQueries[i];
+      var newsGroupDoc = newsGroupDocuments[i];
+      List<String> newsArticleIds = List<String>();
+
+      for (var newsArticleDoc in newsArticleQuery.documents) {
+        NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
+        NewsArticleService.updateOrAddNewsArticle(newsArticle);
+        newsArticleIds.add(newsArticle.id);
+      }
+
+      NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
+      newsGroup.addNewsArticles(newsArticleIds);
+
+      var followedDocumentId =
+          await FirestoreService.checkUserFollowsClusterDocument(
+              _user.id, newsGroup.id);
+
+      newsGroup.followedByUser = followedDocumentId != null;
+
+      NewsGroupService.updateOrAddNewsGroup(newsGroup);
+      newsGroupIds.add(newsGroupDoc.documentID);
+    }
+
+    return newsGroupIds;
   }
 }

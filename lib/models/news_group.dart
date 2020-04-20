@@ -7,7 +7,7 @@ class NewsGroup {
   String category;
   Timestamp date;
   Feed newsArticleFeed;
-  bool followed; //to control whether this user follows this news group
+  bool followedByUser; //to control whether this user follows this news group
 
   NewsGroup(this.id);
 
@@ -15,7 +15,7 @@ class NewsGroup {
     id = documentSnapshot.documentID;
     category = documentSnapshot.data['category'];
     date = documentSnapshot.data['date'];
-    followed = null;
+    followedByUser = null;
     newsArticleFeed = null;
   }
 

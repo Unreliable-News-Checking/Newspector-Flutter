@@ -27,7 +27,6 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
         widget.onTap();
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.grey,
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
