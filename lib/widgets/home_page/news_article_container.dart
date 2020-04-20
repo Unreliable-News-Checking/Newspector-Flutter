@@ -38,6 +38,9 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
             children: <Widget>[
               Text(_newsArticle.headline),
               Text(_newsArticle.date.toDate().toString()),
+              Text(_newsArticle.link),
+              Text("is retweet: ${_newsArticle.isRetweet}"),
+              Text(_newsArticle.newsSourceId),
             ],
           ),
         ),

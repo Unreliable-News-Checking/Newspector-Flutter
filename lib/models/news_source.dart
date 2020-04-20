@@ -1,12 +1,13 @@
 import 'package:flutter/services.dart';
 
+import 'feed.dart';
+
 class NewsSource {
   String id;
   String name;
   ByteData logo;
   String link;
-  List<String> newsArticleIds;
+  Feed<String> newsArticleFeed;
 
-  NewsSource(this.id, this.name, this.logo, this.link, this.newsArticleIds);
-  NewsSource.fromEmpty();
+  NewsSource();
 }

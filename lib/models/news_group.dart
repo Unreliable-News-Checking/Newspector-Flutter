@@ -6,14 +6,10 @@ class NewsGroup {
   String id;
   String category;
   Timestamp date;
-  // List<String> newsArticleIds;
   Feed newsArticleFeed;
-  bool followed;
+  bool followed; //to control whether this user follows this news group
 
   NewsGroup(this.id);
-
-  // NewsGroup.fromAttributes(
-  // this.id, this.category, this.newsArticleIds, this.followed);
 
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
