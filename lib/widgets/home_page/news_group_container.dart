@@ -8,6 +8,8 @@ import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/home_page/news_article_container.dart'
     as nac;
 
+import '../../application_constants.dart' as app_consts;
+
 class NewsGroupContainer extends StatefulWidget {
   final String newsGroupId;
 
@@ -22,52 +24,57 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
   NewsGroup _newsGroup;
+  int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
 
   @override
   Widget build(BuildContext context) {
     _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
+    var itemCount = min(_newsGroup.getArticleCount(), maxNewsArticleCount);
 
     return Container(
-      padding: EdgeInsets.all(5),
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              SizedBox(
-                height: 200,
-                child: PageView.builder(
-                  itemCount: _newsGroup.getArticleCount(),
-                  controller: _controller,
-                  itemBuilder: (BuildContext context, int itemIndex) {
-                    return _buildNewsGroupItem(context, itemIndex);
-                  },
-                ),
+          Container(
+            height: 200,
+            child: PageView.custom(
+              childrenDelegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  if (index == itemCount) {
+                    return seeMoreCard();
+                  }
+                  return _buildNewsGroupItem(context, index);
+                },
+                childCount: itemCount + 1,
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: DotsIndicator(
-                  controller: _controller,
-                  itemCount: _newsGroup.getArticleCount(),
-                  color: Colors.blue,
-                  onPageSelected: (page) {
-                    _controller.animateToPage(
-                      page,
-                      duration: _kDuration,
-                      curve: _kCurve,
-                    );
-                  },
-                ),
+              controller: _controller,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              margin: EdgeInsets.all(5),
+              child: DotsIndicator(
+                controller: _controller,
+                itemCount: itemCount,
+                color: Colors.blue,
+                onPageSelected: (page) {
+                  _controller.animateToPage(
+                    page,
+                    duration: _kDuration,
+                    curve: _kCurve,
+                  );
+                },
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  child: fullCoverageButton(context),
-                ),
-              ),
-            ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              child: fullCoverageButton(context),
+            ),
           ),
         ],
       ),
@@ -88,14 +95,32 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget fullCoverageButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsGroupPage(newsGroupId: _newsGroup.id);
-        }));
-      },
-      child: Text("Full Coverage"),
+    return Container(
+      margin: EdgeInsets.only(right: 15),
+      child: OutlineButton(
+        onPressed: goToNewsGroupPage,
+        child: Text("Full Coverage"),
+      ),
     );
+  }
+
+  Widget seeMoreCard() {
+    return GestureDetector(
+      onTap: goToNewsGroupPage,
+      child: Container(
+        color: Colors.grey,
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        child: Center(
+          child: Text("Tap to see more"),
+        ),
+      ),
+    );
+  }
+
+  void goToNewsGroupPage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return NewsGroupPage(newsGroupId: _newsGroup.id);
+    }));
   }
 }
 

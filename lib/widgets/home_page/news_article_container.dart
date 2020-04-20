@@ -6,7 +6,8 @@ class NewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
 
-  NewsArticleContainer({Key key, @required this.newsArticleId, @required this.onTap})
+  NewsArticleContainer(
+      {Key key, @required this.newsArticleId, @required this.onTap})
       : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
         widget.onTap();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.0),
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.grey,
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
@@ -36,6 +37,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(_newsArticle.headline),
+              Text(_newsArticle.date.toDate().toString()),
             ],
           ),
         ),

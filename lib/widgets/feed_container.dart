@@ -66,7 +66,7 @@ class _FeedContainerState extends State<FeedContainer> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Container(
-            margin: EdgeInsets.all(30),
+            margin: EdgeInsets.all(20),
             alignment: Alignment.center,
             child: NewsGroupContainer(
               newsGroupId: widget.feed.getItem(index),
