@@ -22,12 +22,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
       appBar: appBar(),
       body: Center(
         child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              NewsArticleContainer(newsArticleId: widget.newsArticleId),
-            ],
-          ),
+          child: NewsArticleContainer(newsArticleId: widget.newsArticleId),
         ),
       ),
     );
@@ -69,18 +64,18 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
 
   @override
   Widget build(BuildContext context) {
-    NewsArticle newsArticle =
+    NewsArticle _newsArticle =
         NewsArticleService.getNewsArticle(widget.newsArticleId);
 
     return Container(
       color: Colors.blue,
       child: Column(
         children: <Widget>[
-          Text(newsArticle.headline),
-          // Text(newsArticle.link),
-          // Text(newsArticle.newsSource.name),
-          Text(newsArticle.date.toString()),
-          // Text(newsArticle.analysisResult),
+          Text(_newsArticle.headline),
+          Text(_newsArticle.date.toDate().toString()),
+          Text(_newsArticle.link),
+          Text("is retweet: ${_newsArticle.isRetweet}"),
+          Text(_newsArticle.newsSourceId),
         ],
       ),
     );
