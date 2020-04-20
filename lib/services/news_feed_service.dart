@@ -28,6 +28,7 @@ class NewsFeedService {
 
   static Future<NewsFeed> updateAndGetNewsFeed({
     @required int pageSize,
+    @required int newsGroupPageSize,
     String lastDocumentId,
   }) async {
     bool refreshWanted = false;
@@ -47,8 +48,10 @@ class NewsFeedService {
           lastDocumentId, pageSize);
     }
 
-    List<String> newsGroupIds =
-        await addNewsGroupDocumentsToStores(newsGroupQuery.documents);
+    List<String> newsGroupIds = await addNewsGroupDocumentsToStores(
+      newsGroupQuery.documents,
+      newsGroupPageSize,
+    );
 
     // if there is no feed create one
     if (!hasFeed()) {
@@ -67,7 +70,7 @@ class NewsFeedService {
   }
 
   static Future<List<String>> addNewsGroupDocumentsToStores(
-      List<DocumentSnapshot> newsGroupDocuments) async {
+      List<DocumentSnapshot> newsGroupDocuments, int newsGroupPageSize) async {
     List<String> newsGroupIds = List<String>();
     List<Future<QuerySnapshot>> newsArticleQueryFutures =
         List<Future<QuerySnapshot>>();
@@ -75,7 +78,8 @@ class NewsFeedService {
     // 1) start the fetch for the news articles in parallel
     for (var newsGroupDoc in newsGroupDocuments) {
       Future<QuerySnapshot> newsArticleQueryFuture =
-          FirestoreService.getNewsInCluster(newsGroupDoc.documentID, 5);
+          FirestoreService.getNewsInCluster(
+              newsGroupDoc.documentID, newsGroupPageSize);
       newsArticleQueryFutures.add(newsArticleQueryFuture);
     }
 

@@ -72,7 +72,7 @@ class FirestoreService {
     QuerySnapshot querySnapshot = await db
         .collection('tweets')
         .where('cluster_id', isEqualTo: clusterId)
-        .orderBy("date", descending: true)
+        .orderBy("time", descending: true)
         .startAfterDocument(lastDocument)
         .limit(pageLimit)
         .getDocuments();

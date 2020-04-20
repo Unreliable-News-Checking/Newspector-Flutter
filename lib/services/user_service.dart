@@ -30,6 +30,7 @@ class UserService {
 
   static Future<User> updateAndGetUserFeed({
     @required int pageSize,
+    @required int newsGroupPageSize,
     String lastDocumentId,
   }) async {
     bool refreshWanted = false;
@@ -69,7 +70,8 @@ class UserService {
         await Future.wait(clusterDocumentFutures);
 
     List<String> newsGroupIds =
-        await NewsFeedService.addNewsGroupDocumentsToStores(newsGroupDocuments);
+        await NewsFeedService.addNewsGroupDocumentsToStores(
+            newsGroupDocuments, newsGroupPageSize);
 
     // if there is no feed create one
     if (!hasUserWithFeed()) {
@@ -78,7 +80,7 @@ class UserService {
     }
 
     // if refresh is wanted clear the feed
-    if (refreshWanted){
+    if (refreshWanted) {
       _user.followingFeed.clearItems();
     }
 

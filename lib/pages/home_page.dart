@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,7 +12,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   NewsFeed _newsFeed;
-  var pageSize = 3;
+  var pageSize = app_const.homePagePageSize;
+  var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
 
   @override
@@ -76,6 +78,7 @@ class _HomePageState extends State<HomePage> {
     _newsFeed = null;
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
+      newsGroupPageSize: newsGroupPageSize,
     );
 
     if (_newsFeed.getItemCount() < pageSize) {
@@ -92,6 +95,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getRefreshedFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
+      newsGroupPageSize: newsGroupPageSize,
     );
 
     if (_newsFeed.getItemCount() < pageSize) {
@@ -111,6 +115,7 @@ class _HomePageState extends State<HomePage> {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
+      newsGroupPageSize: newsGroupPageSize,
     );
 
     if (lastDocumentId == _newsFeed.getLastItem()) {

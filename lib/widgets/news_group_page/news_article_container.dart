@@ -29,9 +29,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
         padding: EdgeInsets.all(10),
         color: Colors.white,
         child: Center(
-          child: Flexible(
-            child: Text(_newsArticle.headline),
-          ),
+          child: Text(_newsArticle.headline),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -11,7 +12,9 @@ class FollowingPage extends StatefulWidget {
 
 class _FollowingPageState extends State<FollowingPage> {
   User _user;
-  int pageSize = 4;
+  int pageSize = app_const.followingPagePageSize;
+  int newsGroupPageSize = app_const.newsGroupPageSize;
+
   var loadMoreVisible = true;
 
   @override
@@ -73,7 +76,10 @@ class _FollowingPageState extends State<FollowingPage> {
   }
 
   Future<User> getInitialFeed() async {
-    _user = await UserService.updateAndGetUserFeed(pageSize: pageSize);
+    _user = await UserService.updateAndGetUserFeed(
+      pageSize: pageSize,
+      newsGroupPageSize: newsGroupPageSize,
+    );
 
     if (_user.followingFeed.getItemCount() < pageSize) {
       loadMoreVisible = false;
@@ -87,7 +93,10 @@ class _FollowingPageState extends State<FollowingPage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _user = await UserService.updateAndGetUserFeed(pageSize: pageSize);
+    _user = await UserService.updateAndGetUserFeed(
+      pageSize: pageSize,
+      newsGroupPageSize: newsGroupPageSize,
+    );
 
     if (_user.followingFeed.getItemCount() < pageSize) {
       loadMoreVisible = false;
@@ -108,6 +117,7 @@ class _FollowingPageState extends State<FollowingPage> {
     _user = await UserService.updateAndGetUserFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
+      newsGroupPageSize: newsGroupPageSize,
     );
 
     if (lastDocumentId == _user.followingFeed.getLastItem()) {
