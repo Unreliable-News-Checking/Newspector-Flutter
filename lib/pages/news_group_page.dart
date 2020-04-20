@@ -21,6 +21,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("news group id: ${widget.newsGroupId}");
     if (NewsGroupService.hasNewsGroup(widget.newsGroupId)) {
       _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
       if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
@@ -77,7 +78,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   }
 
   Future<NewsGroup> getInitialFeed() async {
-    _newsGroup = await NewsGroupService.updateAndGetNewsGroup(
+    _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
       newsGroupId: widget.newsGroupId,
       pageSize: pageSize,
     );
@@ -94,7 +95,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _newsGroup = await NewsGroupService.updateAndGetNewsGroup(
+    _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
       newsGroupId: widget.newsGroupId,
       pageSize: pageSize,
     );
@@ -113,13 +114,13 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   Future<void> fetchAdditionalNewsGroups() async {
     var lastDocumentId = _newsGroup.newsArticleFeed.getLastItem();
 
-    _newsGroup = await NewsGroupService.updateAndGetNewsGroup(
+    _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
       newsGroupId: widget.newsGroupId,
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
     );
 
-    if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
+    if (lastDocumentId == _newsGroup.newsArticleFeed.getLastItem()) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;

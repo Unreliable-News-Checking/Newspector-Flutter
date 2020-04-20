@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
@@ -26,7 +27,14 @@ class NewsGroupService {
     return _newsGroupStore.hasNewsGroup(newsGroupId);
   }
 
-  static Future<NewsGroup> updateAndGetNewsGroup({
+  static Future<NewsGroup> updateAndGetNewsGroup(String newsGroupId) async {
+    var documentSnapshot = await FirestoreService.getCluster(newsGroupId);
+    var newsGroup = NewsGroup.fromDocument(documentSnapshot);
+    NewsGroupService.updateOrAddNewsGroup(newsGroup);
+    return newsGroup;
+  }
+
+  static Future<NewsGroup> updateAndGetNewsGroupFeed({
     @required String newsGroupId,
     @required int pageSize,
     String lastDocumentId,
@@ -39,17 +47,22 @@ class NewsGroupService {
       refreshWanted = true;
     }
 
-    DocumentSnapshot newsGroupDocument =
-        await FirestoreService.getCluster(newsGroupId);
+    if (refreshWanted) {
+      updateAndGetNewsGroup(newsGroupId);
+    }
+    NewsGroup newsGroup = getNewsGroup(newsGroupId);
 
     QuerySnapshot newsArticleQuery;
     if (refreshWanted) {
-      newsArticleQuery = await FirestoreService.getNewsInCluster(
-          newsGroupDocument.documentID, pageSize);
+      newsArticleQuery =
+          await FirestoreService.getNewsInCluster(newsGroup.id, pageSize);
     } else {
       newsArticleQuery = await FirestoreService.getNewsInClusterAfterDocument(
-          newsGroupDocument.documentID, lastDocumentId, pageSize);
+          newsGroup.id, lastDocumentId, pageSize);
     }
+
+    print(
+        "news article query result count: ${newsArticleQuery.documents.length}");
 
     List<String> newsArticleIds = List<String>();
     for (var newsArticleDocument in newsArticleQuery.documents) {
@@ -58,8 +71,18 @@ class NewsGroupService {
       newsArticleIds.add(newsArticle.id);
     }
 
-    NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDocument);
-    newsGroup.addNewsArticles(newsArticleIds);
+    if (newsGroup.newsArticleFeed == null) {
+      newsGroup.newsArticleFeed = Feed<String>();
+    }
+
+    if (refreshWanted) {
+      newsGroup.newsArticleFeed.clearItems();
+    }
+
+    newsGroup.newsArticleFeed.addAdditionalItems(newsArticleIds);
+
+    // NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDocument);
+    // newsGroup.addNewsArticles(newsArticleIds);
     NewsGroupService.updateOrAddNewsGroup(newsGroup);
 
     return newsGroup;
