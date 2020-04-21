@@ -6,7 +6,7 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/home_page/news_article_container.dart'
+import 'package:newspector_flutter/widgets/news_group_page/news_article_container.dart'
     as nac;
 
 import '../../application_constants.dart' as app_consts;
@@ -24,9 +24,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   final _controller = PageController();
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
+  static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
+  static const double pageViewItemHorizontalMargin = 10;
+  static const EdgeInsets pageViewItemMargin =
+      EdgeInsets.symmetric(horizontal: pageViewItemHorizontalMargin);
   NewsGroup _newsGroup;
-  int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
-  EdgeInsets pageViewItemMargin = EdgeInsets.symmetric(horizontal: 10);
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     var itemCount = min(_newsGroup.getArticleCount(), maxNewsArticleCount);
 
     return Container(
+      color: Colors.white,
       child: Stack(
         children: <Widget>[
           Container(
-            height: 200,
+            height: 240,
             child: PageView.custom(
               childrenDelegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
@@ -84,7 +87,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           Positioned(
             top: 0,
             left: 0,
-            child: Text("Followed: ${_newsGroup.followedByUser}"),
+            child: firstReporterTag(),
           ),
         ],
       ),
@@ -94,15 +97,40 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget _buildNewsGroupItem(BuildContext context, int index) {
     return Container(
       margin: pageViewItemMargin,
-      child: nac.NewsArticleContainer(
-        newsArticleId: _newsGroup.getNewsArticleId(index),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return NewsArticlePage(
-              newsArticleId: _newsGroup.getNewsArticleId(index),
-            );
-          }));
-        },
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 40,
+          ),
+          nac.NewsArticleContainer(
+            newsArticleId: _newsGroup.getNewsArticleId(index),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return NewsArticlePage(
+                  newsArticleId: _newsGroup.getNewsArticleId(index),
+                );
+              }));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget firstReporterTag() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: pageViewItemHorizontalMargin + 5, vertical: 5),
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(360),
+        color: Colors.redAccent.shade400,
+      ),
+      child: Text(
+        "BBC NEWS",
+        style: TextStyle(
+          fontSize: 10,
+        ),
       ),
     );
   }
@@ -118,10 +146,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget followButton() {
+    var icon = _newsGroup.followedByUser ? Icons.check : Icons.add;
     return Container(
       margin: pageViewItemMargin,
       child: IconButton(
-        icon: Icon(Icons.add),
+        icon: Icon(icon),
         onPressed: () {
           NewsGroupService.toggleFollowNewsGroup(
               newsGroupId: _newsGroup.id, followed: _newsGroup.followedByUser);

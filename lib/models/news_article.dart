@@ -6,7 +6,8 @@ class NewsArticle {
   String tweetId;
   String headline;
   Timestamp date;
-  String link;
+  String tweetLink;
+  String websiteLink;
   bool isRetweet;
   String newsSourceId;
   DocumentReference newsSourceReference; // temp
@@ -21,10 +22,11 @@ class NewsArticle {
     headline = documentSnapshot.data['text'];
     date = documentSnapshot.data['time'];
     tweetId = documentSnapshot.data['tweet_id'];
-    link = "twitter.com/user/status/$tweetId";
+    tweetLink = "https://twitter.com/user/status/$tweetId";
     isRetweet = documentSnapshot.data['is_retweet'];
     newsSourceId = documentSnapshot.data['username'];
 
+    websiteLink = null;
     analysisResult = null;
   }
 }
