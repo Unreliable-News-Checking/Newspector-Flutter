@@ -72,8 +72,11 @@ class NewsSourceService {
       var newsSourceDocument = newsSourceQuery.documents[i];
       var newsSourceId = newsSourceDocument.documentID;
 
-      Uint8List photoInBytes =
-          NewsSourceService.getNewsSource(newsSourceId).photoInBytes;
+      Uint8List photoInBytes;
+      if (NewsSourceService.hasNewsSource(newsSourceId)) {
+        photoInBytes =
+            NewsSourceService.getNewsSource(newsSourceId).photoInBytes;
+      }
 
       var newsSource = NewsSource.fromDocument(newsSourceDocument);
       NewsSourceService.updateOrAddNewsSource(newsSource);
