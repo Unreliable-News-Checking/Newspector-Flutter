@@ -56,7 +56,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
 
   // shown when there is a feed with news groups
   Widget homeScaffold() {
-    print("Rebuilt, item count: ${_newsSourceFeed.getItemCount()}");
     return Scaffold(
       appBar: appBar(),
       body: FeedContainer(

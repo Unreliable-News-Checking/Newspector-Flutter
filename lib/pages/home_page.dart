@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
+import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/home_page/news_group_container.dart';
+import 'package:newspector_flutter/services/sign_in_service.dart'
+    as sign_in_service;
 
 class HomePage extends StatefulWidget {
   @override
@@ -77,6 +80,17 @@ class _HomePageState extends State<HomePage> {
   Widget appBar() {
     return AppBar(
       title: Text("Newspector"),
+      actions: <Widget>[
+        CloseButton(
+          onPressed: () {
+            sign_in_service.signOutGoogle();
+            Navigator.of(context, rootNavigator: true)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              return SignPage();
+            }));
+          },
+        ),
+      ],
     );
   }
 

@@ -65,8 +65,6 @@ class NewsSourceService {
           lastDocumentId, pageSize);
     }
 
-    print("fetched document count: ${newsSourceQuery.documents.length}");
-
     List<String> newsSourceIds = new List();
     for (var i = 0; i < newsSourceQuery.documents.length; i++) {
       var newsSourceDocument = newsSourceQuery.documents[i];

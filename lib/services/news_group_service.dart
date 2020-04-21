@@ -76,9 +76,6 @@ class NewsGroupService {
           newsGroup.id, lastDocumentId, pageSize);
     }
 
-    print(
-        "news article query result count: ${newsArticleQuery.documents.length}");
-
     List<String> newsArticleIds = List<String>();
     for (var newsArticleDocument in newsArticleQuery.documents) {
       NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDocument);

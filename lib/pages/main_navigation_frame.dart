@@ -23,11 +23,11 @@ class MainNavigationFrame extends StatelessWidget {
                 title: null,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.inbox),
+                icon: Icon(CupertinoIcons.bookmark),
                 title: null,
               ),
               BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.profile_circled),
+                icon: Icon(CupertinoIcons.search),
                 title: null,
               ),
             ],
@@ -59,7 +59,7 @@ class MainNavigationFrame extends StatelessWidget {
                       child: NewsSourcesPage(),
                     );
                   },
-                  defaultTitle: 'Profile',
+                  defaultTitle: 'Sources',
                 );
                 break;
             }
