@@ -6,34 +6,33 @@ import 'package:newspector_flutter/widgets/news_sources_page/photo_container.dar
 
 class NewsSourceContainer extends StatelessWidget {
   final String newsSourceId;
+  final Function onTap;
 
-  const NewsSourceContainer({Key key, @required this.newsSourceId})
-      : super(key: key);
+  const NewsSourceContainer({
+    Key key,
+    @required this.newsSourceId,
+    @required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     NewsSource newsSource = NewsSourceService.getNewsSource(newsSourceId);
 
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: Row(
-        children: <Widget>[
-          sourcePhoto(newsSource),
-          sourceInfo(newsSource.name, newsSource.followerCount),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Row(
+          children: <Widget>[
+            sourcePhoto(newsSource),
+            sourceInfo(newsSource.name, newsSource.followerCount),
+          ],
+        ),
       ),
     );
   }
 
   Widget sourcePhoto(NewsSource newsSource) {
-    // return Container(
-    //   width: 60,
-    //   height: 60,
-    //   decoration: BoxDecoration(
-    //     borderRadius: BorderRadius.circular(360),
-    //     color: Colors.blue,
-    //   ),
-    // );
     return PhotoContainer(radius: 60, newsSource: newsSource);
   }
 

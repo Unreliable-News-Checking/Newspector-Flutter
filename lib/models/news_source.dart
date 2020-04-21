@@ -11,13 +11,15 @@ class NewsSource {
 
   int followerCount;
   int approvalCount;
+  int newsCount;
+  
   int firstInGroupCount;
   int reportCount;
-  int newsCount;
   int newsGroupFollowerCount;
   int tweetCount;
 
   String websiteLink;
+  String twitterLink;
   Uint8List photoInBytes;
 
   NewsSource();
@@ -37,5 +39,6 @@ class NewsSource {
     newsGroupFollowerCount = data['number_of_total_newsgroup_followers'];
     tweetCount = data['tweets_count'];
     websiteLink = 'https://$website';
+    twitterLink = 'https//twitter/$twitterUsername';
   }
 }

@@ -33,7 +33,7 @@ String timestampToMeaningfulTime(Timestamp timestamp) {
 String countToMeaningfulString(int count) {
   int million = 1000000;
   int thousand = 1000;
-  if (count > million) return "${count ~/ million}m";
+  if (count > million) return "${(count / million).toStringAsFixed(1)}m";
   if (count > thousand) return "${count ~/ thousand}k";
   return count.toString();
 }
