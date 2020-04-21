@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'firestore_database_service.dart';
 
 class NewsSourceService {
-  static NewsSourceStore newsSourceStore = NewsSourceStore();
+  static NewsSourceStore _newsSourceStore = NewsSourceStore();
   static Feed<String> _newsSourceFeed;
 
   static Feed<String> getNewsSourceFeed() {
@@ -23,6 +23,25 @@ class NewsSourceService {
 
   static void clearFeed() {
     _newsSourceFeed = null;
+  }
+
+  static bool hasNewsSource(String newsSourceId) {
+    return _newsSourceStore.hasNewsSource(newsSourceId);
+  }
+
+  static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {
+    var newsSourceDocument = await FirestoreService.getSource(newsSourceId);
+
+    Uint8List photoInBytes;
+    if (NewsSourceService.hasNewsSource(newsSourceId)) {
+      photoInBytes = NewsSourceService.getNewsSource(newsSourceId).photoInBytes;
+    }
+
+    var newsSource = NewsSource.fromDocument(newsSourceDocument);
+    NewsSourceService.updateOrAddNewsSource(newsSource);
+    newsSource.photoInBytes = photoInBytes;
+
+    return newsSource;
   }
 
   static Future<Feed<String>> updateAndGetNewsSourceFeed({
@@ -81,15 +100,15 @@ class NewsSourceService {
   //firebase stuff here too
 
   static NewsSource getNewsSource(String newsSourceId) {
-    return newsSourceStore.getNewsSource(newsSourceId);
+    return _newsSourceStore.getNewsSource(newsSourceId);
   }
 
   static NewsSource updateOrAddNewsSource(NewsSource newsArticle) {
-    return newsSourceStore.updateOrAddNewsSource(newsArticle);
+    return _newsSourceStore.updateOrAddNewsSource(newsArticle);
   }
 
   static void clearStore() {
-    newsSourceStore = NewsSourceStore();
+    _newsSourceStore = NewsSourceStore();
   }
 
   static goToSourceWebsite(String newsSourceId) async {

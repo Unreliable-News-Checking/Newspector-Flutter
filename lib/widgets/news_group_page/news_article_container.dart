@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 
@@ -33,13 +34,16 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
           child: Column(
             children: <Widget>[
               headline(),
+              SizedBox(
+                height: 5,
+              ),
               Row(
                 children: <Widget>[
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      date(),
                       source(),
+                      date(),
                     ],
                   ),
                   Expanded(child: Container()),
@@ -59,18 +63,39 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
   }
 
   Widget source() {
-    return Row(
-      children: <Widget>[
-        Text(_newsArticle.newsSourceId),
-        Text("is retweet: ${_newsArticle.isRetweet}"),
-      ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NewsSourcePage(
+            newsSourceId: _newsArticle.newsSourceId,
+          );
+        }));
+      },
+      child: Row(
+        children: <Widget>[
+          Text(
+            _newsArticle.newsSourceId,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          _newsArticle.isRetweet ? Icon(Icons.repeat) : Container(),
+          // Text("is retweet: ${_newsArticle.isRetweet}"),
+        ],
+      ),
     );
   }
 
   Widget date() {
     var timestamp = _newsArticle.date;
     var dateString = utils.timestampToMeaningfulTime(timestamp);
-    return Text(dateString);
+    return Text(
+      dateString,
+      style: TextStyle(
+        fontSize: 13,
+        color: Colors.grey.shade600,
+      ),
+    );
   }
 
   Widget tweetButton() {

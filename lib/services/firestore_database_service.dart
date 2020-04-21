@@ -5,6 +5,13 @@ import 'package:newspector_flutter/models/user.dart';
 class FirestoreService {
   static Firestore db = Firestore.instance;
 
+  static Future<DocumentSnapshot> getSource(String newsSourceId) async {
+    var documentSnapshot =
+        await db.collection('accounts').document(newsSourceId).get();
+
+    return documentSnapshot;
+  }
+
   static Future<QuerySnapshot> getSources(int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('accounts')

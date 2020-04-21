@@ -22,6 +22,40 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   @override
   Widget build(BuildContext context) {
     _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
+
+    if (NewsSourceService.hasNewsSource(widget.newsSourceId)) {
+      _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
+      return homeScaffold();
+    }
+
+    // if there is no existing feed,
+    // get the latest feed and display it
+    return FutureBuilder(
+      future: NewsSourceService.updateAndGetNewsSource(widget.newsSourceId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            _newsSource = snapshot.data;
+            return homeScaffold();
+            break;
+          default:
+            return loadingScaffold();
+        }
+      },
+    );
+  }
+
+  Widget loadingScaffold() {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget homeScaffold() {
     return Scaffold(
       appBar: AppBar(
         title: Text(_newsSource.name),
@@ -48,6 +82,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             physics: BouncingScrollPhysics()
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
+              refreshControl(),
               SliverToBoxAdapter(
                 child: sourceHeader(),
               ),
@@ -68,6 +103,13 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         ),
       ),
     );
+  }
+
+  Widget refreshControl() {
+    return CupertinoSliverRefreshControl(onRefresh: () async {
+      _newsSource =
+          await NewsSourceService.updateAndGetNewsSource(widget.newsSourceId);
+    });
   }
 
   Widget sourceHeader() {
