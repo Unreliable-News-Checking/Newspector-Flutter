@@ -1,28 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/models/news_feed.dart';
-import 'package:newspector_flutter/services/news_feed_service.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
-import 'package:newspector_flutter/application_constants.dart' as app_const;
-import 'package:newspector_flutter/widgets/home_page/news_group_container.dart';
+import 'package:newspector_flutter/models/feed.dart';
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
 
-class HomePage extends StatefulWidget {
+class NewsSourcesPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _NewsSourcesPageState createState() => _NewsSourcesPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  NewsFeed _newsFeed;
-  var pageSize = app_const.homePagePageSize;
-  var newsGroupPageSize = app_const.newsGroupPageSize;
-  var loadMoreVisible = true;
+class _NewsSourcesPageState extends State<NewsSourcesPage> {
+  Feed<String> _newsSourceFeed;
+  int pageSize = 11;
+  bool loadMoreVisible = true;
 
   @override
   Widget build(BuildContext context) {
-    // if there is an existing feed show that
-    if (NewsFeedService.hasFeed()) {
-      _newsFeed = NewsFeedService.getNewsFeed();
-      if (_newsFeed.getItemCount() < pageSize) {
+    if (NewsSourceService.hasFeed()) {
+      _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
+      if (_newsSourceFeed.getItemCount() < pageSize) {
         loadMoreVisible = false;
       }
       return homeScaffold();
@@ -35,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _newsFeed = snapshot.data;
+            _newsSourceFeed = snapshot.data;
             return homeScaffold();
             break;
           default:
@@ -58,16 +55,17 @@ class _HomePageState extends State<HomePage> {
 
   // shown when there is a feed with news groups
   Widget homeScaffold() {
+    print("Rebuilt, item count: ${_newsSourceFeed.getItemCount()}");
     return Scaffold(
       appBar: appBar(),
-      body: FeedContainer<String>(
-        feed: _newsFeed,
-        onRefresh: getRefreshedFeed,
-        onBottomReached: fetchAdditionalNewsGroups,
+      body: FeedContainer(
+        feed: _newsSourceFeed,
         loadMoreVisible: loadMoreVisible,
-        buildContainer: (String newsGroupId) {
-          return NewsGroupContainer(
-            newsGroupId: newsGroupId,
+        onBottomReached: fetchAdditionalNewsGroups,
+        onRefresh: getRefreshedFeed,
+        buildContainer: (String newsSourceId) {
+          return NewsSourceContainer(
+            newsSourceId: newsSourceId,
           );
         },
       ),
@@ -76,35 +74,32 @@ class _HomePageState extends State<HomePage> {
 
   Widget appBar() {
     return AppBar(
-      title: Text("Newspector"),
+      title: Text("Sources"),
     );
   }
 
-  Future<NewsFeed> getInitialFeed() async {
-    _newsFeed = null;
-    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+  Future<Feed<String>> getInitialFeed() async {
+    _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: pageSize,
-      newsGroupPageSize: newsGroupPageSize,
     );
 
-    if (_newsFeed.getItemCount() < pageSize) {
+    if (_newsSourceFeed.getItemCount() < pageSize) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;
     }
 
-    return _newsFeed;
+    return _newsSourceFeed;
   }
 
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+    _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: pageSize,
-      newsGroupPageSize: newsGroupPageSize,
     );
 
-    if (_newsFeed.getItemCount() < pageSize) {
+    if (_newsSourceFeed.getItemCount() < pageSize) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;
@@ -116,15 +111,14 @@ class _HomePageState extends State<HomePage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> fetchAdditionalNewsGroups() async {
-    var lastDocumentId = _newsFeed.getLastItem();
+    var lastDocumentId = _newsSourceFeed.getLastItem();
 
-    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
+    _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
-      newsGroupPageSize: newsGroupPageSize,
     );
 
-    if (lastDocumentId == _newsFeed.getLastItem()) {
+    if (lastDocumentId == _newsSourceFeed.getLastItem()) {
       loadMoreVisible = false;
     } else {
       loadMoreVisible = true;

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/pages/profile_page.dart';
+import 'package:newspector_flutter/pages/news_sources_page.dart';
 
 import 'following_page.dart';
 import 'home_page.dart';
@@ -55,7 +55,8 @@ class MainNavigationFrame extends StatelessWidget {
                 return CupertinoTabView(
                   builder: (BuildContext context) {
                     return CupertinoPageScaffold(
-                      child: ProfilePage(),
+                      // child: ProfilePage(),
+                      child: NewsSourcesPage(),
                     );
                   },
                   defaultTitle: 'Profile',

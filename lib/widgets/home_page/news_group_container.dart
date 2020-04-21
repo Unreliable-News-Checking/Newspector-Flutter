@@ -36,6 +36,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     var itemCount = min(_newsGroup.getArticleCount(), maxNewsArticleCount);
 
     return Container(
+      margin: EdgeInsets.all(20),
       color: Colors.white,
       child: Stack(
         children: <Widget>[

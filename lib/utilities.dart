@@ -29,3 +29,11 @@ String timestampToMeaningfulTime(Timestamp timestamp) {
 
   return dateString;
 }
+
+String countToMeaningfulString(int count) {
+  int million = 1000000;
+  int thousand = 1000;
+  if (count > million) return "${count ~/ million}m";
+  if (count > thousand) return "${count ~/ thousand}k";
+  return count.toString();
+}

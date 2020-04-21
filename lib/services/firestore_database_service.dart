@@ -8,7 +8,7 @@ class FirestoreService {
   static Future<QuerySnapshot> getSources(int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('accounts')
-        .orderBy("date", descending: true)
+        .orderBy("name", descending: false)
         .limit(pageLimit)
         .getDocuments();
 
@@ -16,11 +16,14 @@ class FirestoreService {
   }
 
   static Future<QuerySnapshot> getSourcesAfterDocument(
-      DocumentSnapshot document, int pageLimit) async {
+      String lastDocumentId, int pageLimit) async {
+    var lastDocument =
+        await db.collection('accounts').document(lastDocumentId).get();
+
     QuerySnapshot querySnapshot = await db
         .collection('accounts')
-        .orderBy("date", descending: true)
-        .startAfter([document])
+        .orderBy("name")
+        .startAfterDocument(lastDocument)
         .limit(pageLimit)
         .getDocuments();
 

@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/home_page/news_group_container.dart';
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -65,6 +66,11 @@ class _FollowingPageState extends State<FollowingPage> {
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
         loadMoreVisible: loadMoreVisible,
+        buildContainer: (String newsGroupId) {
+          return NewsGroupContainer(
+            newsGroupId: newsGroupId,
+          );
+        },
       ),
     );
   }
