@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 
 class FCMService {
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -18,19 +19,27 @@ class FCMService {
   //   // Or do other work.
   // }
 
-  static void configureFCM() {
+  static void configureFCM({
+    @required Function onMessage,
+    @required Function onResume,
+  }) {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
+        onMessage();
         // _showItemDialog(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        // _navigateToItemDetail(message);
+        var data = message['data'];
+        print(data['news_group_id']);
+        onResume(data['news_group_id']);
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        // _navigateToItemDetail(message);
+        var data = message['data'];
+        print(data['news_group_id']);
+        onResume(data['news_group_id']);
       },
     );
   }
