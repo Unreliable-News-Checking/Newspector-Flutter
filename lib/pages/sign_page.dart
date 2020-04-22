@@ -32,7 +32,7 @@ class _SignPageState extends State<SignPage> {
   }
 
   Future<void> signIn() async {
-    var fireBaseUser = await sign_in_service.signInWithGoogle();
+    await sign_in_service.signInWithGoogle();
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();

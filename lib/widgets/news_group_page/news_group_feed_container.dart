@@ -141,6 +141,7 @@ class TimelineItem extends StatelessWidget {
                 margin: EdgeInsets.all(10),
                 child: nac.NewsArticleContainer(
                   newsArticleId: newsArticleId,
+                  shorten: false,
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {

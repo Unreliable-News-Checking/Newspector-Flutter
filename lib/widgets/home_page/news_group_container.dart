@@ -30,6 +30,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       EdgeInsets.symmetric(horizontal: pageViewItemHorizontalMargin);
   NewsGroup _newsGroup;
 
+  static const double topPadding = 40;
+  static const double bottomPadding = 30;
+  static const double textContainerSize = 120;
+
   @override
   Widget build(BuildContext context) {
     _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
@@ -41,7 +45,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Stack(
         children: <Widget>[
           Container(
-            height: 240,
+            height: topPadding + bottomPadding + textContainerSize,
             child: PageView.custom(
               childrenDelegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
@@ -101,17 +105,27 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: 40,
+            // padding for the follow and leader
+            height: topPadding,
           ),
-          nac.NewsArticleContainer(
-            newsArticleId: _newsGroup.getNewsArticleId(index),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return NewsArticlePage(
-                  newsArticleId: _newsGroup.getNewsArticleId(index),
-                );
-              }));
-            },
+          SizedBox(
+            height: textContainerSize,
+            child: nac.NewsArticleContainer(
+              newsArticleId: _newsGroup.getNewsArticleId(index),
+              shorten: true,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return NewsArticlePage(
+                    newsArticleId: _newsGroup.getNewsArticleId(index),
+                  );
+                }));
+              },
+            ),
+          ),
+          SizedBox(
+            // padding for the full coverage and dot inditicator
+            height: bottomPadding,
           ),
         ],
       ),

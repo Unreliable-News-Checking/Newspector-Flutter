@@ -7,9 +7,13 @@ import 'package:newspector_flutter/utilities.dart' as utils;
 class NewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
+  final bool shorten;
 
   NewsArticleContainer(
-      {Key key, @required this.newsArticleId, @required this.onTap})
+      {Key key,
+      @required this.newsArticleId,
+      @required this.onTap,
+      @required this.shorten})
       : super(key: key);
 
   @override
@@ -32,11 +36,9 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
         color: Colors.white,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               headline(),
-              SizedBox(
-                height: 5,
-              ),
               Row(
                 children: <Widget>[
                   Column(
@@ -59,7 +61,18 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
   }
 
   Widget headline() {
-    return Text(_newsArticle.headline);
+    String headline = _newsArticle.headline;
+    if (widget.shorten) {
+      return Text(
+        headline,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 3,
+      );
+    }
+
+    return Text(
+      headline,
+    );
   }
 
   Widget source() {
