@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 
 import 'news_article_service.dart';
@@ -41,6 +42,8 @@ void signOutGoogle() async {
   NewsArticleService.clearStore();
   NewsFeedService.clearFeed();
   NewsGroupService.clearStore();
+  NewsSourceService.clearFeed();
+  NewsSourceService.clearStore();
   UserService.clearUser();
 }
 

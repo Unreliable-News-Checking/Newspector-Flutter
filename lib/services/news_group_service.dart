@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/news_group_store.dart';
@@ -110,9 +111,11 @@ class NewsGroupService {
     if (followed) {
       await FirestoreService.deleteUserFollowsClusterDocument(
           _user.id, _newsGroup.id);
+      FCMService.unsubscribeFromTopic(_newsGroup.id);
     } else {
       await FirestoreService.createUserFollowsClusterDocument(
           _user.id, _newsGroup.id);
+      FCMService.subscribeToTopic(_newsGroup.id);
     }
 
     return;

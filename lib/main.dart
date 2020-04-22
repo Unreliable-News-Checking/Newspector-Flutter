@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
+import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:newspector_flutter/services/sign_in_service.dart'
     as signInService;
 
@@ -9,7 +10,19 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    FCMService.configureFCM();
+    FCMService.requestNotificationPermissions();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -21,6 +21,7 @@ dependencies:
   firebase_auth:
   google_sign_in:
   url_launcher:
+  firebase_messaging:
   flutter:
     sdk: flutter
 
