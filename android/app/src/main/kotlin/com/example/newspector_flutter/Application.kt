@@ -35,7 +35,9 @@ class Application : FlutterApplication(), PluginRegistrantCallback {
   private fun createNotificationChannel(id: String, name: String,
                                             description: String) {
  
-        val importance = NotificationManager.IMPORTANCE_HIGH 
+        notificationManager?.deleteNotificationChannel(id)
+
+        val importance = NotificationManager.IMPORTANCE_MAX 
         val channel = NotificationChannel(id, name, importance)
  
         channel.description = description
