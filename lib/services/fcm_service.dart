@@ -1,45 +1,34 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 
 class FCMService {
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  // static Future<dynamic> myBackgroundMessageHandler(
-  //     Map<String, dynamic> message) {
-  //   if (message.containsKey('data')) {
-  //     // Handle data message
-  //     final dynamic data = message['data'];
-  //   }
-
-  //   if (message.containsKey('notification')) {
-  //     // Handle notification message
-  //     final dynamic notification = message['notification'];
-  //   }
-
-  //   // Or do other work.
-  // }
+  static Function onMessage;
+  static Function onResume;
 
   static void configureFCM({
-    @required Function onMessage,
-    @required Function onResume,
+    Function onMessage,
+    Function onResume,
   }) {
+    if (onMessage != null) FCMService.onMessage = onMessage;
+    if (onResume != null) FCMService.onResume = onResume;
+
+    updateNotificationCallbacks();
+  }
+
+  static void updateNotificationCallbacks() {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        onMessage();
-        // _showItemDialog(message);
+        var data = message['data'];
+        FCMService.onMessage(data);
       },
       onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
         var data = message['data'];
-        print(data['news_group_id']);
-        onResume(data['news_group_id']);
+        FCMService.onResume(data);
       },
       onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
         var data = message['data'];
-        print(data['news_group_id']);
-        onResume(data['news_group_id']);
+        FCMService.onResume(data);
       },
     );
   }

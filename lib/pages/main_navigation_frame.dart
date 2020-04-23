@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/news_sources_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
+import 'package:flushbar/flushbar.dart';
 
 import 'following_page.dart';
 import 'home_page.dart';
@@ -17,16 +18,28 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   void initState() {
     super.initState();
     FCMService.configureFCM(
-      onMessage: (newsGroupId) {
-        // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        //   return NewsGroupPage(newsGroupId: newsGroupId);
-        // }));
-      },
-      onResume: (newsGroupId) {
-        print("On resume in main called");
+      onResume: (data) {
+        var newsGroupId = data['news_group_id'];
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsGroupPage(newsGroupId: newsGroupId);
         }));
+      },
+      onMessage: (data) {
+        var newsGroupId = data['news_group_id'];
+        var title = data['title'];
+        var body = data['body'];
+        Flushbar(
+          flushbarStyle: FlushbarStyle.GROUNDED,
+          flushbarPosition: FlushbarPosition.TOP,
+          title: title,
+          message: body,
+          duration: Duration(seconds: 3),
+          onTap: (a) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return NewsGroupPage(newsGroupId: newsGroupId);
+            }));
+          },
+        ).show(context);
       },
     );
   }
@@ -80,7 +93,6 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
                 return CupertinoTabView(
                   builder: (BuildContext context) {
                     return CupertinoPageScaffold(
-                      // child: ProfilePage(),
                       child: NewsSourcesPage(),
                     );
                   },

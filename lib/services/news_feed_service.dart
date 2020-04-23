@@ -39,9 +39,9 @@ class NewsFeedService {
     // get the right documents from the database
     QuerySnapshot newsGroupQuery;
     if (refreshWanted) {
-      newsGroupQuery = await FirestoreService.getClusters(pageSize);
+      newsGroupQuery = await FirestoreService.getNewsGroups(pageSize);
     } else {
-      newsGroupQuery = await FirestoreService.getClustersAfterDocument(
+      newsGroupQuery = await FirestoreService.getNewsGroupsAfterDocument(
           lastDocumentId, pageSize);
     }
 

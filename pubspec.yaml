@@ -22,6 +22,7 @@ dependencies:
   google_sign_in:
   url_launcher:
   firebase_messaging:
+  flushbar:
   flutter:
     sdk: flutter
 

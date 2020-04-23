@@ -67,23 +67,23 @@ class UserService {
     QuerySnapshot userFollowsGroupQuery;
     if (refreshWanted) {
       userFollowsGroupQuery =
-          await FirestoreService.gerUserFollowsClusters(_user.id, pageSize);
+          await FirestoreService.gerUserFollowsNewsGroups(_user.id, pageSize);
     } else {
       userFollowsGroupQuery =
-          await FirestoreService.getUserFollowsClusterAfterTimestamp(
+          await FirestoreService.getUserFollowsNewsGroupAfterDocument(
               _user.id, lastDocumentId, pageSize);
     }
 
     // from the user follows cluster documents,
     // get the clusterId and start fetching the clusters in parallel
-    List<Future<DocumentSnapshot>> clusterDocumentFutures = List();
-    for (var userFollowsClusterDoc in userFollowsGroupQuery.documents) {
-      var clusterId = userFollowsClusterDoc.data['cluster_id'];
-      var clusterDocumentFuture = FirestoreService.getCluster(clusterId);
-      clusterDocumentFutures.add(clusterDocumentFuture);
+    List<Future<DocumentSnapshot>> newsGroupDocumentFutures = List();
+    for (var userFollowsNewsGroupDoc in userFollowsGroupQuery.documents) {
+      var newsGroupId = userFollowsNewsGroupDoc.data['news_group_id'];
+      var newsGroupDocumentFuture = FirestoreService.getNewsGroup(newsGroupId);
+      newsGroupDocumentFutures.add(newsGroupDocumentFuture);
     }
     List<DocumentSnapshot> newsGroupDocuments =
-        await Future.wait(clusterDocumentFutures);
+        await Future.wait(newsGroupDocumentFutures);
 
     List<String> newsGroupIds =
         await NewsGroupService.addNewsGroupDocumentsToStores(

@@ -36,12 +36,12 @@ class NewsGroupService {
   }
 
   static Future<NewsGroup> updateAndGetNewsGroup(String newsGroupId) async {
-    var documentSnapshot = await FirestoreService.getCluster(newsGroupId);
+    var documentSnapshot = await FirestoreService.getNewsGroup(newsGroupId);
     var newsGroup = NewsGroup.fromDocument(documentSnapshot);
 
     var _user = await UserService.getOrFetchUser();
     var followedDocumentId =
-        await FirestoreService.checkUserFollowsClusterDocument(
+        await FirestoreService.checkUserFollowsNewsGroupDocument(
             _user.id, newsGroupId);
 
     newsGroup.followedByUser = followedDocumentId != null;
@@ -71,9 +71,9 @@ class NewsGroupService {
     QuerySnapshot newsArticleQuery;
     if (refreshWanted) {
       newsArticleQuery =
-          await FirestoreService.getNewsInCluster(newsGroup.id, pageSize);
+          await FirestoreService.getNewsInNewsGroup(newsGroup.id, pageSize);
     } else {
-      newsArticleQuery = await FirestoreService.getNewsInClusterAfterDocument(
+      newsArticleQuery = await FirestoreService.getNewsInNewsGroupAfterDocument(
           newsGroup.id, lastDocumentId, pageSize);
     }
 
@@ -109,11 +109,11 @@ class NewsGroupService {
     var _user = await UserService.getOrFetchUser();
 
     if (followed) {
-      await FirestoreService.deleteUserFollowsClusterDocument(
+      await FirestoreService.deleteUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.unsubscribeFromTopic(_newsGroup.id);
     } else {
-      await FirestoreService.createUserFollowsClusterDocument(
+      await FirestoreService.createUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.subscribeToTopic(_newsGroup.id);
     }
@@ -131,7 +131,7 @@ class NewsGroupService {
     // 1) start the fetch for the news articles in parallel
     for (var newsGroupDoc in newsGroupDocuments) {
       Future<QuerySnapshot> newsArticleQueryFuture =
-          FirestoreService.getNewsInCluster(
+          FirestoreService.getNewsInNewsGroup(
               newsGroupDoc.documentID, newsGroupPageSize);
       newsArticleQueryFutures.add(newsArticleQueryFuture);
     }
@@ -157,7 +157,7 @@ class NewsGroupService {
       newsGroup.addNewsArticles(newsArticleIds);
 
       var followedDocumentId =
-          await FirestoreService.checkUserFollowsClusterDocument(
+          await FirestoreService.checkUserFollowsNewsGroupDocument(
               _user.id, newsGroup.id);
 
       newsGroup.followedByUser = followedDocumentId != null;
