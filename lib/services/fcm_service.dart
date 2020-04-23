@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:newspector_flutter/services/firestore_database_service.dart';
 
 class FCMService {
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -54,5 +55,15 @@ class FCMService {
 
   static void unsubscribeFromTopic(String topicName) {
     _firebaseMessaging.unsubscribeFromTopic(topicName);
+  }
+
+  static void subscribeToEveryFollowingNews()
+  {
+    // var newsGroupIds = FirestoreService.getUserFollowsNewsGroups(newsGroupId);
+  }
+
+  static void unsubscribeFromEveryFollowingNews()
+  {
+
   }
 }

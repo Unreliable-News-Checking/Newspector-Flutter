@@ -235,29 +235,4 @@ class FirestoreService {
 
     return querySnapshot;
   }
-
-  static Future<QuerySnapshot> getUserFollowsNewsGroupsAfterDocument(
-      String newsGroupId, DocumentSnapshot document, int pageLimit) async {
-    QuerySnapshot querySnapshot = await db
-        .collection('user_follows_news_group')
-        .where('news_group_id', isEqualTo: newsGroupId)
-        .orderBy("date", descending: true)
-        .startAfter([document])
-        .limit(pageLimit)
-        .getDocuments();
-
-    return querySnapshot;
-  }
-
-  static Future<int> getNumberOfUsersFollowingNewsGroup(
-      String newsGroupId, int pageLimit) async {
-    QuerySnapshot querySnapshot = await db
-        .collection('user_follows_news_group')
-        .where('news_group_id', isEqualTo: newsGroupId)
-        .orderBy("date", descending: true)
-        .limit(pageLimit)
-        .getDocuments();
-
-    return querySnapshot.documents.length;
-  }
 }
