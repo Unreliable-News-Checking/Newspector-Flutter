@@ -32,7 +32,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   static const double topPadding = 40;
   static const double bottomPadding = 30;
-  static const double textContainerSize = 120;
+  static const double textContainerSize = 125;
 
   @override
   Widget build(BuildContext context) {

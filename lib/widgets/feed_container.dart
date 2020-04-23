@@ -8,6 +8,7 @@ class FeedContainer<E> extends StatefulWidget {
   final Function onBottomReached;
   final bool loadMoreVisible;
   final Function buildContainer;
+  final String emptyListMessage;
 
   FeedContainer({
     Key key,
@@ -16,6 +17,7 @@ class FeedContainer<E> extends StatefulWidget {
     @required this.onBottomReached,
     @required this.loadMoreVisible,
     @required this.buildContainer,
+    @required this.emptyListMessage,
   }) : super(key: key);
 
   @override
@@ -46,7 +48,7 @@ class _FeedContainerState extends State<FeedContainer> {
               BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
           slivers: <Widget>[
             refreshControl(),
-            newsGroupList(),
+            itemList(),
             SliverToBoxAdapter(
               child: loadMoreContainer(),
             ),
@@ -62,20 +64,29 @@ class _FeedContainerState extends State<FeedContainer> {
     );
   }
 
-  Widget newsGroupList() {
+  Widget itemList() {
+    if (widget.feed.getItemCount() == 0) return emptyItemList();
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Container(
-            // margin: EdgeInsets.all(20),
-            // alignment: Alignment.center,
             child: widget.buildContainer(widget.feed.getItem(index)),
-            // NewsGroupContainer(
-            // newsGroupId: widget.feed.getItem(index),
-            // ),
           );
         },
         childCount: widget.feed.getItemCount(),
+      ),
+    );
+  }
+
+  // shown when the page is loading the new feed
+  Widget emptyItemList() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.only(top: 50),
+        child: Center(
+          child: Text(widget.emptyListMessage),
+        ),
       ),
     );
   }

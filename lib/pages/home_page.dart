@@ -68,6 +68,7 @@ class _HomePageState extends State<HomePage> {
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
         loadMoreVisible: loadMoreVisible,
+        emptyListMessage: "There are no news available yet.",
         buildContainer: (String newsGroupId) {
           return NewsGroupContainer(
             newsGroupId: newsGroupId,

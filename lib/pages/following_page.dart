@@ -66,6 +66,7 @@ class _FollowingPageState extends State<FollowingPage> {
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
         loadMoreVisible: loadMoreVisible,
+        emptyListMessage: "You are not following any news groups yet.",
         buildContainer: (String newsGroupId) {
           return NewsGroupContainer(
             newsGroupId: newsGroupId,

@@ -63,6 +63,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
         loadMoreVisible: loadMoreVisible,
         onBottomReached: fetchAdditionalNewsGroups,
         onRefresh: getRefreshedFeed,
+        emptyListMessage: "There are no news sources yet.",
         buildContainer: (String newsSourceId) {
           return NewsSourceContainer(
             newsSourceId: newsSourceId,
