@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 String timestampToMeaningfulTime(Timestamp timestamp) {
@@ -32,8 +34,25 @@ String timestampToMeaningfulTime(Timestamp timestamp) {
 
 String countToMeaningfulString(int count) {
   int million = 1000000;
+  int hundredThousand = 100000;
   int thousand = 1000;
-  if (count > million) return "${(count / million).toStringAsFixed(1)}m";
-  if (count > thousand) return "${count ~/ thousand}k";
-  return count.toString();
+  String strCount;
+
+  if (count > million && count % million > hundredThousand) {
+    strCount = "${roundDown(count / million, 1)}m";
+  } else if (count > million) {
+    strCount = "${(count / million).toStringAsFixed(0)}m";
+  } else if (count > thousand) {
+    strCount = "${count ~/ thousand}k";
+  } else {
+    strCount = count.toString();
+  }
+
+  return strCount;
+}
+
+String roundDown(double d, int decimals) {
+  int fac = pow(10, decimals);
+  d = (d * fac).truncateToDouble() / fac;
+  return d.toString();
 }

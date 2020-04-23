@@ -39,7 +39,7 @@ class FirestoreService {
 
   static Future<QuerySnapshot> getClusters(int pageLimit) async {
     QuerySnapshot querySnapshot = await db
-        .collection('clusters')
+        .collection('news_groups')
         .orderBy("date", descending: true)
         .limit(pageLimit)
         .getDocuments();
@@ -50,10 +50,10 @@ class FirestoreService {
   static Future<QuerySnapshot> getClustersAfterDocument(
       String lastDocumentId, int pageLimit) async {
     var lastDocument =
-        await db.collection('clusters').document(lastDocumentId).get();
+        await db.collection('news_groups').document(lastDocumentId).get();
 
     QuerySnapshot querySnapshot = await db
-        .collection('clusters')
+        .collection('news_groups')
         .orderBy("date", descending: true)
         .startAfterDocument(lastDocument)
         .limit(pageLimit)
@@ -66,8 +66,8 @@ class FirestoreService {
       String clusterId, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
         .collection('tweets')
-        .where('cluster_id', isEqualTo: clusterId)
-        .orderBy("time", descending: true)
+        .where('news_group_id', isEqualTo: clusterId)
+        .orderBy("date", descending: true)
         .limit(pageLimit)
         .getDocuments();
 
@@ -81,8 +81,8 @@ class FirestoreService {
 
     QuerySnapshot querySnapshot = await db
         .collection('tweets')
-        .where('cluster_id', isEqualTo: clusterId)
-        .orderBy("time", descending: true)
+        .where('news_group_id', isEqualTo: clusterId)
+        .orderBy("date", descending: true)
         .startAfterDocument(lastDocument)
         .limit(pageLimit)
         .getDocuments();
@@ -128,9 +128,9 @@ class FirestoreService {
   static Future<String> checkUserFollowsClusterDocument(
       String userId, String newsGroupId) async {
     var documentsToBeDeleted = await db
-        .collection('userfollowscluster')
+        .collection('user_follows_news_group')
         .where('user_id', isEqualTo: userId)
-        .where('cluster_id', isEqualTo: newsGroupId)
+        .where('news_group_id', isEqualTo: newsGroupId)
         .getDocuments();
 
     if (documentsToBeDeleted.documents.length <= 0) return null;
@@ -149,10 +149,10 @@ class FirestoreService {
 
     Map<String, dynamic> data = Map<String, dynamic>();
     data['user_id'] = userId;
-    data['cluster_id'] = newsGroupId;
+    data['news_group_id'] = newsGroupId;
     data['date'] = Timestamp.now();
 
-    db.collection('userfollowscluster').add(data);
+    db.collection('user_follows_news_group').add(data);
   }
 
   static Future<void> deleteUserFollowsClusterDocument(
@@ -163,14 +163,14 @@ class FirestoreService {
     if (documentToBeDeletedId == null) return;
 
     db
-        .collection('userfollowscluster')
+        .collection('user_follows_news_group')
         .document(documentToBeDeletedId)
         .delete();
   }
 
   static Future<DocumentSnapshot> getCluster(String clusterId) async {
     DocumentSnapshot userSnapshot =
-        await db.collection('clusters').document(clusterId).get();
+        await db.collection('news_groups').document(clusterId).get();
     return userSnapshot;
   }
 
@@ -203,7 +203,7 @@ class FirestoreService {
   static Future<QuerySnapshot> gerUserFollowsClusters(
       String userId, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
-        .collection('userfollowscluster')
+        .collection('user_follows_news_group')
         .where('user_id', isEqualTo: userId)
         .orderBy("date", descending: true)
         .limit(pageLimit)
@@ -218,7 +218,7 @@ class FirestoreService {
         await db.collection('clusters').document(lastDocumentId).get();
 
     QuerySnapshot querySnapshot = await db
-        .collection('userfollowscluster')
+        .collection('user_follows_news_group')
         .where('user_id', isEqualTo: userId)
         .orderBy("date", descending: true)
         .startAfterDocument(lastDocument)
@@ -231,8 +231,8 @@ class FirestoreService {
   static Future<QuerySnapshot> getUserFollowsClusters(
       String clusterId, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
-        .collection('userfollowscluster')
-        .where('cluster_id', isEqualTo: clusterId)
+        .collection('user_follows_news_group')
+        .where('news_group_id', isEqualTo: clusterId)
         .orderBy("date", descending: true)
         .limit(pageLimit)
         .getDocuments();
@@ -243,8 +243,8 @@ class FirestoreService {
   static Future<QuerySnapshot> getUserFollowsClustersAfterDocument(
       String clusterId, DocumentSnapshot document, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
-        .collection('userfollowscluster')
-        .where('cluster_id', isEqualTo: clusterId)
+        .collection('user_follows_news_group')
+        .where('news_group_id', isEqualTo: clusterId)
         .orderBy("date", descending: true)
         .startAfter([document])
         .limit(pageLimit)
@@ -256,8 +256,8 @@ class FirestoreService {
   static Future<int> getNumberOfUsersFollowingCluster(
       String clusterId, int pageLimit) async {
     QuerySnapshot querySnapshot = await db
-        .collection('userfollowscluster')
-        .where('cluster_id', isEqualTo: clusterId)
+        .collection('user_follows_news_group')
+        .where('news_group_id', isEqualTo: clusterId)
         .orderBy("date", descending: true)
         .limit(pageLimit)
         .getDocuments();

@@ -27,17 +27,17 @@ class NewsSource {
   NewsSource.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
-    name = data['name'];
     twitterUsername = data['username'];
+    name = data['name'];
+    followerCount = data['followers_count'];
+    tweetCount = data['tweets_count'];
     website = data['website'];
     photoUrl = data['profile_photo'];
-    followerCount = data['followers_count'];
-    approvalCount = data['number_of_approvals'];
-    firstInGroupCount = data['number_of_first_news_in_group'];
-    reportCount = data['number_of_reports'];
-    newsCount = data['number_of_total_news'];
-    newsGroupFollowerCount = data['number_of_total_newsgroup_followers'];
-    tweetCount = data['tweets_count'];
+    newsCount = data['news_count'];
+    firstInGroupCount = data['news_group_leadership_count'];
+    approvalCount = data['like_count'];
+    reportCount = data['dislike_count'];
+
     websiteLink = 'https://$website';
     twitterLink = 'https//twitter/$twitterUsername';
   }

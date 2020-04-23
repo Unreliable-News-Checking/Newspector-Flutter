@@ -18,9 +18,9 @@ class NewsArticle {
 
   NewsArticle.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
-    newsGroupId = documentSnapshot.data['cluster_id'];
+    newsGroupId = documentSnapshot.data['news_group_id'];
     headline = documentSnapshot.data['text'];
-    date = documentSnapshot.data['time'];
+    date = documentSnapshot.data['date'];
     tweetId = documentSnapshot.data['tweet_id'];
     tweetLink = "https://twitter.com/user/status/$tweetId";
     isRetweet = documentSnapshot.data['is_retweet'];
