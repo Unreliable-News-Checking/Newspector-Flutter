@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
-import 'package:newspector_flutter/widgets/news_sources_page/photo_container.dart';
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 
 class NewsSourceContainer extends StatelessWidget {
   final String newsSourceId;
@@ -33,7 +33,7 @@ class NewsSourceContainer extends StatelessWidget {
   }
 
   Widget sourcePhoto(NewsSource newsSource) {
-    return PhotoContainer(radius: 60, newsSource: newsSource);
+    return NewsSourcePhotoContainer(radius: 60, newsSource: newsSource);
   }
 
   Widget sourceInfo(String sourceName, int followerCount) {

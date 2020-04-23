@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 
 class FeedContainer<E> extends StatefulWidget {
+  final SliverAppBar sliverAppBar;
   final Feed<E> feed;
   final Function onRefresh;
   final Function onBottomReached;
@@ -18,6 +19,7 @@ class FeedContainer<E> extends StatefulWidget {
     @required this.loadMoreVisible,
     @required this.buildContainer,
     @required this.emptyListMessage,
+    @required this.sliverAppBar,
   }) : super(key: key);
 
   @override
@@ -47,6 +49,7 @@ class _FeedContainerState extends State<FeedContainer> {
           physics:
               BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
           slivers: <Widget>[
+            widget.sliverAppBar,
             refreshControl(),
             itemList(),
             SliverToBoxAdapter(

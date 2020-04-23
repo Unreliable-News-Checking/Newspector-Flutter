@@ -49,7 +49,6 @@ class _FollowingPageState extends State<FollowingPage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -60,8 +59,8 @@ class _FollowingPageState extends State<FollowingPage> {
   // shown when there is a user
   Widget homeScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: FeedContainer(
+        sliverAppBar: sliverAppBar(),
         feed: _user.followingFeed,
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
@@ -76,9 +75,13 @@ class _FollowingPageState extends State<FollowingPage> {
     );
   }
 
-  Widget appBar() {
-    return AppBar(
+  Widget sliverAppBar() {
+    return SliverAppBar(
       title: Text("Following"),
+      backgroundColor: Theme.of(context).backgroundColor,
+      floating: true,
+      pinned: false,
+      snap: false,
     );
   }
 

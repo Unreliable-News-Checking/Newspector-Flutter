@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
@@ -8,13 +9,16 @@ class NewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
   final bool shorten;
+  final Color backgroundColor;
 
-  NewsArticleContainer(
-      {Key key,
-      @required this.newsArticleId,
-      @required this.onTap,
-      @required this.shorten})
-      : super(key: key);
+  NewsArticleContainer({
+    Key key,
+    @required this.newsArticleId,
+    @required this.onTap,
+    @required this.shorten,
+    @required this.backgroundColor,
+    
+  }) : super(key: key);
 
   @override
   _NewsArticleContainerState createState() => _NewsArticleContainerState();
@@ -33,7 +37,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
       },
       child: Container(
         padding: EdgeInsets.all(10),
-        color: Colors.white,
+        color: widget.backgroundColor,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +97,6 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
             ),
           ),
           _newsArticle.isRetweet ? Icon(Icons.repeat) : Container(),
-          // Text("is retweet: ${_newsArticle.isRetweet}"),
         ],
       ),
     );
@@ -113,7 +116,7 @@ class _NewsArticleContainerState extends State<NewsArticleContainer> {
 
   Widget tweetButton() {
     return IconButton(
-      icon: Icon(Icons.alternate_email),
+      icon: Icon(EvaIcons.twitter),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
       },

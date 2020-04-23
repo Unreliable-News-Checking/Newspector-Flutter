@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: appBar(),
+      // appBar: appBar(),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -62,8 +62,9 @@ class _HomePageState extends State<HomePage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
-      appBar: appBar(),
+      // appBar: appBar(),
       body: FeedContainer<String>(
+        sliverAppBar: sliverAppBar(),
         feed: _newsFeed,
         onRefresh: getRefreshedFeed,
         onBottomReached: fetchAdditionalNewsGroups,
@@ -78,9 +79,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget appBar() {
-    return AppBar(
+  Widget sliverAppBar() {
+    return SliverAppBar(
       title: Text("Newspector"),
+      floating: true,
+      pinned: false,
+      snap: false,
+      backgroundColor: Theme.of(context).backgroundColor,
       actions: <Widget>[
         CloseButton(
           onPressed: () {

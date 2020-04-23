@@ -46,7 +46,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -57,8 +56,8 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: FeedContainer(
+        sliverAppBar: sliverAppBar(),
         feed: _newsSourceFeed,
         loadMoreVisible: loadMoreVisible,
         onBottomReached: fetchAdditionalNewsGroups,
@@ -80,9 +79,13 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
     );
   }
 
-  Widget appBar() {
-    return AppBar(
+  Widget sliverAppBar() {
+    return SliverAppBar(
       title: Text("Sources"),
+      backgroundColor: Theme.of(context).backgroundColor,
+      floating: true,
+      pinned: false,
+      snap: false,
     );
   }
 

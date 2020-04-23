@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
-import 'package:newspector_flutter/widgets/news_sources_page/photo_container.dart';
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -121,7 +121,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              PhotoContainer(radius: 80, newsSource: _newsSource),
+              NewsSourcePhotoContainer(radius: 80, newsSource: _newsSource),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -12,7 +12,7 @@ class NewsSource {
   int followerCount;
   int approvalCount;
   int newsCount;
-  
+
   int firstInGroupCount;
   int reportCount;
   int newsGroupFollowerCount;

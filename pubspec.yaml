@@ -23,6 +23,8 @@ dependencies:
   url_launcher:
   firebase_messaging:
   flushbar:
+  eva_icons_flutter:
+  cached_network_image:
   flutter:
     sdk: flutter
 

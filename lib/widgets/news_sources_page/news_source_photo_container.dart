@@ -4,19 +4,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 
-class PhotoContainer extends StatefulWidget {
+class NewsSourcePhotoContainer extends StatefulWidget {
   final double radius;
   final NewsSource newsSource;
 
-  const PhotoContainer({
+  const NewsSourcePhotoContainer({
     @required this.radius,
     @required this.newsSource,
   });
   @override
-  _PhotoContainerState createState() => _PhotoContainerState();
+  _NewsSourcePhotoContainerState createState() =>
+      _NewsSourcePhotoContainerState();
 }
 
-class _PhotoContainerState extends State<PhotoContainer> {
+class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
   Uint8List photoInBytes;
   @override
   Widget build(BuildContext context) {
@@ -54,12 +55,7 @@ class _PhotoContainerState extends State<PhotoContainer> {
   }
 
   void storeCachedImage(NewsSource user, Uint8List _photoInBytes) {
-    // if (UserService.userStore.hasUser(user.documentID))
-    // {
-    //   user = UserService.userStore
-    // }
     user.photoInBytes = _photoInBytes;
-    // UserService.userStore.addOrUpdateUser(user);
   }
 
   Widget _getDefaultPhoto(double radius) {
