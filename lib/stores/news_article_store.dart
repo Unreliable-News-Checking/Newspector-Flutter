@@ -15,8 +15,8 @@ class NewsArticleStore {
   }
 
   NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
-    var newsArticleID = newsArticle.id;
-    _newsArticles[newsArticleID] = newsArticle;
+    var newsArticleId = newsArticle.id;
+    _newsArticles[newsArticleId] = newsArticle;
     return newsArticle;
   }
 

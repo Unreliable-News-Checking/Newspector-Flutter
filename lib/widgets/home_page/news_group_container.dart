@@ -1,17 +1,19 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/home_page/news_article_container.dart'
-    as nac;
+import 'package:newspector_flutter/widgets/home_page/home_page_news_article_container.dart';
+
+import '../../application_constants.dart' as app_consts;
 
 class NewsGroupContainer extends StatefulWidget {
-  final String newsGroupID;
+  final String newsGroupId;
 
-  NewsGroupContainer({Key key, @required this.newsGroupID}) : super(key: key);
+  NewsGroupContainer({Key key, @required this.newsGroupId}) : super(key: key);
 
   @override
   _NewsGroupContainerState createState() => _NewsGroupContainerState();
@@ -21,53 +23,75 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   final _controller = PageController();
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
+  static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
   NewsGroup _newsGroup;
+
+  static const double topPadding = 0;
+  static const double bottomPadding = 0;
+  static const double textContainerSize = 154;
+  Color backgroundColor = app_consts.newsArticleBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupID);
+    _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
+    var itemCount = min(_newsGroup.getArticleCount(), maxNewsArticleCount);
 
     return Container(
-      padding: EdgeInsets.all(5),
-      child: Column(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Stack(
         children: <Widget>[
-          Stack(
-            children: <Widget>[
-              SizedBox(
-                height: 200,
-                child: PageView.builder(
-                  itemCount: _newsGroup.getArticleCount(),
-                  controller: _controller,
-                  itemBuilder: (BuildContext context, int itemIndex) {
-                    return _buildNewsGroupItem(context, itemIndex);
-                  },
-                ),
+          Container(
+            height: topPadding + bottomPadding + textContainerSize,
+            child: PageView.custom(
+              childrenDelegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  if (index == itemCount) {
+                    return seeMoreCard();
+                  }
+                  return _buildNewsGroupItem(context, index);
+                },
+                childCount: itemCount + 1,
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: DotsIndicator(
-                  controller: _controller,
-                  itemCount: _newsGroup.getArticleCount(),
-                  color: Colors.blue,
-                  onPageSelected: (page) {
-                    _controller.animateToPage(
-                      page,
-                      duration: _kDuration,
-                      curve: _kCurve,
-                    );
-                  },
-                ),
+              controller: _controller,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              margin: EdgeInsets.all(5),
+              child: DotsIndicator(
+                controller: _controller,
+                itemCount: itemCount,
+                color: Colors.white,
+                onPageSelected: (page) {
+                  _controller.animateToPage(
+                    page,
+                    duration: _kDuration,
+                    curve: _kCurve,
+                  );
+                },
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  child: fullCoverageButton(context),
-                ),
-              ),
-            ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: fullCoverageButton(context),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: followButton(),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            child: firstReporterTag(),
           ),
         ],
       ),
@@ -75,27 +99,119 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
-    return nac.NewsArticleContainer(
-      newsArticleID: _newsGroup.getNewsArticle(index).id,
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsArticlePage(
-            newsArticleID: _newsGroup.getNewsArticle(index).id,
-          );
-        }));
-      },
+    return Container(
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            // padding for the follow and leader
+            height: topPadding,
+          ),
+          SizedBox(
+            height: textContainerSize,
+            child: HomePageNewsArticleContainer(
+              newsArticleId: _newsGroup.getNewsArticleId(index),
+              shorten: true,
+              // backgroundColor: backgroundColor,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return NewsArticlePage(
+                    newsArticleId: _newsGroup.getNewsArticleId(index),
+                  );
+                }));
+              },
+            ),
+          ),
+          SizedBox(
+            // padding for the full coverage and dot inditicator
+            height: bottomPadding,
+          ),
+        ],
+      ),
     );
   }
 
+  Widget firstReporterTag() {
+    return Container();
+    // return Container(
+    //   margin: EdgeInsets.symmetric(
+    //       horizontal: pageViewItemHorizontalMargin + 5, vertical: 5),
+    //   padding: EdgeInsets.all(5),
+    //   decoration: BoxDecoration(
+    //     borderRadius: BorderRadius.circular(360),
+    //     color: Colors.redAccent.shade400,
+    //   ),
+    //   child: Text(
+    //     "BBC NEWS",
+    //     style: TextStyle(
+    //       fontSize: 10,
+    //     ),
+    //   ),
+    // );
+  }
+
   Widget fullCoverageButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsGroupPage(newsGroupID: _newsGroup.id);
-        }));
-      },
-      child: Text("Full Coverage"),
+    return Container(
+      child: FlatButton(
+        onPressed: goToNewsGroupPage,
+        child: Text(
+          "Full Coverage",
+          style: TextStyle(
+            color: Colors.white,
+            shadows: app_consts.shadowsForWhiteWidgets(),
+          ),
+        ),
+      ),
     );
+  }
+
+  Widget followButton() {
+    var icon = _newsGroup.followedByUser ? Icons.check : Icons.add;
+    return Container(
+      margin: EdgeInsets.only(right: 5),
+      child: IconButton(
+        icon: Icon(
+          icon,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          NewsGroupService.toggleFollowNewsGroup(
+              newsGroupId: _newsGroup.id, followed: _newsGroup.followedByUser);
+          _newsGroup.followedByUser = !_newsGroup.followedByUser;
+
+          if (mounted) setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget seeMoreCard() {
+    return GestureDetector(
+      onTap: goToNewsGroupPage,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.black87,
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        child: Center(
+          child: Text(
+            "Tap to see Full Coverage",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void goToNewsGroupPage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return NewsGroupPage(newsGroupId: _newsGroup.id);
+    }));
   }
 }
 

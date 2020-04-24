@@ -15,13 +15,17 @@ class NewsGroupStore {
   }
 
   NewsGroup updateOrAddNewsArticle(NewsGroup newsGroup) {
-    var newsGroupID = newsGroup.id;
-    _newsGroups[newsGroupID] = newsGroup;
+    var newsGroupId = newsGroup.id;
+    _newsGroups[newsGroupId] = newsGroup;
     return newsGroup;
   }
 
   String generateRandomId() {
     _counter++;
     return (_counter - 1).toString();
+  }
+
+  bool hasNewsGroup(String newsGroupId) {
+    return _newsGroups.containsKey(newsGroupId);
   }
 }

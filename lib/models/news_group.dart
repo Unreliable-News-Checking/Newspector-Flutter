@@ -1,21 +1,37 @@
-import 'package:newspector_flutter/models/news_article.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'feed.dart';
 
 class NewsGroup {
   String id;
   String category;
-  bool followed;
-  List<NewsArticle> newsArticles;
+  Timestamp date;
+  Feed newsArticleFeed;
+  bool followedByUser; //to control whether this user follows this news group
 
   NewsGroup(this.id);
 
-  NewsGroup.fromAttributes(
-      this.id, this.category, this.newsArticles, this.followed);
-
-  int getArticleCount() {
-    return newsArticles.length;
+  NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
+    id = documentSnapshot.documentID;
+    category = documentSnapshot.data['category'];
+    date = documentSnapshot.data['date'];
+    followedByUser = null;
+    newsArticleFeed = null;
   }
 
-  NewsArticle getNewsArticle(int index) {
-    return newsArticles[index];
+  void addNewsArticles(List<String> newsArticleIds) {
+    if (this.newsArticleFeed == null) {
+      this.newsArticleFeed = Feed<String>();
+    }
+
+    this.newsArticleFeed.addAdditionalItems(newsArticleIds);
+  }
+
+  int getArticleCount() {
+    return newsArticleFeed.getItemCount();
+  }
+
+  String getNewsArticleId(int index) {
+    return newsArticleFeed.getItem(index);
   }
 }

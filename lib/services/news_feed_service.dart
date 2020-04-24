@@ -1,60 +1,68 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:newspector_flutter/mock_database.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
-import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'firestore_database_service.dart';
 
 class NewsFeedService {
-  //firebase stuff here too
-  static NewsFeed newsFeed;
+  static NewsFeed _newsFeed;
 
   static NewsFeed getNewsFeed() {
-    return newsFeed;
+    return _newsFeed;
   }
 
   static bool hasFeed() {
-    return newsFeed != null;
+    return _newsFeed != null;
+  }
+
+  static void assignFeed(NewsFeed feed) {
+    NewsFeedService._newsFeed = feed;
+  }
+
+  static void clearFeed() {
+    _newsFeed = null;
   }
 
   static Future<NewsFeed> updateAndGetNewsFeed({
     @required int pageSize,
-    @required var lastTimeStamp,
+    @required int newsGroupPageSize,
+    String lastDocumentId,
   }) async {
-    NewsFeed _feed;
-    bool fresh = false;
+    bool refreshWanted = false;
 
-    //if there is no prior timestamp that means this is a fresh feed
-    if (lastTimeStamp == "") {
-      fresh = true;
-      lastTimeStamp = DateTime.now();
+    // if there is no timestamp a refresh is wanted
+    // if there is no feed a refresh is required
+    if (lastDocumentId == null || !hasFeed()) {
+      refreshWanted = true;
     }
 
-    // if there is no prior feed
-    if (!hasFeed()) {
-      fresh = true;
-    }
-
-    // if there is no feed get a new one,
-    // else use the old one
-    if (fresh) {
-      _feed = NewsFeed();
+    // get the right documents from the database
+    QuerySnapshot newsGroupQuery;
+    if (refreshWanted) {
+      newsGroupQuery = await FirestoreService.getNewsGroups(pageSize);
     } else {
-      _feed = newsFeed;
+      newsGroupQuery = await FirestoreService.getNewsGroupsAfterDocument(
+          lastDocumentId, pageSize);
     }
 
-    //Get the newsArticles and Groups Documents
-    var _newsGroups = await MockDatabase.getNewsGroups();
+    List<String> newsGroupIds = await NewsGroupService.addNewsGroupDocumentsToStores(
+      newsGroupQuery.documents,
+      newsGroupPageSize,
+    );
 
-    //Add the newsArticles and newsGroups to their stores
-    for (var newsGroup in _newsGroups) {
-      for (var newsArticle in newsGroup.newsArticles) {
-        NewsArticleService.updateOrAddNewsArticle(newsArticle);
-      }
-      NewsGroupService.updateOrAddNewsGroup(newsGroup);
+    // if there is no feed create one
+    if (!hasFeed()) {
+      _newsFeed = NewsFeed();
     }
 
-    _feed.newsGroups = _newsGroups;
-    newsFeed = _feed;
-    return _feed;
+    // if refresh is wanted clear the feed
+    if (refreshWanted) {
+      _newsFeed.clearItems();
+    }
+
+    // add the items to feed
+    _newsFeed.addAdditionalItems(newsGroupIds);
+
+    return _newsFeed;
   }
 }
