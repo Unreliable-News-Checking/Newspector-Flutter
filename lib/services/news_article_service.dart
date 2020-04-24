@@ -28,4 +28,15 @@ class NewsArticleService {
     await launch(url);
     return true;
   }
+
+  static Future<bool> goToWebsite(String newsArticleId) async {
+    var newsArticle = getNewsArticle(newsArticleId);
+    var url = newsArticle.websiteLink;
+    var canLaunchUrl = await canLaunch(url);
+
+    if (!canLaunchUrl) return false;
+
+    await launch(url);
+    return true;
+  }
 }

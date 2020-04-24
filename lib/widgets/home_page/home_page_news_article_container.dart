@@ -151,8 +151,13 @@ class _HomePageNewsArticleContainerState
   Widget websiteButton() {
     if (_newsArticle.websiteLink == null) return Container();
     return IconButton(
-      icon: Icon(Icons.web),
-      onPressed: () {},
+      icon: Icon(
+        Icons.web,
+        color: Colors.white,
+      ),
+      onPressed: () async {
+        await NewsArticleService.goToWebsite(widget.newsArticleId);
+      },
     );
   }
 

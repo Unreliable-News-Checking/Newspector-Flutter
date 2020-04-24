@@ -183,8 +183,12 @@ class _NewsGroupPageNewsArticleContainerState
   Widget websiteButton() {
     if (_newsArticle.websiteLink == null) return Container();
     return IconButton(
-      icon: Icon(Icons.web),
-      onPressed: () {},
+      icon: Icon(
+        Icons.web,
+      ),
+      onPressed: () async {
+        await NewsArticleService.goToWebsite(widget.newsArticleId);
+      },
     );
   }
 }

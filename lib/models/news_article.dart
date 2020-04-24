@@ -35,7 +35,10 @@ class NewsArticle {
       photoUrl = documentSnapshot.data['photos'][0];
     }
 
-    websiteLink = null;
+    if (documentSnapshot.data['urls'].length > 0) {
+      websiteLink = documentSnapshot.data['urls'][0];
+    }
+
     analysisResult = null;
   }
 }

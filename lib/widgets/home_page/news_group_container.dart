@@ -153,7 +153,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget fullCoverageButton(BuildContext context) {
     return Container(
       child: FlatButton(
-        // color: Colors.white,
         onPressed: goToNewsGroupPage,
         child: Text(
           "Full Coverage",
