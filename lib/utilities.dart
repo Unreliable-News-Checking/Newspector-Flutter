@@ -32,6 +32,29 @@ String timestampToMeaningfulTime(Timestamp timestamp) {
   return dateString;
 }
 
+const months = <String>[
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+];
+
+String timestampToDateString(Timestamp timestamp) {
+  DateTime dateTime = timestamp.toDate();
+  var dayString = dateTime.day.toString();
+  var monthString = months[dateTime.month - 1];
+  var yearString = dateTime.year.toString();
+  return monthString + " " + dayString + ", " + yearString;
+}
+
 String countToMeaningfulString(int count) {
   int million = 1000000;
   int hundredThousand = 100000;

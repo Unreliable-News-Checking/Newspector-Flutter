@@ -49,7 +49,6 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -60,8 +59,8 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
-      appBar: appBar(),
       body: NewsGroupFeedContainer(
+        sliverAppBar: sliverAppBar(),
         newsGroup: _newsGroup,
         loadMoreVisible: loadMoreVisible,
         onBottomReached: fetchAdditionalNewsGroups,
@@ -70,9 +69,13 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
     );
   }
 
-  Widget appBar() {
-    return AppBar(
+  Widget sliverAppBar() {
+    return SliverAppBar(
       title: Text("News Group Page"),
+      backgroundColor: Theme.of(context).backgroundColor,
+      floating: true,
+      pinned: false,
+      snap: false,
     );
   }
 

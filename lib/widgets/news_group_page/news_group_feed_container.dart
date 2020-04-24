@@ -2,23 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/models/news_group.dart';
-import 'package:newspector_flutter/widgets/news_group_page/news_article_container.dart'
-    as nac;
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
+import 'news_group_page_news_article_container.dart';
+
 class NewsGroupFeedContainer extends StatefulWidget {
+  final SliverAppBar sliverAppBar;
   final NewsGroup newsGroup;
   final Function onRefresh;
   final Function onBottomReached;
   final bool loadMoreVisible;
 
-  NewsGroupFeedContainer(
-      {Key key,
-      @required this.newsGroup,
-      @required this.onRefresh,
-      @required this.onBottomReached,
-      @required this.loadMoreVisible})
-      : super(key: key);
+  NewsGroupFeedContainer({
+    Key key,
+    @required this.newsGroup,
+    @required this.onRefresh,
+    @required this.onBottomReached,
+    @required this.loadMoreVisible,
+    @required this.sliverAppBar,
+  }) : super(key: key);
 
   @override
   _NewsGroupFeedContainerState createState() => _NewsGroupFeedContainerState();
@@ -47,6 +49,7 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
           physics:
               BouncingScrollPhysics().applyTo(AlwaysScrollableScrollPhysics()),
           slivers: <Widget>[
+            widget.sliverAppBar,
             refreshControl(),
             newsArticleList(),
             SliverToBoxAdapter(
@@ -122,16 +125,16 @@ class TimelineItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5.0),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
               height: double.infinity,
               child: Column(
                 children: <Widget>[
-                  dontShowTopLine ? Expanded(child: Container()) : line(),
+                  dontShowTopLine ? Container(height: 10) : line(heigth: 10),
                   ball(),
                   line(),
                 ],
@@ -139,10 +142,9 @@ class TimelineItem extends StatelessWidget {
             ),
             Flexible(
               child: Container(
-                margin: EdgeInsets.all(10),
-                child: nac.NewsArticleContainer(
+                child: NewsGroupPageNewsArticleContainer(
                   newsArticleId: newsArticleId,
-                  shorten: false,
+                  topMargin: 10,
                   backgroundColor: app_consts.newsArticleBackgroundColor,
                   onTap: () {
                     Navigator.of(context)
@@ -161,9 +163,18 @@ class TimelineItem extends StatelessWidget {
     );
   }
 
-  Widget line() {
-    var width = 2.0;
+  Widget line({double heigth}) {
+    var width = 1.0;
     var color = Colors.grey;
+
+    if (heigth != null) {
+      return Container(
+        height: heigth,
+        width: width,
+        color: color,
+      );
+    }
+
     return Expanded(
       child: Container(
         width: width,
@@ -173,8 +184,8 @@ class TimelineItem extends StatelessWidget {
   }
 
   Widget ball() {
-    var radius = 20.0;
-    var margin = 5.0;
+    var radius = 9.0;
+    var margin = 3.0;
     return Container(
       margin: EdgeInsets.all(margin),
       height: radius,
