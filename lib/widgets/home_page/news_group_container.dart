@@ -168,6 +168,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget followButton() {
     var icon = _newsGroup.followedByUser ? Icons.check : Icons.add;
     return Container(
+      margin: EdgeInsets.only(right: 5),
       child: IconButton(
         icon: Icon(
           icon,
