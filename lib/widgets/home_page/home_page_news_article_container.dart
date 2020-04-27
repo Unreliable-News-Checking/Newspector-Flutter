@@ -4,19 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
+
+import 'news_article_photo_container.dart';
 
 class HomePageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
   final bool shorten;
+  final double height;
 
   HomePageNewsArticleContainer({
     Key key,
     @required this.newsArticleId,
     @required this.onTap,
     @required this.shorten,
+    @required this.height,
   }) : super(key: key);
 
   @override
@@ -37,31 +42,43 @@ class _HomePageNewsArticleContainerState
         widget.onTap();
       },
       child: Container(
-        decoration: BoxDecoration(
-          image: showNewsArticlePhoto(),
-          color: app_consts.newsArticleBackgroundColor,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(16),
+        //   color: Colors.green,
+        // ),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              child: NewsArticlePhotoContainer(
+                newsArticle: _newsArticle,
+                height: widget.height,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  source(),
                   Expanded(child: Container()),
-                  websiteButton(),
-                  tweetButton(),
-                  SizedBox(width: 32)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      source(),
+                      separatorDot(),
+                      date(),
+                      Expanded(child: Container()),
+                      websiteButton(),
+                      tweetButton(),
+                    ],
+                  ),
+                  headline(),
+                  SizedBox(height: 32),
                 ],
               ),
-              headline(),
-              date(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -72,12 +89,13 @@ class _HomePageNewsArticleContainerState
     var overflow = widget.shorten ? TextOverflow.ellipsis : null;
     var maxLines = widget.shorten ? 3 : null;
     return Container(
-      height: 60,
+      margin: EdgeInsets.only(bottom: 10),
       child: Text(
         headline,
         overflow: overflow,
         maxLines: maxLines,
         style: TextStyle(
+          fontSize: 22,
           color: Colors.white,
           fontWeight: FontWeight.bold,
           shadows: app_consts.shadowsForWhiteWidgets(),
@@ -102,7 +120,7 @@ class _HomePageNewsArticleContainerState
             Text(
               _newsArticle.newsSourceId,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
                 shadows: app_consts.shadowsForWhiteWidgets(),
@@ -126,9 +144,9 @@ class _HomePageNewsArticleContainerState
     return Text(
       dateString,
       style: TextStyle(
-        fontSize: 12,
-        color: Colors.white,
+        fontSize: 14,
         fontWeight: FontWeight.normal,
+        color: Colors.white,
         shadows: app_consts.shadowsForWhiteWidgets(),
       ),
     );
@@ -156,6 +174,18 @@ class _HomePageNewsArticleContainerState
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);
       },
+    );
+  }
+
+  Widget separatorDot() {
+    return Container(
+      width: 3,
+      height: 3,
+      margin: EdgeInsets.symmetric(horizontal: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(360),
+        color: Colors.white,
+      ),
     );
   }
 

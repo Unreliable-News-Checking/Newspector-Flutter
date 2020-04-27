@@ -14,19 +14,19 @@ String timestampToMeaningfulTime(Timestamp timestamp) {
         "/" +
         postDate.year.toString();
   } else if (diff.inDays.toInt() > 1) {
-    dateString = diff.inDays.toInt().toString() + " DAYS AGO";
+    dateString = diff.inDays.toInt().toString() + " days ago";
   } else if (diff.inDays.toInt() == 1) {
-    dateString = "1 DAY AGO";
+    dateString = "Yesterday";
   } else if (diff.inHours.toInt() > 1) {
-    dateString = diff.inHours.toInt().toString() + " HOURS AGO";
+    dateString = diff.inHours.toInt().toString() + " hours ago";
   } else if (diff.inHours.toInt() == 1) {
-    dateString = "1 HOUR AGO";
+    dateString = "1 hour ago";
   } else if (diff.inMinutes.toInt() > 1) {
-    dateString = diff.inMinutes.toInt().toString() + " MINUTES AGO";
+    dateString = diff.inMinutes.toInt().toString() + " minutes ago";
   } else if (diff.inMinutes.toInt() == 1) {
-    dateString = "1 MINUTE AGO";
+    dateString = "1 minute ago";
   } else {
-    dateString = diff.inSeconds.toString() + " SECONDS AGO";
+    dateString = diff.inSeconds.toString() + " seconds ago";
   }
 
   return dateString;

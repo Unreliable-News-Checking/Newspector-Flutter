@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.grey);
+    // FlutterStatusbarcolor.setStatusBarColor(Colors.grey);
     return MaterialApp(
       title: 'Newspector',
       theme: ThemeData(

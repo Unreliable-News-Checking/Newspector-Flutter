@@ -26,7 +26,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
   NewsGroup _newsGroup;
 
-  static const double textContainerSize = 154;
+  static const double textContainerSize = 250;
   Color backgroundColor = app_consts.newsArticleBackgroundColor;
 
   @override
@@ -42,7 +42,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     listViewItems.add(seeMoreCard());
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -102,9 +102,9 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           SizedBox(
             height: textContainerSize,
             child: HomePageNewsArticleContainer(
+              height: textContainerSize,
               newsArticleId: _newsGroup.getNewsArticleId(index),
               shorten: true,
-              // backgroundColor: backgroundColor,
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
@@ -122,25 +122,11 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget firstReporterTag() {
     return Container();
-    // return Container(
-    //   margin: EdgeInsets.symmetric(
-    //       horizontal: pageViewItemHorizontalMargin + 5, vertical: 5),
-    //   padding: EdgeInsets.all(5),
-    //   decoration: BoxDecoration(
-    //     borderRadius: BorderRadius.circular(360),
-    //     color: Colors.redAccent.shade400,
-    //   ),
-    //   child: Text(
-    //     "BBC NEWS",
-    //     style: TextStyle(
-    //       fontSize: 10,
-    //     ),
-    //   ),
-    // );
   }
 
   Widget fullCoverageButton(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
       child: FlatButton(
         onPressed: goToNewsGroupPage,
         child: Text(
@@ -157,7 +143,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget followButton() {
     var icon = _newsGroup.followedByUser ? Icons.check : Icons.add;
     return Container(
-      margin: EdgeInsets.only(right: 5),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: IconButton(
         icon: Icon(
           icon,

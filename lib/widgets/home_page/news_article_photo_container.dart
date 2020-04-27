@@ -6,9 +6,11 @@ import 'package:newspector_flutter/models/news_article.dart';
 
 class NewsArticlePhotoContainer extends StatefulWidget {
   final NewsArticle newsArticle;
+  final double height;
 
   const NewsArticlePhotoContainer({
     @required this.newsArticle,
+    @required this.height,
   });
   @override
   _NewsArticlePhotoContainerState createState() =>
@@ -20,7 +22,7 @@ class _NewsArticlePhotoContainerState extends State<NewsArticlePhotoContainer> {
   @override
   Widget build(BuildContext context) {
     // No profile photo
-    if (widget.newsArticle.photoUrl == "") {
+    if (widget.newsArticle.photoUrl == null) {
       return _getDefaultPhoto();
     }
 
@@ -57,14 +59,31 @@ class _NewsArticlePhotoContainerState extends State<NewsArticlePhotoContainer> {
   }
 
   Widget _getDefaultPhoto() {
-    return null;
+    return _getLoadingPhoto();
   }
 
   Widget _getNewsArticlePhoto(Uint8List _photoInBytes) {
-    return Image.memory(_photoInBytes);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        height: widget.height,
+        width: double.infinity,
+        child: FittedBox(
+          child: Image.memory(_photoInBytes),
+          fit: BoxFit.fill,
+        ),
+      ),
+    );
   }
 
   Widget _getLoadingPhoto() {
-    return null;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        height: widget.height,
+        width: double.infinity,
+        color: Colors.grey.shade800,
+      ),
+    );
   }
 }

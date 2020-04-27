@@ -26,6 +26,7 @@ dependencies:
   eva_icons_flutter:
   cached_network_image:
   flutter_statusbarcolor:
+  flutter_tags:
   flutter:
     sdk: flutter
 
