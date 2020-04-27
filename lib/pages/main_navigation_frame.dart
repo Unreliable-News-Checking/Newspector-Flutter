@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:newspector_flutter/pages/news_sources_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
@@ -55,7 +56,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future<bool>.value(true),
+      onWillPop: _onWillPop,
       child: DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle,
         child: CupertinoTabScaffold(
@@ -65,6 +66,14 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         ),
       ),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    var popped = await tabNavigationKeys[currentIndex].currentState.maybePop();
+    if (popped) return Future<bool>.value(!popped);
+
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return Future<bool>.value(true);
   }
 
   Widget tabBar() {
@@ -101,12 +110,15 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
     assert(index >= 0 && index <= 2);
     switch (index) {
       case 0:
-        return CupertinoTabView(
-          navigatorKey: tabNavigationKeys[0],
-          builder: (BuildContext context) {
-            return HomePage();
-          },
-          defaultTitle: 'Home',
+        return WillPopScope(
+          onWillPop: () => Future<bool>.value(false),
+          child: CupertinoTabView(
+            navigatorKey: tabNavigationKeys[0],
+            builder: (BuildContext context) {
+              return HomePage();
+            },
+            defaultTitle: 'Home',
+          ),
         );
         break;
       case 1:
@@ -122,9 +134,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         return CupertinoTabView(
           navigatorKey: tabNavigationKeys[2],
           builder: (BuildContext context) {
-            return CupertinoPageScaffold(
-              child: NewsSourcesPage(),
-            );
+            return NewsSourcesPage();
           },
           defaultTitle: 'Sources',
         );
