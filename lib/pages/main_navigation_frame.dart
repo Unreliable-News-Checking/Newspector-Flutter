@@ -14,6 +14,14 @@ class MainNavigationFrame extends StatefulWidget {
 }
 
 class _MainNavigationFrameState extends State<MainNavigationFrame> {
+  int currentIndex = 0;
+
+  final List<GlobalKey<NavigatorState>> tabNavigationKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>()
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -51,59 +59,77 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
       child: DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle,
         child: CupertinoTabScaffold(
-          resizeToAvoidBottomInset: true,
           backgroundColor: Colors.white,
-          tabBar: CupertinoTabBar(
-            backgroundColor: Colors.white,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.home),
-                title: null,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.bookmark),
-                title: null,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.search),
-                title: null,
-              ),
-            ],
-          ),
-          tabBuilder: (BuildContext context, int index) {
-            assert(index >= 0 && index <= 2);
-            switch (index) {
-              case 0:
-                return CupertinoTabView(
-                  builder: (BuildContext context) {
-                    return HomePage();
-                  },
-                  defaultTitle: 'Home',
-                );
-                break;
-              case 1:
-                return CupertinoTabView(
-                  builder: (BuildContext context) {
-                    return FollowingPage();
-                  },
-                  defaultTitle: 'Followed',
-                );
-                break;
-              case 2:
-                return CupertinoTabView(
-                  builder: (BuildContext context) {
-                    return CupertinoPageScaffold(
-                      child: NewsSourcesPage(),
-                    );
-                  },
-                  defaultTitle: 'Sources',
-                );
-                break;
-            }
-            return null;
-          },
+          tabBar: tabBar(),
+          tabBuilder: tabBuilder,
         ),
       ),
     );
+  }
+
+  Widget tabBar() {
+    return CupertinoTabBar(
+      onTap: (int index) {
+        if (index == currentIndex) {
+          tabNavigationKeys[index].currentState.popUntil((r) => r.isFirst);
+        }
+
+        currentIndex = index;
+        if (mounted) setState(() {});
+      },
+      activeColor: Colors.blue,
+      inactiveColor: Colors.grey,
+      backgroundColor: Colors.white,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.home),
+          title: null,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.bookmark),
+          title: null,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.search),
+          title: null,
+        ),
+      ],
+    );
+  }
+
+  Widget tabBuilder(BuildContext context, int index) {
+    assert(index >= 0 && index <= 2);
+    switch (index) {
+      case 0:
+        return CupertinoTabView(
+          navigatorKey: tabNavigationKeys[0],
+          builder: (BuildContext context) {
+            return HomePage();
+          },
+          defaultTitle: 'Home',
+        );
+        break;
+      case 1:
+        return CupertinoTabView(
+          navigatorKey: tabNavigationKeys[1],
+          builder: (BuildContext context) {
+            return FollowingPage();
+          },
+          defaultTitle: 'Followed',
+        );
+        break;
+      case 2:
+        return CupertinoTabView(
+          navigatorKey: tabNavigationKeys[2],
+          builder: (BuildContext context) {
+            return CupertinoPageScaffold(
+              child: NewsSourcesPage(),
+            );
+          },
+          defaultTitle: 'Sources',
+        );
+        break;
+    }
+    return null;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
@@ -15,22 +16,6 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-const MaterialColor white = const MaterialColor(
-  0xFFFFFFFF,
-  const <int, Color>{
-    50: const Color(0xFFFFFFFF),
-    100: const Color(0xFFFFFFFF),
-    200: const Color(0xFFFFFFFF),
-    300: const Color(0xFFFFFFFF),
-    400: const Color(0xFFFFFFFF),
-    500: const Color(0xFFFFFFFF),
-    600: const Color(0xFFFFFFFF),
-    700: const Color(0xFFFFFFFF),
-    800: const Color(0xFFFFFFFF),
-    900: const Color(0xFFFFFFFF),
-  },
-);
-
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
@@ -40,14 +25,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.grey);
     return MaterialApp(
       title: 'Newspector',
       theme: ThemeData(
         primarySwatch: Colors.grey,
-        accentColor: Colors.white,
+        accentColor: Colors.blue,
         primaryTextTheme: TextTheme(),
-        // scaffoldBackgroundColor: Colors.grey.shade200,
-        // fontFamily: 'Noticia',
       ),
       home: showHome(),
       routes: {},

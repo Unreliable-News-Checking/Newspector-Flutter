@@ -25,6 +25,7 @@ dependencies:
   flushbar:
   eva_icons_flutter:
   cached_network_image:
+  flutter_statusbarcolor:
   flutter:
     sdk: flutter
 
