@@ -26,6 +26,8 @@ class Application : FlutterApplication(), PluginRegistrantCallback {
                 "very_important",
                 "Very Important",
                 "Very important Description")
+
+    notificationManager?.cancelAll();
   }
 
   override fun registerWith(registry: PluginRegistry?) {

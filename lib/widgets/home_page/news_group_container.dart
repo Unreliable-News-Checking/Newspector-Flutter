@@ -26,8 +26,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
   NewsGroup _newsGroup;
 
-  static const double topPadding = 0;
-  static const double bottomPadding = 0;
   static const double textContainerSize = 154;
   Color backgroundColor = app_consts.newsArticleBackgroundColor;
 
@@ -35,6 +33,13 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   Widget build(BuildContext context) {
     _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
     var itemCount = min(_newsGroup.getArticleCount(), maxNewsArticleCount);
+
+    List<Widget> listViewItems = [];
+    for (var i = 0; i < itemCount; i++) {
+      var listViewItem = _buildNewsGroupItem(context, i);
+      listViewItems.add(listViewItem);
+    }
+    listViewItems.add(seeMoreCard());
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
@@ -44,17 +49,9 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Stack(
         children: <Widget>[
           Container(
-            height: topPadding + bottomPadding + textContainerSize,
-            child: PageView.custom(
-              childrenDelegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  if (index == itemCount) {
-                    return seeMoreCard();
-                  }
-                  return _buildNewsGroupItem(context, index);
-                },
-                childCount: itemCount + 1,
-              ),
+            height: textContainerSize,
+            child: PageView(
+              children: listViewItems,
               controller: _controller,
             ),
           ),
@@ -66,7 +63,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
               margin: EdgeInsets.all(5),
               child: DotsIndicator(
                 controller: _controller,
-                itemCount: itemCount,
+                itemCount: itemCount + 1,
                 color: Colors.white,
                 onPageSelected: (page) {
                   _controller.animateToPage(
@@ -103,10 +100,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            // padding for the follow and leader
-            height: topPadding,
-          ),
-          SizedBox(
             height: textContainerSize,
             child: HomePageNewsArticleContainer(
               newsArticleId: _newsGroup.getNewsArticleId(index),
@@ -121,10 +114,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
                 }));
               },
             ),
-          ),
-          SizedBox(
-            // padding for the full coverage and dot inditicator
-            height: bottomPadding,
           ),
         ],
       ),

@@ -11,14 +11,12 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
   final bool shorten;
-  // final Color backgroundColor;
 
   HomePageNewsArticleContainer({
     Key key,
     @required this.newsArticleId,
     @required this.onTap,
     @required this.shorten,
-    // @required this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -57,7 +55,7 @@ class _HomePageNewsArticleContainerState
                   Expanded(child: Container()),
                   websiteButton(),
                   tweetButton(),
-                  SizedBox(width: 24)
+                  SizedBox(width: 32)
                 ],
               ),
               headline(),
