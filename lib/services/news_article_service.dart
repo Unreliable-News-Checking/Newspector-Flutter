@@ -55,14 +55,10 @@ class NewsArticleService {
 
   static void getNewsArticleImage(NewsArticle newsArticle) async {
     // there is no imageUrl
-    if (newsArticle.photoUrl == null) {
-      return;
-    }
+    if (newsArticle.photoUrl == null) return;
 
     // There is a cached image
-    if (newsArticle.photoInBytes != null) {
-      return;
-    }
+    if (newsArticle.photoInBytes != null) return;
 
     // There is an imageUrl but no cached image
     var response = await get(newsArticle.photoUrl);

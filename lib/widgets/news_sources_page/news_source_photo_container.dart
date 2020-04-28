@@ -124,7 +124,6 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
       alignment: Alignment.center,
       children: <Widget>[
         Container(
-          //grey circle
           height: radius,
           width: radius,
           decoration: BoxDecoration(
