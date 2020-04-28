@@ -145,8 +145,8 @@ class NewsGroupService {
 
     // Wait for futures.
     var futures = await Future.wait([newsGroupDocumentFuture, _userFuture]);
-    DocumentSnapshot newsGroupDocument = futures[0];
-    NewsGroup _newsGroup = NewsGroup.fromDocument(newsGroupDocument);
+    NewsGroup _newsGroup = futures[0];
+    // NewsGroup _newsGroup = NewsGroup.fromDocument(newsGroupDocument);
     User _user = futures[1];
 
     if (followed) {

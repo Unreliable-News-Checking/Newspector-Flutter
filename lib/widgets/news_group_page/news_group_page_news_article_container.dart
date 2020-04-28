@@ -12,6 +12,7 @@ class NewsGroupPageNewsArticleContainer extends StatefulWidget {
   final Function onTap;
   final Color backgroundColor;
   final double topMargin;
+  final bool dontShowDivider;
 
   NewsGroupPageNewsArticleContainer({
     Key key,
@@ -19,6 +20,7 @@ class NewsGroupPageNewsArticleContainer extends StatefulWidget {
     @required this.onTap,
     @required this.backgroundColor,
     @required this.topMargin,
+    @required this.dontShowDivider,
   }) : super(key: key);
 
   @override
@@ -78,10 +80,9 @@ class _NewsGroupPageNewsArticleContainerState
                   tweetButton(),
                 ],
               ),
-              Container(
-                height: 1,
-                color: Colors.grey,
-              )
+              widget.dontShowDivider
+                  ? Container()
+                  : Container(height: 1, color: Colors.grey),
             ],
           ),
         ),

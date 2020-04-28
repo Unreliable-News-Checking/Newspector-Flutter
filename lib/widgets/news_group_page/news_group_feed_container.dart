@@ -76,6 +76,8 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
             child: TimelineItem(
               newsArticleId: widget.newsGroup.getNewsArticleId(index),
               dontShowTopLine: index == 0,
+              dontShowBottomDivider:
+                  index == widget.newsGroup.newsArticleFeed.getItemCount() - 1,
             ),
           );
         },
@@ -115,11 +117,13 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
 class TimelineItem extends StatelessWidget {
   final String newsArticleId;
   final bool dontShowTopLine;
+  final bool dontShowBottomDivider;
 
   const TimelineItem({
     Key key,
     @required this.newsArticleId,
     this.dontShowTopLine,
+    @required this.dontShowBottomDivider,
   }) : super(key: key);
 
   @override
@@ -143,6 +147,7 @@ class TimelineItem extends StatelessWidget {
             Flexible(
               child: Container(
                 child: NewsGroupPageNewsArticleContainer(
+                  dontShowDivider: dontShowBottomDivider,
                   newsArticleId: newsArticleId,
                   topMargin: 10,
                   backgroundColor: app_consts.newsArticleBackgroundColor,
