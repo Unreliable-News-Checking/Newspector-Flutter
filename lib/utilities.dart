@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String timestampToMeaningfulTime(Timestamp timestamp) {
   DateTime postDate = timestamp.toDate();
@@ -78,4 +79,13 @@ String roundDown(double d, int decimals) {
   int fac = pow(10, decimals);
   d = (d * fac).truncateToDouble() / fac;
   return d.toString();
+}
+
+Future<bool> goToUrl(String url) async {
+  var canLaunchUrl = await canLaunch(url);
+
+  if (!canLaunchUrl) return false;
+
+  await launch(url);
+  return true;
 }

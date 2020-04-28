@@ -114,14 +114,14 @@ class FirestoreService {
     Map<String, dynamic> data = Map<String, dynamic>();
     data['uid'] = firebaseUserId;
 
-    DocumentReference postToBeAddedReference =
+    DocumentReference userToBeAddedReferebce =
         Firestore.instance.collection('users').document();
 
-    db
+    await db
         .collection('users')
-        .document(postToBeAddedReference.documentID)
+        .document(userToBeAddedReferebce.documentID)
         .setData(data);
-    User user = User.fromMap(data, postToBeAddedReference.documentID);
+    User user = User.fromMap(data, userToBeAddedReferebce.documentID);
     return user;
   }
 

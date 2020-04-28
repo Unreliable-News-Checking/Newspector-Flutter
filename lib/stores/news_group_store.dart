@@ -14,7 +14,7 @@ class NewsGroupStore {
     return _newsGroups[id];
   }
 
-  NewsGroup updateOrAddNewsArticle(NewsGroup newsGroup) {
+  NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
     var newsGroupId = newsGroup.id;
     _newsGroups[newsGroupId] = newsGroup;
     return newsGroup;

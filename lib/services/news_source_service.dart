@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/stores/news_source_store.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:newspector_flutter/utilities.dart' as utils;
 
 import 'firestore_database_service.dart';
 
@@ -115,22 +115,12 @@ class NewsSourceService {
   static goToSourceWebsite(String newsSourceId) async {
     var newsArticle = getNewsSource(newsSourceId);
     var url = newsArticle.websiteLink;
-    var canLaunchUrl = await canLaunch(url);
-
-    if (!canLaunchUrl) return false;
-
-    await launch(url);
-    return true;
+    return await utils.goToUrl(url);
   }
 
   static goToSourceTwitter(String newsSourceId) async {
     var newsArticle = getNewsSource(newsSourceId);
     var url = newsArticle.twitterLink;
-    var canLaunchUrl = await canLaunch(url);
-
-    if (!canLaunchUrl) return false;
-
-    await launch(url);
-    return true;
+    return await utils.goToUrl(url);
   }
 }

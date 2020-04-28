@@ -45,7 +45,7 @@ class NewsFeedService {
           lastDocumentId, pageSize);
     }
 
-    List<String> newsGroupIds = await NewsGroupService.addNewsGroupDocumentsToStores(
+    List<String> newsGroupIds = await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
       newsGroupQuery.documents,
       newsGroupPageSize,
     );

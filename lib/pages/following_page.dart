@@ -86,7 +86,7 @@ class _FollowingPageState extends State<FollowingPage> {
   }
 
   Future<User> getInitialFeed() async {
-    _user = await UserService.updateAndGetUserFeed(
+    _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
@@ -103,7 +103,7 @@ class _FollowingPageState extends State<FollowingPage> {
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _user = await UserService.updateAndGetUserFeed(
+    _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
@@ -124,7 +124,7 @@ class _FollowingPageState extends State<FollowingPage> {
   Future<void> fetchAdditionalNewsGroups() async {
     var lastDocumentId = _user.followingFeed.getLastItem();
 
-    _user = await UserService.updateAndGetUserFeed(
+    _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
       newsGroupPageSize: newsGroupPageSize,

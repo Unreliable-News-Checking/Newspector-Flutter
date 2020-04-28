@@ -14,6 +14,14 @@ class UserService {
     return _user;
   }
 
+  static bool hasUser() {
+    return _user != null;
+  }
+
+  static bool hasUserWithFeed() {
+    return hasUser() && _user.hasFeed();
+  }
+
   static Future<User> getOrFetchUser() async {
     if (hasUser()) return _user;
 
@@ -23,18 +31,18 @@ class UserService {
   static Future<User> getOrFetchUserWithFeed() async {
     if (hasUserWithFeed()) return _user;
 
-    return await updateAndGetUserFeed(
+    return await updateAndGetUserWithFeed(
       pageSize: app_consts.followingPagePageSize,
       newsGroupPageSize: app_consts.newsGroupPageSize,
     );
   }
 
-  static bool hasUser() {
-    return _user != null;
+  static void assingUser(User user) {
+    UserService._user = user;
   }
 
-  static bool hasUserWithFeed() {
-    return hasUser() && _user.hasFeed();
+  static void clearUser() {
+    _user = null;
   }
 
   static Future<User> updateAndGetUser() async {
@@ -44,26 +52,25 @@ class UserService {
     return _user;
   }
 
-  static Future<User> updateAndGetUserFeed({
+  static Future<User> updateAndGetUserWithFeed({
     @required int pageSize,
     @required int newsGroupPageSize,
     String lastDocumentId,
   }) async {
     bool refreshWanted = false;
 
-    // if there is no timestamp a refresh is wanted
-    // if there is no user a refresh is required
+    // If there is no timestamp a refresh is wanted.
+    // If there is no user a refresh is required.
     if (lastDocumentId == null || !hasUser()) {
       refreshWanted = true;
     }
 
-    // If a refresh is wanted, fetch the user from the database
+    // If a refresh is wanted, fetch the user from the database.
     if (refreshWanted) {
       await updateAndGetUser();
     }
 
-    // get the user follows cluster documents
-    // according to the wanted action (refresh or scroll down)
+    // Get the correct user follows news group documents
     QuerySnapshot userFollowsGroupQuery;
     if (refreshWanted) {
       userFollowsGroupQuery =
@@ -74,8 +81,8 @@ class UserService {
               _user.id, lastDocumentId, pageSize);
     }
 
-    // from the user follows cluster documents,
-    // get the clusterId and start fetching the clusters in parallel
+    // From the user follows news group documents,
+    // get the news group ids and start fetching the news groups in parallel
     List<Future<DocumentSnapshot>> newsGroupDocumentFutures = List();
     for (var userFollowsNewsGroupDoc in userFollowsGroupQuery.documents) {
       var newsGroupId = userFollowsNewsGroupDoc.data['news_group_id'];
@@ -86,8 +93,10 @@ class UserService {
         await Future.wait(newsGroupDocumentFutures);
 
     List<String> newsGroupIds =
-        await NewsGroupService.addNewsGroupDocumentsToStores(
-            newsGroupDocuments, newsGroupPageSize);
+        await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
+      newsGroupDocuments,
+      newsGroupPageSize,
+    );
 
     // if there is no feed create one
     if (!hasUserWithFeed()) {
@@ -104,13 +113,5 @@ class UserService {
     _user.followingFeed.addAdditionalItems(newsGroupIds);
 
     return _user;
-  }
-
-  static void assingUser(User user) {
-    UserService._user = user;
-  }
-
-  static void clearUser() {
-    _user = null;
   }
 }

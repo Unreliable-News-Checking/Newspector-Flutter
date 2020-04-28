@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
-import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
@@ -13,43 +13,68 @@ import 'news_article_service.dart';
 class NewsGroupService {
   static NewsGroupStore _newsGroupStore = NewsGroupStore();
 
+  /// Returns the existing News Group.
   static NewsGroup getNewsGroup(String id) {
     return _newsGroupStore.getNewsGroup(id);
   }
 
+  /// Returns true if the News Group exists.
+  ///
+  /// Check the store for the news group
+  static bool hasNewsGroup(String newsGroupId) {
+    return _newsGroupStore.hasNewsGroup(newsGroupId);
+  }
+
+  /// Returns the existing or a new News Group.
+  ///
+  /// Chhecks if the news group exists,
+  /// if it exist, returns the existing news group
+  /// if not gets the newsgroup form the database and returns it.
   static Future<NewsGroup> getOrFetchNewsGroup(String newsGroupId) async {
     if (hasNewsGroup(newsGroupId)) return getNewsGroup(newsGroupId);
 
     return await updateAndGetNewsGroup(newsGroupId);
   }
 
+  /// Adds or updates an existing news group in the store.
   static NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
-    return _newsGroupStore.updateOrAddNewsArticle(newsGroup);
+    return _newsGroupStore.updateOrAddNewsGroup(newsGroup);
   }
 
+  /// Clears the news group store.
   static void clearStore() {
     _newsGroupStore = NewsGroupStore();
   }
 
-  static bool hasNewsGroup(String newsGroupId) {
-    return _newsGroupStore.hasNewsGroup(newsGroupId);
-  }
-
+  /// Updates and returns the news group document but not the news articles within.
   static Future<NewsGroup> updateAndGetNewsGroup(String newsGroupId) async {
-    var documentSnapshot = await FirestoreService.getNewsGroup(newsGroupId);
-    var newsGroup = NewsGroup.fromDocument(documentSnapshot);
+    // futures for newsGroup  and User
+    var newsGroupDocumentFuture = FirestoreService.getNewsGroup(newsGroupId);
+    var _userFuture = UserService.getOrFetchUser();
 
-    var _user = await UserService.getOrFetchUser();
+    // wait for futures
+    var futures = await Future.wait([newsGroupDocumentFuture, _userFuture]);
+    DocumentSnapshot newsGroupDocument = futures[0];
+    var newsGroup = NewsGroup.fromDocument(newsGroupDocument);
+    User _user = futures[1];
+
+    // check if the user follows the news group
     var followedDocumentId =
         await FirestoreService.checkUserFollowsNewsGroupDocument(
-            _user.id, newsGroupId);
-
+      _user.id,
+      newsGroupId,
+    );
     newsGroup.followedByUser = followedDocumentId != null;
 
     NewsGroupService.updateOrAddNewsGroup(newsGroup);
     return newsGroup;
   }
 
+  /// Updates and returns the news group document as a whole.
+  ///
+  /// Updates the news group using the "updateAndGetNewsGroup" function also
+  /// fetches the news articles contained in the news group
+  /// and add the articles to the news groups feed.
   static Future<NewsGroup> updateAndGetNewsGroupFeed({
     @required String newsGroupId,
     @required int pageSize,
@@ -57,17 +82,21 @@ class NewsGroupService {
   }) async {
     bool refreshWanted = false;
 
-    // if there is no timestamp a refresh is wanted
-    // if there is no user a refresh is required
+    // If there is no timestamp a refresh is wanted.
+    // If there is no user a refresh is required.
     if (lastDocumentId == null || !hasNewsGroup(newsGroupId)) {
       refreshWanted = true;
     }
 
+    // If a refresh is wanted we want to update the newsgroup document as well.
     if (refreshWanted) {
       await updateAndGetNewsGroup(newsGroupId);
     }
+
+    // Get the updated news group from the store.
     NewsGroup newsGroup = getNewsGroup(newsGroupId);
 
+    // Make the correct query to fetch the needed news articles.
     QuerySnapshot newsArticleQuery;
     if (refreshWanted) {
       newsArticleQuery =
@@ -77,89 +106,120 @@ class NewsGroupService {
           newsGroup.id, lastDocumentId, pageSize);
     }
 
+    // Create News Article models from the fetched news article documents.
     List<String> newsArticleIds = List<String>();
     for (var newsArticleDocument in newsArticleQuery.documents) {
-      NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDocument);
-      NewsArticleService.updateOrAddNewsArticle(newsArticle);
-      newsArticleIds.add(newsArticle.id);
+      var newsArticleId =
+          NewsArticleService.createAndAddNewsArticle(newsArticleDocument);
+      newsArticleIds.add(newsArticleId);
     }
 
+    // If there is no feed in the news group create one.
     if (newsGroup.newsArticleFeed == null) {
       newsGroup.newsArticleFeed = Feed<String>();
     }
 
+    // If refresh is wanted clear the items in the feed.
     if (refreshWanted) {
       newsGroup.newsArticleFeed.clearItems();
     }
 
+    // Add the newly fetched news articles to the news group's feed.
     newsGroup.newsArticleFeed.addAdditionalItems(newsArticleIds);
-
-    // NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDocument);
-    // newsGroup.addNewsArticles(newsArticleIds);
     NewsGroupService.updateOrAddNewsGroup(newsGroup);
 
     return newsGroup;
   }
 
+  /// Toggles the state of follow on a news group
+  ///
+  /// (Un)Subscribes and creates/deletes documents
+  /// for the user follows news group documents
   static Future<void> toggleFollowNewsGroup({
     @required String newsGroupId,
     @required bool followed,
   }) async {
-    var _newsGroup = await getOrFetchNewsGroup(newsGroupId);
-    var _user = await UserService.getOrFetchUser();
+    // Futures for newsGroup and user.
+    var newsGroupDocumentFuture = getOrFetchNewsGroup(newsGroupId);
+    var _userFuture = UserService.getOrFetchUser();
+
+    // Wait for futures.
+    var futures = await Future.wait([newsGroupDocumentFuture, _userFuture]);
+    DocumentSnapshot newsGroupDocument = futures[0];
+    NewsGroup _newsGroup = NewsGroup.fromDocument(newsGroupDocument);
+    User _user = futures[1];
 
     if (followed) {
       await FirestoreService.deleteUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.unsubscribeFromTopic(_newsGroup.id);
-    } else {
+      return;
+    }
+
+    if (!followed) {
       await FirestoreService.createUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.subscribeToTopic(_newsGroup.id);
+      return;
     }
-
-    return;
   }
 
-  static Future<List<String>> addNewsGroupDocumentsToStores(
-      List<DocumentSnapshot> newsGroupDocuments, int newsGroupPageSize) async {
-    var _user = await UserService.getOrFetchUser();
-    List<String> newsGroupIds = List<String>();
-    List<Future<QuerySnapshot>> newsArticleQueryFutures =
-        List<Future<QuerySnapshot>>();
+  /// Given a list of news group documents,
+  /// fetched the news articles for all of them in parallel,
+  /// updates the news groups and the respective stores.
+  ///
+  /// returns a List of document ids for the news groups
+  static Future<List<String>> fetchAndAddNewsArticlesInNewsGroups(
+    List<DocumentSnapshot> newsGroupDocuments,
+    int newsGroupPageSize,
+  ) async {
+    var newsGroupIds = List<String>();
+    var newsArticleQueryFutures = List<Future<QuerySnapshot>>();
+    var followedDocumentIdsFuture = List<Future<String>>();
 
-    // 1) start the fetch for the news articles in parallel
+    var _user = await UserService.getOrFetchUser();
+
+    // Start the news article fetch for all news groups in parallel.
+    // Start the followed document check for all news groups in parallel.
     for (var newsGroupDoc in newsGroupDocuments) {
       Future<QuerySnapshot> newsArticleQueryFuture =
           FirestoreService.getNewsInNewsGroup(
-              newsGroupDoc.documentID, newsGroupPageSize);
+        newsGroupDoc.documentID,
+        newsGroupPageSize,
+      );
       newsArticleQueryFutures.add(newsArticleQueryFuture);
+
+      var followedDocumentIdFuture =
+          FirestoreService.checkUserFollowsNewsGroupDocument(
+              _user.id, newsGroupDoc.documentID);
+      followedDocumentIdsFuture.add(followedDocumentIdFuture);
     }
 
-    // 1) wait for news articles to be fetched
-    // 2) turn them into models
-    // 3) add them to news article store
-    // 4) add the articles to news group
-    // 5 add them to news group store
-    var newsArticleQueries = await Future.wait(newsArticleQueryFutures);
+    // Wait for all the futures.
+    var futures = await Future.wait([
+      Future.wait(newsArticleQueryFutures),
+      Future.wait(followedDocumentIdsFuture),
+    ]);
+    List<QuerySnapshot> newsArticleQueries = futures[0];
+    List<String> followedDocumentIds = futures[1];
+
     for (var i = 0; i < newsArticleQueries.length; i++) {
-      var newsArticleQuery = newsArticleQueries[i];
       var newsGroupDoc = newsGroupDocuments[i];
+      var newsArticleQuery = newsArticleQueries[i];
+      var followedDocumentId = followedDocumentIds[i];
+
       List<String> newsArticleIds = List<String>();
 
+      // Create news articles from documents.
       for (var newsArticleDoc in newsArticleQuery.documents) {
-        NewsArticle newsArticle = NewsArticle.fromDocument(newsArticleDoc);
-        NewsArticleService.updateOrAddNewsArticle(newsArticle);
-        newsArticleIds.add(newsArticle.id);
+        var newsArticleId =
+            NewsArticleService.createAndAddNewsArticle(newsArticleDoc);
+        newsArticleIds.add(newsArticleId);
       }
 
+      // Create a news group and add the news articles and the followed information.
       NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       newsGroup.addNewsArticles(newsArticleIds);
-
-      var followedDocumentId =
-          await FirestoreService.checkUserFollowsNewsGroupDocument(
-              _user.id, newsGroup.id);
-
       newsGroup.followedByUser = followedDocumentId != null;
 
       NewsGroupService.updateOrAddNewsGroup(newsGroup);

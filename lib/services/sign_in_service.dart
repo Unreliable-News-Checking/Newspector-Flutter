@@ -31,6 +31,8 @@ Future<FirebaseUser> signInWithGoogle() async {
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
 
+  await createOrGetUserFromDatabase(user.uid);
+
   return user;
 }
 
@@ -51,10 +53,6 @@ Future<bool> hasSignedInUser() async {
   var firebaseUser = await _auth.currentUser();
   var hasSignedInUser = firebaseUser != null;
 
-  if (hasSignedInUser) {
-    await createOrGetUserFromDatabase(firebaseUser.uid);
-  }
-
   return hasSignedInUser;
 }
 
@@ -69,9 +67,10 @@ Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
   // no matching user in the database
   if (userDocument == null) {
     user = await FirestoreService.createUser(firebaseUserId);
+  } else {
+    user = User.fromDocument(userDocument);
   }
 
-  user = User.fromDocument(userDocument);
   UserService.assingUser(user);
 
   return user;
