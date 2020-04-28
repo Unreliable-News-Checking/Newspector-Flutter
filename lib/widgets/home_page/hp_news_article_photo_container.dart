@@ -7,17 +7,20 @@ import 'package:newspector_flutter/models/news_article.dart';
 class HpNewsArticlePhotoContainer extends StatefulWidget {
   final NewsArticle newsArticle;
   final double height;
+  final double borderRadius;
 
   const HpNewsArticlePhotoContainer({
     @required this.newsArticle,
     @required this.height,
+    @required this.borderRadius,
   });
   @override
   _HpNewsArticlePhotoContainerState createState() =>
       _HpNewsArticlePhotoContainerState();
 }
 
-class _HpNewsArticlePhotoContainerState extends State<HpNewsArticlePhotoContainer>
+class _HpNewsArticlePhotoContainerState
+    extends State<HpNewsArticlePhotoContainer>
     with SingleTickerProviderStateMixin {
   Uint8List photoInBytes;
   AnimationController _animationController;
@@ -95,7 +98,7 @@ class _HpNewsArticlePhotoContainerState extends State<HpNewsArticlePhotoContaine
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(widget.borderRadius),
       child: Stack(
         children: <Widget>[
           Container(
@@ -131,7 +134,7 @@ class _HpNewsArticlePhotoContainerState extends State<HpNewsArticlePhotoContaine
 
   Widget _getLoadingPhoto() {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(widget.borderRadius),
       child: Container(
         height: widget.height,
         width: double.infinity,

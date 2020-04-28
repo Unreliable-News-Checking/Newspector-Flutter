@@ -36,7 +36,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _newsGroup.newsArticleFeed = snapshot.data;
+            _newsGroup = snapshot.data;
             return homeScaffold();
             break;
           default:

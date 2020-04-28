@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   var pageSize = app_const.homePagePageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
+  var backgroundColor = Colors.grey.shade900;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
-      // appBar: appBar(),
+      backgroundColor: app_const.backgroundColor,
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
-      // appBar: appBar(),
+      backgroundColor: app_const.backgroundColor,
       body: FeedContainer<String>(
         sliverAppBar: sliverAppBar(),
         feed: _newsFeed,
@@ -81,11 +82,15 @@ class _HomePageState extends State<HomePage> {
 
   Widget sliverAppBar() {
     return SliverAppBar(
-      title: Text("Newspector"),
+      title: Text(
+        "Newspector",
+        style: TextStyle(color: Colors.white),
+      ),
+      centerTitle: true,
       floating: true,
       pinned: false,
       snap: false,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: app_const.backgroundColor,
       actions: <Widget>[
         CloseButton(
           onPressed: () {

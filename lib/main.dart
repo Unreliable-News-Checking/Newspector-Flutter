@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Newspector',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.pink,
         accentColor: Colors.blue,
         primaryTextTheme: TextTheme(),
       ),

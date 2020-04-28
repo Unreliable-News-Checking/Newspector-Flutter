@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:newspector_flutter/pages/news_sources_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 import 'following_page.dart';
 import 'home_page.dart';
@@ -86,9 +87,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         currentIndex = index;
         if (mounted) setState(() {});
       },
-      activeColor: Colors.blue,
-      inactiveColor: Colors.grey,
-      backgroundColor: Colors.white,
+      activeColor: Colors.blue.shade400,
+      inactiveColor: Colors.grey.shade300,
+      backgroundColor: app_const.tabBarColor,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.home),

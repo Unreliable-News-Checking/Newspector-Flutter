@@ -13,6 +13,8 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   final Function onTap;
   final bool shorten;
   final double height;
+  final double borderRadius;
+  final double horizontalMargin;
 
   HomePageNewsArticleContainer({
     Key key,
@@ -20,6 +22,8 @@ class HomePageNewsArticleContainer extends StatefulWidget {
     @required this.onTap,
     @required this.shorten,
     @required this.height,
+    @required this.borderRadius,
+    @required this.horizontalMargin,
   }) : super(key: key);
 
   @override
@@ -40,13 +44,17 @@ class _HomePageNewsArticleContainerState
         widget.onTap();
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
+        margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
         child: Stack(
           children: <Widget>[
-            Container(
-              child: HpNewsArticlePhotoContainer(
-                newsArticle: _newsArticle,
-                height: widget.height,
+            Hero(
+              tag: "hp_nap_${widget.newsArticleId}",
+              child: Container(
+                child: HpNewsArticlePhotoContainer(
+                  newsArticle: _newsArticle,
+                  height: widget.height,
+                  borderRadius: widget.borderRadius,
+                ),
               ),
             ),
             Container(

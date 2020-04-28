@@ -24,10 +24,12 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
+  Color backgroundColor = app_consts.newsArticleBackgroundColor;
+  static const double textContainerSize = 230;
+  static const double borderRadius = 10.0;
+  static const double horizontalMargin = 20.0;
   NewsGroup _newsGroup;
 
-  static const double textContainerSize = 250;
-  Color backgroundColor = app_consts.newsArticleBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: Stack(
         children: <Widget>[
@@ -102,6 +104,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           SizedBox(
             height: textContainerSize,
             child: HomePageNewsArticleContainer(
+              borderRadius: borderRadius,
+              horizontalMargin: horizontalMargin,
               height: textContainerSize,
               newsArticleId: _newsGroup.getNewsArticleId(index),
               shorten: true,
@@ -165,10 +169,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       onTap: goToNewsGroupPage,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(borderRadius),
           color: Colors.black87,
         ),
-        margin: EdgeInsets.symmetric(horizontal: 5),
+        margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
         child: Center(
           child: Text(
             "Tap to see Full Coverage",
