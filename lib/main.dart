@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';

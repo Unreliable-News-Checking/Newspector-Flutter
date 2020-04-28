@@ -14,6 +14,10 @@ class NewsArticleStore {
     return _newsArticles[id];
   }
 
+  bool hasNewsArticle(String id) {
+    return _newsArticles.containsKey(id);
+  }
+
   NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
     var newsArticleId = newsArticle.id;
     _newsArticles[newsArticleId] = newsArticle;

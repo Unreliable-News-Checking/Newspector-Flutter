@@ -1,14 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
-import 'package:flutter_tags/flutter_tags.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
-import 'news_article_photo_container.dart';
+import 'hp_news_article_photo_container.dart';
 
 class HomePageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
@@ -43,14 +41,10 @@ class _HomePageNewsArticleContainerState
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
-        // decoration: BoxDecoration(
-        //   borderRadius: BorderRadius.circular(16),
-        //   color: Colors.green,
-        // ),
         child: Stack(
           children: <Widget>[
             Container(
-              child: NewsArticlePhotoContainer(
+              child: HpNewsArticlePhotoContainer(
                 newsArticle: _newsArticle,
                 height: widget.height,
               ),
@@ -186,16 +180,6 @@ class _HomePageNewsArticleContainerState
         borderRadius: BorderRadius.circular(360),
         color: Colors.white,
       ),
-    );
-  }
-
-  DecorationImage showNewsArticlePhoto() {
-    var photoUrl = _newsArticle.photoUrl;
-    if (photoUrl == null) return null;
-
-    return DecorationImage(
-      image: CachedNetworkImageProvider(photoUrl),
-      fit: BoxFit.cover,
     );
   }
 }
