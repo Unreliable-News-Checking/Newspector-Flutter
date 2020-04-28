@@ -72,7 +72,8 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   Widget sliverAppBar() {
     return SliverAppBar(
       title: Text("News Group Page"),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: app_const.backgroundColor,
+      centerTitle: true,
       floating: true,
       pinned: false,
       snap: false,

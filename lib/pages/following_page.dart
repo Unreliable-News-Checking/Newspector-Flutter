@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
-import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/home_page/news_group_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -49,6 +49,7 @@ class _FollowingPageState extends State<FollowingPage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
+      backgroundColor: app_const.backgroundColor,
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -59,6 +60,7 @@ class _FollowingPageState extends State<FollowingPage> {
   // shown when there is a user
   Widget homeScaffold() {
     return Scaffold(
+      backgroundColor: app_const.backgroundColor,
       body: FeedContainer(
         sliverAppBar: sliverAppBar(),
         feed: _user.followingFeed,
@@ -78,7 +80,8 @@ class _FollowingPageState extends State<FollowingPage> {
   Widget sliverAppBar() {
     return SliverAppBar(
       title: Text("Following"),
-      backgroundColor: Theme.of(context).backgroundColor,
+      centerTitle: true,
+      backgroundColor: app_const.backgroundColor,
       floating: true,
       pinned: false,
       snap: false,
