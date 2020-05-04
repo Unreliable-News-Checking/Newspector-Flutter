@@ -19,27 +19,14 @@ class _HomePageState extends State<HomePage> {
   var pageSize = app_const.homePagePageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
-  var backgroundColor = Colors.grey.shade900;
 
   @override
   Widget build(BuildContext context) {
-    // if there is an existing feed show that
-    if (NewsFeedService.hasFeed()) {
-      _newsFeed = NewsFeedService.getNewsFeed();
-      if (_newsFeed.getItemCount() < pageSize) {
-        loadMoreVisible = false;
-      }
-      return homeScaffold();
-    }
-
-    // if there is no existing feed,
-    // get the latest feed and display it
     return FutureBuilder(
-      future: getInitialFeed(),
+      future: getFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _newsFeed = snapshot.data;
             return homeScaffold();
             break;
           default:
@@ -52,6 +39,15 @@ class _HomePageState extends State<HomePage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Newspector",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: app_const.backgroundColor,
+      ),
       backgroundColor: app_const.backgroundColor,
       body: Container(
         alignment: Alignment.center,
@@ -105,41 +101,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<NewsFeed> getInitialFeed() async {
-    _newsFeed = null;
-    _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
-      pageSize: pageSize,
-      newsGroupPageSize: newsGroupPageSize,
-    );
-
-    if (_newsFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    return _newsFeed;
+  /// If there is an existing feed returns it,
+  /// if not fetches the feed from the database and returns it.
+  Future<void> getFeed() async {
+    _newsFeed = await NewsFeedService.getOrFetchNewsFeed();
+    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
   }
 
-  // this fetches an updated user async
-  // called when user tries to refresh the page
+  /// Forces a fresh fetch of the feed from the database.
   Future<void> getRefreshedFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
-
-    if (_newsFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
+    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
     if (mounted) setState(() {});
   }
 
-  // this fetches an updated user async
-  // called when user tries to refresh the page
+  /// Fetches the wanted documents after the specified document.
   Future<void> fetchAdditionalNewsGroups() async {
     var lastDocumentId = _newsFeed.getLastItem();
 
@@ -149,12 +128,7 @@ class _HomePageState extends State<HomePage> {
       newsGroupPageSize: newsGroupPageSize,
     );
 
-    if (lastDocumentId == _newsFeed.getLastItem()) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
+    loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();
     if (mounted) setState(() {});
   }
 }

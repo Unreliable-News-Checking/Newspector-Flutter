@@ -3,11 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:newspector_flutter/models/news_feed.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'firestore_database_service.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsFeedService {
   static NewsFeed _newsFeed;
 
-  static NewsFeed getNewsFeed() {
+  static Future<NewsFeed> getOrFetchNewsFeed() async {
+    if (hasFeed()) return _newsFeed;
+
+    return await updateAndGetNewsFeed(
+        pageSize: app_const.homePagePageSize,
+        newsGroupPageSize: app_const.newsGroupPageSize);
+  }
+
+  static NewsFeed _getNewsFeed() {
     return _newsFeed;
   }
 
@@ -45,7 +54,8 @@ class NewsFeedService {
           lastDocumentId, pageSize);
     }
 
-    List<String> newsGroupIds = await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
+    List<String> newsGroupIds =
+        await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
       newsGroupQuery.documents,
       newsGroupPageSize,
     );
