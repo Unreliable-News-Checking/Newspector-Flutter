@@ -6,7 +6,7 @@ import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:http/http.dart';
 import 'package:newspector_flutter/stores/store.dart';
-import 'firestore_database_service.dart';
+import 'firestore/firestore_service.dart' as firestore;
 import 'package:newspector_flutter/utilities.dart' as utils;
 
 class NewsSourceService {
@@ -42,7 +42,7 @@ class NewsSourceService {
   }
 
   static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {
-    var newsSourceDocument = await FirestoreService.getSource(newsSourceId);
+    var newsSourceDocument = await firestore.getSource(newsSourceId);
 
     Uint8List photoInBytes;
     if (NewsSourceService.hasNewsSource(newsSourceId)) {
@@ -71,9 +71,9 @@ class NewsSourceService {
     // get the right documents from the database
     QuerySnapshot newsSourceQuery;
     if (refreshWanted) {
-      newsSourceQuery = await FirestoreService.getSources(pageSize);
+      newsSourceQuery = await firestore.getSources(pageSize);
     } else {
-      newsSourceQuery = await FirestoreService.getSourcesAfterDocument(
+      newsSourceQuery = await firestore.getSourcesAfterDocument(
           lastDocumentId, pageSize);
     }
 

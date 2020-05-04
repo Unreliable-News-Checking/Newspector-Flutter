@@ -31,7 +31,6 @@ class NewsArticle extends Model {
     isRetweet = data['is_retweet'];
     newsSourceId = data['username'];
 
-    photoUrl = null;
     if (documentSnapshot.data['photos'].length > 0) {
       photoUrl = documentSnapshot.data['photos'][0];
     }

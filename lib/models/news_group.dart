@@ -15,8 +15,6 @@ class NewsGroup extends Model{
     id = documentSnapshot.documentID;
     category = data['category'];
     date = data['date'];
-    followedByUser = null;
-    newsArticleFeed = null;
   }
 
   void addNewsArticles(List<String> newsArticleIds) {

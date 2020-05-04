@@ -4,7 +4,7 @@ import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
-import 'package:newspector_flutter/services/firestore_database_service.dart';
+import 'firestore/firestore_service.dart' as firestore;
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 
@@ -49,7 +49,7 @@ class NewsGroupService {
   /// Updates and returns the news group document but not the news articles within.
   static Future<NewsGroup> updateAndGetNewsGroup(String newsGroupId) async {
     // futures for newsGroup  and User
-    var newsGroupDocumentFuture = FirestoreService.getNewsGroup(newsGroupId);
+    var newsGroupDocumentFuture = firestore.getNewsGroup(newsGroupId);
     var _userFuture = UserService.getOrFetchUser();
 
     // wait for futures
@@ -59,8 +59,7 @@ class NewsGroupService {
     User _user = futures[1];
 
     // check if the user follows the news group
-    var followedDocumentId =
-        await FirestoreService.checkUserFollowsNewsGroupDocument(
+    var followedDocumentId = await firestore.checkUserFollowsNewsGroupDocument(
       _user.id,
       newsGroupId,
     );
@@ -100,10 +99,11 @@ class NewsGroupService {
     QuerySnapshot newsArticleQuery;
     if (refreshWanted) {
       newsArticleQuery =
-          await FirestoreService.getNewsInNewsGroup(newsGroup.id, pageSize);
+          await firestore.getNewsArticlesInNewsGroup(newsGroup.id, pageSize);
     } else {
-      newsArticleQuery = await FirestoreService.getNewsInNewsGroupAfterDocument(
-          newsGroup.id, lastDocumentId, pageSize);
+      newsArticleQuery =
+          await firestore.getNewsArticlesInNewsGroupAfterDocument(
+              newsGroup.id, lastDocumentId, pageSize);
     }
 
     // Create News Article models from the fetched news article documents.
@@ -150,14 +150,14 @@ class NewsGroupService {
     User _user = futures[1];
 
     if (followed) {
-      await FirestoreService.deleteUserFollowsNewsGroupDocument(
+      await firestore.deleteUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.unsubscribeFromTopic(_newsGroup.id);
       return;
     }
 
     if (!followed) {
-      await FirestoreService.createUserFollowsNewsGroupDocument(
+      await firestore.createUserFollowsNewsGroupDocument(
           _user.id, _newsGroup.id);
       FCMService.subscribeToTopic(_newsGroup.id);
       return;
@@ -183,15 +183,14 @@ class NewsGroupService {
     // Start the followed document check for all news groups in parallel.
     for (var newsGroupDoc in newsGroupDocuments) {
       Future<QuerySnapshot> newsArticleQueryFuture =
-          FirestoreService.getNewsInNewsGroup(
+          firestore.getNewsArticlesInNewsGroup(
         newsGroupDoc.documentID,
         newsGroupPageSize,
       );
       newsArticleQueryFutures.add(newsArticleQueryFuture);
 
-      var followedDocumentIdFuture =
-          FirestoreService.checkUserFollowsNewsGroupDocument(
-              _user.id, newsGroupDoc.documentID);
+      var followedDocumentIdFuture = firestore
+          .checkUserFollowsNewsGroupDocument(_user.id, newsGroupDoc.documentID);
       followedDocumentIdsFuture.add(followedDocumentIdFuture);
     }
 

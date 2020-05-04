@@ -12,15 +12,11 @@ class User {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
     firebaseId = data['uid'];
-    notificationToken = null;
-    followingFeed = null;
   }
 
   User.fromMap(Map<String, dynamic> userData, String documentId) {
     this.id = documentId;
     this.firebaseId = userData['uid'];
-    notificationToken = null;
-    followingFeed = null;
   }
 
   void assignFeedToUser(Feed<String> followingFeed) {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/user.dart';
-import 'package:newspector_flutter/services/firestore_database_service.dart';
+import 'firestore/firestore_service.dart' as firestore;
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
@@ -47,7 +47,7 @@ class UserService {
 
   static Future<User> updateAndGetUser() async {
     var userSnapshot =
-        await FirestoreService.getUserWithFirebaseId(userFirebaseId);
+        await firestore.getUserWithFirebaseId(userFirebaseId);
     _user = User.fromDocument(userSnapshot);
     return _user;
   }
@@ -74,10 +74,10 @@ class UserService {
     QuerySnapshot userFollowsGroupQuery;
     if (refreshWanted) {
       userFollowsGroupQuery =
-          await FirestoreService.gerUserFollowsNewsGroups(_user.id, pageSize);
+          await firestore.getUserFollowsNewsGroups(_user.id, pageSize);
     } else {
       userFollowsGroupQuery =
-          await FirestoreService.getUserFollowsNewsGroupAfterDocument(
+          await firestore.getUserFollowsNewsGroupAfterDocument(
               _user.id, lastDocumentId, pageSize);
     }
 
@@ -86,7 +86,7 @@ class UserService {
     List<Future<DocumentSnapshot>> newsGroupDocumentFutures = List();
     for (var userFollowsNewsGroupDoc in userFollowsGroupQuery.documents) {
       var newsGroupId = userFollowsNewsGroupDoc.data['news_group_id'];
-      var newsGroupDocumentFuture = FirestoreService.getNewsGroup(newsGroupId);
+      var newsGroupDocumentFuture = firestore.getNewsGroup(newsGroupId);
       newsGroupDocumentFutures.add(newsGroupDocumentFuture);
     }
     List<DocumentSnapshot> newsGroupDocuments =

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:newspector_flutter/models/user.dart';
-import 'package:newspector_flutter/services/firestore_database_service.dart';
+import 'firestore/firestore_service.dart' as firestore;
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
@@ -61,12 +61,12 @@ Future<bool> hasSignedInUser() async {
 // fetch the user from the database
 Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
   var userDocument =
-      await FirestoreService.getUserWithFirebaseId(firebaseUserId);
+      await firestore.getUserWithFirebaseId(firebaseUserId);
   User user;
 
   // no matching user in the database
   if (userDocument == null) {
-    user = await FirestoreService.createUser(firebaseUserId);
+    user = await firestore.createUser(firebaseUserId);
   } else {
     user = User.fromDocument(userDocument);
   }
