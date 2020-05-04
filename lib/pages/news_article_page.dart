@@ -19,11 +19,9 @@ class NewsArticlePage extends StatefulWidget {
 }
 
 class _NewsArticlePageState extends State<NewsArticlePage> {
-  NewsArticle _newsArticle;
-
   @override
   Widget build(BuildContext context) {
-    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
+    // _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
     return Scaffold(
       appBar: appBar(),
       backgroundColor: app_consts.backgroundColor,

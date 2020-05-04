@@ -6,23 +6,23 @@ import 'package:newspector_flutter/models/user.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:newspector_flutter/services/firestore_database_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
-import 'package:newspector_flutter/stores/news_group_store.dart';
+import 'package:newspector_flutter/stores/store.dart';
 
 import 'news_article_service.dart';
 
 class NewsGroupService {
-  static NewsGroupStore _newsGroupStore = NewsGroupStore();
+  static Store<NewsGroup> _newsGroupStore = Store<NewsGroup>();
 
   /// Returns the existing News Group.
   static NewsGroup getNewsGroup(String id) {
-    return _newsGroupStore.getNewsGroup(id);
+    return _newsGroupStore.getItem(id);
   }
 
   /// Returns true if the News Group exists.
   ///
   /// Check the store for the news group
   static bool hasNewsGroup(String newsGroupId) {
-    return _newsGroupStore.hasNewsGroup(newsGroupId);
+    return _newsGroupStore.hasItem(newsGroupId);
   }
 
   /// Returns the existing or a new News Group.
@@ -38,12 +38,12 @@ class NewsGroupService {
 
   /// Adds or updates an existing news group in the store.
   static NewsGroup updateOrAddNewsGroup(NewsGroup newsGroup) {
-    return _newsGroupStore.updateOrAddNewsGroup(newsGroup);
+    return _newsGroupStore.updateOrAddItem(newsGroup);
   }
 
   /// Clears the news group store.
   static void clearStore() {
-    _newsGroupStore = NewsGroupStore();
+    _newsGroupStore = Store<NewsGroup>();
   }
 
   /// Updates and returns the news group document but not the news articles within.

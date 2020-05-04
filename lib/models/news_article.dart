@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class NewsArticle {
+import 'model.dart';
+
+class NewsArticle extends Model {
   String id;
   String newsGroupId;
   String tweetId;

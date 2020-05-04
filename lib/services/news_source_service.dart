@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
-import 'package:newspector_flutter/stores/news_source_store.dart';
 import 'package:http/http.dart';
+import 'package:newspector_flutter/stores/store.dart';
 import 'firestore_database_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 
 class NewsSourceService {
-  static NewsSourceStore _newsSourceStore = NewsSourceStore();
+  static Store<NewsSource> _newsSourceStore = Store<NewsSource>();
   static Feed<String> _newsSourceFeed;
 
   static Feed<String> getNewsSourceFeed() {
@@ -26,19 +26,19 @@ class NewsSourceService {
   }
 
   static bool hasNewsSource(String newsSourceId) {
-    return _newsSourceStore.hasNewsSource(newsSourceId);
+    return _newsSourceStore.hasItem(newsSourceId);
   }
 
   static void clearStore() {
-    _newsSourceStore = NewsSourceStore();
+    _newsSourceStore = Store<NewsSource>();
   }
 
   static NewsSource getNewsSource(String newsSourceId) {
-    return _newsSourceStore.getNewsSource(newsSourceId);
+    return _newsSourceStore.getItem(newsSourceId);
   }
 
   static NewsSource updateOrAddNewsSource(NewsSource newsSource) {
-    return _newsSourceStore.updateOrAddNewsSource(newsSource);
+    return _newsSourceStore.updateOrAddItem(newsSource);
   }
 
   static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {

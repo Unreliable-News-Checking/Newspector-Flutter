@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'feed.dart';
+import 'model.dart';
 
-class NewsGroup {
+class NewsGroup extends Model{
   String id;
   String category;
   Timestamp date;

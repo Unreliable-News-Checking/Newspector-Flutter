@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/services/sign_in_service.dart'
     as sign_in_service;
 
@@ -12,18 +13,28 @@ class _SignPageState extends State<SignPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: app_const.backgroundColor,
       appBar: AppBar(
+        backgroundColor: app_const.backgroundColor,
+        elevation: 0,
         title: Text("Sign In"),
       ),
       body: Container(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text("Google Signin"),
-              GoogleSignInButton(
-                onPressed: signIn,
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 120),
+                child: Text(
+                  "Newspector",
+                  style: TextStyle(
+                    fontSize: 32,
+                    color: Colors.white,
+                  ),
+                ),
               ),
+              GoogleSignInButton(onPressed: signIn),
             ],
           ),
         ),
@@ -37,9 +48,6 @@ class _SignPageState extends State<SignPage> {
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();
     }));
-
-    // need to add a method here to check if the user exist in the
-    // database and do the appropriate thing
   }
 }
 
@@ -58,9 +66,9 @@ class GoogleSignInButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(40),
       ),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
+      borderSide: BorderSide(color: Colors.white),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +83,7 @@ class GoogleSignInButton extends StatelessWidget {
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
               ),
             )

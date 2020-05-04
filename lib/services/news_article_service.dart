@@ -2,27 +2,27 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newspector_flutter/models/news_article.dart';
-import 'package:newspector_flutter/stores/news_article_store.dart';
+import 'package:newspector_flutter/stores/store.dart';
 import 'package:http/http.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 
 class NewsArticleService {
-  static NewsArticleStore newsArticleStore = NewsArticleStore();
+  static Store<NewsArticle> newsArticleStore = Store<NewsArticle>();
 
   static NewsArticle getNewsArticle(String newsArticleId) {
-    return newsArticleStore.getNewsArticle(newsArticleId);
+    return newsArticleStore.getItem(newsArticleId);
   }
 
   static bool hasNewsArticle(String newsArticleId) {
-    return newsArticleStore.hasNewsArticle(newsArticleId);
+    return newsArticleStore.hasItem(newsArticleId);
   }
 
   static NewsArticle updateOrAddNewsArticle(NewsArticle newsArticle) {
-    return newsArticleStore.updateOrAddNewsArticle(newsArticle);
+    return newsArticleStore.updateOrAddItem(newsArticle);
   }
 
   static void clearStore() {
-    newsArticleStore = NewsArticleStore();
+    newsArticleStore = Store<NewsArticle>();
   }
 
   static Future<bool> goToTweet(String newsArticleId) async {
