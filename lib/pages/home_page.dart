@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/models/news_feed.dart';
+import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
@@ -15,13 +15,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  NewsFeed _newsFeed;
+  Feed<String> _newsFeed;
   var pageSize = app_const.homePagePageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
 
   @override
   Widget build(BuildContext context) {
+    if (NewsFeedService.hasFeed()) {
+      _newsFeed = NewsFeedService.getFeed();
+      loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
+      return homeScaffold();
+    }
+
     return FutureBuilder(
       future: getFeed(),
       builder: (context, snapshot) {

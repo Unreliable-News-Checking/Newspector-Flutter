@@ -18,19 +18,18 @@ class NewsArticle extends Model {
   String photoUrl;
   Uint8List photoInBytes;
 
-  String analysisResult;
-
   NewsArticle();
 
   NewsArticle.fromDocument(DocumentSnapshot documentSnapshot) {
+    var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
-    newsGroupId = documentSnapshot.data['news_group_id'];
-    headline = documentSnapshot.data['text'];
-    date = documentSnapshot.data['date'];
-    tweetId = documentSnapshot.data['tweet_id'];
+    newsGroupId = data['news_group_id'];
+    headline = data['text'];
+    date = data['date'];
+    tweetId = data['tweet_id'];
     tweetLink = "https://twitter.com/user/status/$tweetId";
-    isRetweet = documentSnapshot.data['is_retweet'];
-    newsSourceId = documentSnapshot.data['username'];
+    isRetweet = data['is_retweet'];
+    newsSourceId = data['username'];
 
     photoUrl = null;
     if (documentSnapshot.data['photos'].length > 0) {
@@ -40,7 +39,5 @@ class NewsArticle extends Model {
     if (documentSnapshot.data['urls'].length > 0) {
       websiteLink = documentSnapshot.data['urls'][0];
     }
-
-    analysisResult = null;
   }
 }

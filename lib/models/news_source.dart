@@ -24,8 +24,6 @@ class NewsSource extends Model {
   String twitterLink;
   Uint8List photoInBytes;
 
-  NewsSource();
-
   NewsSource.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;

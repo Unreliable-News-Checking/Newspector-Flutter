@@ -8,14 +8,13 @@ class NewsGroup extends Model{
   String category;
   Timestamp date;
   Feed newsArticleFeed;
-  bool followedByUser; //to control whether this user follows this news group
-
-  NewsGroup(this.id);
+  bool followedByUser;
 
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
+    var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
-    category = documentSnapshot.data['category'];
-    date = documentSnapshot.data['date'];
+    category = data['category'];
+    date = data['date'];
     followedByUser = null;
     newsArticleFeed = null;
   }

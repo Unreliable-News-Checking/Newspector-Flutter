@@ -8,11 +8,10 @@ class User {
   String notificationToken;
   Feed<String> followingFeed;
 
-  User();
-
   User.fromDocument(DocumentSnapshot documentSnapshot) {
+    var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
-    firebaseId = documentSnapshot.data['uid'];
+    firebaseId = data['uid'];
     notificationToken = null;
     followingFeed = null;
   }
