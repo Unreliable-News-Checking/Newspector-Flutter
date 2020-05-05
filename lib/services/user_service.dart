@@ -54,7 +54,7 @@ class UserService {
   }
 
   /// Fetched the user with the matching [userFirebaseId] from the database.
-  /// 
+  ///
   /// Only fetches the user document and not the news groups that the user follows.
   static Future<User> updateAndGetUser() async {
     var userSnapshot = await firestore.getUserWithFirebaseId(userFirebaseId);
