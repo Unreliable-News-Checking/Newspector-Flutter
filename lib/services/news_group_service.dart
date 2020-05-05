@@ -18,7 +18,7 @@ class NewsGroupService {
     return _newsGroupStore.getItem(id);
   }
 
-  /// Returns true if the News Group exists.
+  /// Returns `true` if the News Group exists.
   ///
   /// Check the store for the news group
   static bool hasNewsGroup(String newsGroupId) {
@@ -27,7 +27,7 @@ class NewsGroupService {
 
   /// Returns the existing or a new News Group.
   ///
-  /// Chhecks if the news group exists,
+  /// Checks if the news group exists,
   /// if it exist, returns the existing news group
   /// if not gets the newsgroup form the database and returns it.
   static Future<NewsGroup> getOrFetchNewsGroup(String newsGroupId) async {

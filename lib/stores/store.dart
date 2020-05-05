@@ -21,4 +21,8 @@ class Store<E extends Model> {
     _items[id] = item;
     return item;
   }
+
+  void clear() {
+    _items.clear();
+  }
 }

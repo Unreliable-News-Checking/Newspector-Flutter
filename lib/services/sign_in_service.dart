@@ -9,9 +9,14 @@ import 'package:newspector_flutter/services/user_service.dart';
 
 import 'news_article_service.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
+/// Signs in the user using the Google sign in feature.
+/// 
+/// First the google sign in will be completed. 
+/// After that the firebase authentication will be completed using the google sign in authentication.
+/// Finally, a user will be created by [createOrGetUserFromDatabase] in firestore.
 Future<FirebaseUser> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   final GoogleSignInAuthentication googleSignInAuthentication =
@@ -22,13 +27,13 @@ Future<FirebaseUser> signInWithGoogle() async {
     idToken: googleSignInAuthentication.idToken,
   );
 
-  final AuthResult authResult = await _auth.signInWithCredential(credential);
+  final AuthResult authResult = await _firebaseAuth.signInWithCredential(credential);
   final FirebaseUser user = authResult.user;
 
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
 
-  final FirebaseUser currentUser = await _auth.currentUser();
+  final FirebaseUser currentUser = await _firebaseAuth.currentUser();
   assert(user.uid == currentUser.uid);
 
   await createOrGetUserFromDatabase(user.uid);
@@ -36,11 +41,13 @@ Future<FirebaseUser> signInWithGoogle() async {
   return user;
 }
 
+/// Signs out the user from both google and firebase.
 void signOutGoogle() async {
   var googleSignOut = googleSignIn.signOut();
-  var firebaseSignOut = _auth.signOut();
+  var firebaseSignOut = _firebaseAuth.signOut();
   await Future.wait([googleSignOut, firebaseSignOut]);
 
+  // TODO: maybe change this to an sign out event.
   NewsArticleService.clearStore();
   NewsFeedService.clearFeed();
   NewsGroupService.clearStore();
@@ -49,16 +56,17 @@ void signOutGoogle() async {
   UserService.clearUser();
 }
 
+/// Returns `true` if there is signed in firebase user.
 Future<bool> hasSignedInUser() async {
-  var firebaseUser = await _auth.currentUser();
+  var firebaseUser = await _firebaseAuth.currentUser();
   var hasSignedInUser = firebaseUser != null;
 
   return hasSignedInUser;
 }
 
-// with the given uid, check the database for a matching user,
-// if there is no user, create a new user,
-// fetch the user from the database
+/// With the given uid checks the database for a matching user,
+/// if there is no existing user creates a new user, otherwise just
+/// fetches the user from the database.
 Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
   var userDocument =
       await firestore.getUserWithFirebaseId(firebaseUserId);

@@ -13,34 +13,48 @@ class NewsSourceService {
   static Store<NewsSource> _newsSourceStore = Store<NewsSource>();
   static Feed<String> _newsSourceFeed;
 
+  /// Returns the existing news source feed.
+  ///
+  /// No null check use with caution.
   static Feed<String> getNewsSourceFeed() {
     return _newsSourceFeed;
   }
 
+  /// Returns `true` if there an existing feed.
   static bool hasFeed() {
     return _newsSourceFeed != null;
   }
 
+  /// Clears the existing feed.
   static void clearFeed() {
     _newsSourceFeed = null;
   }
 
+  /// Returns `true` if there is a news source with the given id.
   static bool hasNewsSource(String newsSourceId) {
     return _newsSourceStore.hasItem(newsSourceId);
   }
 
+  /// Clears the existing store.
   static void clearStore() {
-    _newsSourceStore = Store<NewsSource>();
+    _newsSourceStore.clear();
   }
 
+  /// Returns the news source with the given id.
   static NewsSource getNewsSource(String newsSourceId) {
     return _newsSourceStore.getItem(newsSourceId);
   }
 
+  /// Updates the existing news source or creates a new one.
   static NewsSource updateOrAddNewsSource(NewsSource newsSource) {
     return _newsSourceStore.updateOrAddItem(newsSource);
   }
 
+  /// Fetches the news source with the given [newsSourceId] from the database.
+  ///
+  /// If the newly created news article already exists in the store, saves the photo
+  /// and assigns the photo to the news version while the new photo is fetched online.
+  /// By this the old photo can be used for display while the possibly new photo is fetched.
   static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {
     var newsSourceDocument = await firestore.getSource(newsSourceId);
 
@@ -56,6 +70,13 @@ class NewsSourceService {
     return newsSource;
   }
 
+  /// Fetches news sources from the database and returns them in a feed.
+  ///
+  /// The number of news sources that will be fetched is determined by [pageSize].
+  /// The function will return at maximum [pageSize] number of news groups. The [lastDocumentId]
+  /// is optional and is used for pagination. If [lastDocumentId] is specified only documents
+  /// after that document will be fetched. When [lastDocumenId] is a non null value, the fetched documents
+  /// will be added at the end of the existing feed.
   static Future<Feed<String>> updateAndGetNewsSourceFeed({
     @required int pageSize,
     String lastDocumentId,
@@ -73,8 +94,8 @@ class NewsSourceService {
     if (refreshWanted) {
       newsSourceQuery = await firestore.getSources(pageSize);
     } else {
-      newsSourceQuery = await firestore.getSourcesAfterDocument(
-          lastDocumentId, pageSize);
+      newsSourceQuery =
+          await firestore.getSourcesAfterDocument(lastDocumentId, pageSize);
     }
 
     List<String> newsSourceIds = new List();
@@ -100,6 +121,11 @@ class NewsSourceService {
     return _newsSourceFeed;
   }
 
+  /// Creates a news source from a document and adds the news article to the store.
+  ///
+  /// If the newly created news source already exists in the store, saves the photo
+  /// and assigns the photo to the new version while the new photo is fetched online.
+  /// By this the old photo can be used for display while the possibly new photo is fetched.
   static String createAndAddNewsSource(DocumentSnapshot newsSourceDoc) {
     Uint8List oldPhoto;
     if (NewsSourceService.hasNewsSource(newsSourceDoc.documentID)) {
@@ -116,6 +142,7 @@ class NewsSourceService {
     return newsSource.id;
   }
 
+  /// If there is a photo url and no cached photo, fetches the photo online asynchronously.
   static void getNewsSourceImage(NewsSource newsSource) async {
     // there is no imageUrl
     if (newsSource.photoUrl == null) return;
@@ -130,12 +157,14 @@ class NewsSourceService {
     return;
   }
 
+  /// Opens the news website url given the news article id.
   static goToSourceWebsite(String newsSourceId) async {
     var newsArticle = getNewsSource(newsSourceId);
     var url = newsArticle.websiteLink;
     return await utils.goToUrl(url);
   }
 
+  /// Opens the tweet url given the news article id.
   static goToSourceTwitter(String newsSourceId) async {
     var newsArticle = getNewsSource(newsSourceId);
     var url = newsArticle.twitterLink;

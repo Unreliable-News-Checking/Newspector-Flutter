@@ -6,6 +6,9 @@ class FCMService {
   static Function onMessage;
   static Function onResume;
 
+  /// Configures the FCM callback functions.
+  ///
+  /// Functions are optional parameters. If there is no override, the old callback remains active.
   static void configureFCM({
     Function onMessage,
     Function onResume,
@@ -16,6 +19,7 @@ class FCMService {
     updateNotificationCallbacks();
   }
 
+  /// Applies the callback functions to the FCM library.
   static void updateNotificationCallbacks() {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -33,6 +37,7 @@ class FCMService {
     );
   }
 
+  /// Requests notification permissions for the FCM library.
   static void requestNotificationPermissions() {
     _firebaseMessaging
         .requestNotificationPermissions(const IosNotificationSettings(
@@ -48,21 +53,21 @@ class FCMService {
     });
   }
 
+  /// Subscribes the device to a notification topic.
   static void subscribeToTopic(String topicName) {
     _firebaseMessaging.subscribeToTopic(topicName);
   }
 
+  /// Unsubscribes the device from a notification topic.
   static void unsubscribeFromTopic(String topicName) {
     _firebaseMessaging.unsubscribeFromTopic(topicName);
   }
 
-  static void subscribeToEveryFollowingNews()
-  {
+  /// Subscribes the device to topic of news group that the user is currently following.
+  static void subscribeToEveryFollowingNews() {
     // var newsGroupIds = FirestoreService.getUserFollowsNewsGroups(newsGroupId);
   }
 
-  static void unsubscribeFromEveryFollowingNews()
-  {
-
-  }
+  /// Unsubscribes the device from all the notification topics.
+  static void unsubscribeFromEveryFollowingNews() {}
 }
