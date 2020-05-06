@@ -117,18 +117,18 @@ class _HomePageState extends State<HomePage> {
 
   /// If there is an existing feed returns it,
   /// if not fetches the feed from the database and returns it.
-  Future<void> getFeed() async {
-    _newsFeed = await NewsFeedService.getOrFetchNewsFeed();
-    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
-  }
-
-  /// Forces a fresh fetch of the feed from the database.
-  Future<void> getRefreshedFeed() async {
+  Future<Feed<String>> getFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
+    return _newsFeed;
+  }
+
+  /// Forces a fresh fetch of the feed from the database.
+  Future<void> getRefreshedFeed() async {
+    _newsFeed = await getFeed();
     if (mounted) setState(() {});
   }
 

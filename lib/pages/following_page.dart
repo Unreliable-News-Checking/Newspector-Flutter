@@ -15,7 +15,6 @@ class _FollowingPageState extends State<FollowingPage> {
   User _user;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;
-
   var loadMoreVisible = true;
 
   @override
@@ -23,16 +22,14 @@ class _FollowingPageState extends State<FollowingPage> {
     // if there is an existing feed show that
     if (UserService.hasUserWithFeed()) {
       _user = UserService.getUser();
-      if (_user.followingFeed.getItemCount() < pageSize) {
-        loadMoreVisible = false;
-      }
+      loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
       return homeScaffold();
     }
 
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: getInitialFeed(),
+      future: getFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -49,6 +46,15 @@ class _FollowingPageState extends State<FollowingPage> {
   // shown when the page is loading the new feed
   Widget loadingScaffold() {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Following",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: app_const.backgroundColor,
+      ),
       backgroundColor: app_const.backgroundColor,
       body: Container(
         alignment: Alignment.center,
@@ -79,7 +85,10 @@ class _FollowingPageState extends State<FollowingPage> {
 
   Widget sliverAppBar() {
     return SliverAppBar(
-      title: Text("Following"),
+      title: Text(
+        "Following",
+        style: TextStyle(color: Colors.white),
+      ),
       centerTitle: true,
       backgroundColor: app_const.backgroundColor,
       floating: true,
@@ -88,38 +97,20 @@ class _FollowingPageState extends State<FollowingPage> {
     );
   }
 
-  Future<User> getInitialFeed() async {
+  Future<User> getFeed() async {
     _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
-
-    if (_user.followingFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
+    loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
     return _user;
   }
 
   // this fetches an updated user async
   // called when user tries to refresh the page
   Future<void> getRefreshedFeed() async {
-    _user = await UserService.updateAndGetUserWithFeed(
-      pageSize: pageSize,
-      newsGroupPageSize: newsGroupPageSize,
-    );
-
-    if (_user.followingFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) {
-      setState(() {});
-    }
+    _user = await getFeed();
+    if (mounted) setState(() {});
   }
 
   // this fetches additional items
@@ -133,14 +124,7 @@ class _FollowingPageState extends State<FollowingPage> {
       newsGroupPageSize: newsGroupPageSize,
     );
 
-    if (lastDocumentId == _user.followingFeed.getLastItem()) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) {
-      setState(() {});
-    }
+    loadMoreVisible = lastDocumentId != _user.followingFeed.getLastItem();
+    if (mounted) setState(() {});
   }
 }
