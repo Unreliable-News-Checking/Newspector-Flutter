@@ -10,6 +10,7 @@ class FeedContainer<E> extends StatefulWidget {
   final bool loadMoreVisible;
   final Function buildContainer;
   final String emptyListMessage;
+  final ScrollController scrollController;
 
   FeedContainer({
     Key key,
@@ -20,6 +21,7 @@ class FeedContainer<E> extends StatefulWidget {
     @required this.buildContainer,
     @required this.emptyListMessage,
     @required this.sliverAppBar,
+    this.scrollController,
   }) : super(key: key);
 
   @override
@@ -27,8 +29,14 @@ class FeedContainer<E> extends StatefulWidget {
 }
 
 class _FeedContainerState extends State<FeedContainer> {
-  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
   bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = widget.scrollController ?? ScrollController();
+  }
 
   @override
   Widget build(BuildContext context) {

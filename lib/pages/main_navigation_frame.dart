@@ -24,6 +24,12 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
     GlobalKey<NavigatorState>()
   ];
 
+  final List<ScrollController> scrollControllers = [
+    ScrollController(),
+    ScrollController(),
+    ScrollController(),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -69,24 +75,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
     );
   }
 
-  Future<bool> _onWillPop() async {
-    var popped = await tabNavigationKeys[currentIndex].currentState.maybePop();
-    if (popped) return Future<bool>.value(!popped);
-
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-    return Future<bool>.value(true);
-  }
-
   Widget tabBar() {
     return CupertinoTabBar(
-      onTap: (int index) {
-        if (index == currentIndex) {
-          tabNavigationKeys[index].currentState.popUntil((r) => r.isFirst);
-        }
-
-        currentIndex = index;
-        if (mounted) setState(() {});
-      },
+      onTap: _onTapToNavBar,
       activeColor: Colors.blue.shade400,
       inactiveColor: Colors.grey.shade300,
       backgroundColor: app_const.tabBarColor,
@@ -116,7 +107,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[0],
             builder: (BuildContext context) {
-              return HomePage();
+              return HomePage(
+                scrollController: scrollControllers[0],
+              );
             },
             defaultTitle: 'Home',
           ),
@@ -142,5 +135,47 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         break;
     }
     return null;
+  }
+
+  /// Determines what to do when the current page is to be popped from the navigation frame.
+  /// for example: back button pressed.
+  ///
+  /// If the inner navigator has a route on the [currentIndex], pop from the inner navigator.
+  /// If the inner navigator has no route to pop other than it's first route, exit from the application.
+  /// Whether inner navigator has a route to pop can be determined by calling [maybePop].
+  Future<bool> _onWillPop() async {
+    var popped = await tabNavigationKeys[currentIndex].currentState.maybePop();
+    if (popped) return Future<bool>.value(!popped);
+
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return Future<bool>.value(true);
+  }
+
+  /// Determines what to do when an item in the navigation bar is tapped.
+  ///
+  /// If the tapped [index] is not the same as the [currentIndex],
+  /// simply changes the page to the [index]. However, if [index] is equal to [currentIndex]
+  /// and the inner navigation has routes that can be popped,
+  /// the inner navigator will be popped until the first element.
+  /// If the inner navigator does not have any routes, scroll the page to the top.
+  void _onTapToNavBar(int index) {
+    if (index != currentIndex) {
+      currentIndex = index;
+      if (mounted) setState(() {});
+      return;
+    }
+
+    var canPop = tabNavigationKeys[currentIndex].currentState.canPop();
+    if (canPop) {
+      tabNavigationKeys[currentIndex].currentState.popUntil((r) => r.isFirst);
+    } else {
+      //scroll to top
+      print("Scroll to top");
+      scrollControllers[currentIndex].animateTo(
+        0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
+    }
   }
 }
