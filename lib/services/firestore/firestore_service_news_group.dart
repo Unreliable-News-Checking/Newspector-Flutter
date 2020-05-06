@@ -12,7 +12,7 @@ Future<DocumentSnapshot> getNewsGroup(String newsGroupId) async {
 Future<QuerySnapshot> getNewsGroups(int pageLimit) async {
   QuerySnapshot querySnapshot = await db
       .collection('news_groups')
-      .orderBy("date", descending: true)
+      .orderBy("updated_at", descending: true)
       .limit(pageLimit)
       .getDocuments();
 
@@ -27,7 +27,7 @@ Future<QuerySnapshot> getNewsGroupsAfterDocument(
 
   QuerySnapshot querySnapshot = await db
       .collection('news_groups')
-      .orderBy("date", descending: true)
+      .orderBy("updated_at", descending: true)
       .startAfterDocument(lastDocument)
       .limit(pageLimit)
       .getDocuments();

@@ -9,11 +9,13 @@ class NewsArticle extends Model {
   String newsGroupId;
   String tweetId;
   String headline;
-  Timestamp date;
+  DateTime date;
   String tweetLink;
   String websiteLink;
   bool isRetweet;
-  String newsSourceId;
+  String newsSourceId; 
+  String category;
+  double sentiment;
 
   String photoUrl;
   Uint8List photoInBytes;
@@ -23,12 +25,15 @@ class NewsArticle extends Model {
   NewsArticle.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
+
+    date = DateTime.fromMillisecondsSinceEpoch(data['date'].toInt());
+    isRetweet = data['is_retweet'];
     newsGroupId = data['news_group_id'];
+    category = data['perceived_category'];
+    sentiment = data['sentiment_score'];
     headline = data['text'];
-    date = data['date'];
     tweetId = data['tweet_id'];
     tweetLink = "https://twitter.com/user/status/$tweetId";
-    isRetweet = data['is_retweet'];
     newsSourceId = data['username'];
 
     if (documentSnapshot.data['photos'].length > 0) {

@@ -6,15 +6,20 @@ import 'model.dart';
 class NewsGroup extends Model{
   String id;
   String category;
-  Timestamp date;
+  DateTime creationDate;
+  DateTime updateDate;
   Feed newsArticleFeed;
   bool followedByUser;
+  String leaderId;
 
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
+
     category = data['category'];
-    date = data['date'];
+    creationDate = DateTime.fromMillisecondsSinceEpoch(data['created_at'].toInt());
+    updateDate = DateTime.fromMillisecondsSinceEpoch(data['updated_at'].toInt());
+    leaderId = data['group_leader'];
   }
 
   void addNewsArticles(List<String> newsArticleIds) {

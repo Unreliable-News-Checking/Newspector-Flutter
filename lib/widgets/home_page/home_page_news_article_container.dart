@@ -141,8 +141,8 @@ class _HomePageNewsArticleContainerState
   }
 
   Widget date() {
-    var timestamp = _newsArticle.date;
-    var dateString = utils.timestampToMeaningfulTime(timestamp);
+    var date = _newsArticle.date;
+    var dateString = utils.timestampToMeaningfulTime(date);
     return Text(
       dateString,
       style: TextStyle(

@@ -1,19 +1,16 @@
 import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String timestampToMeaningfulTime(Timestamp timestamp) {
-  DateTime postDate = timestamp.toDate();
-  Duration diff = DateTime.now().difference(postDate);
+String timestampToMeaningfulTime(DateTime date) {
+  Duration diff = DateTime.now().difference(date);
 
   String dateString;
   if (diff.inDays.toInt() >= 7) {
-    dateString = postDate.day.toString() +
+    dateString = date.day.toString() +
         "/" +
-        postDate.month.toString() +
+        date.month.toString() +
         "/" +
-        postDate.year.toString();
+        date.year.toString();
   } else if (diff.inDays.toInt() > 1) {
     dateString = diff.inDays.toInt().toString() + " days ago";
   } else if (diff.inDays.toInt() == 1) {
@@ -48,11 +45,10 @@ const months = <String>[
   'Dec'
 ];
 
-String timestampToDateString(Timestamp timestamp) {
-  DateTime dateTime = timestamp.toDate();
-  var dayString = dateTime.day.toString();
-  var monthString = months[dateTime.month - 1];
-  var yearString = dateTime.year.toString();
+String timestampToDateString(DateTime date) {
+  var dayString = date.day.toString();
+  var monthString = months[date.month - 1];
+  var yearString = date.year.toString();
   return monthString + " " + dayString + ", " + yearString;
 }
 

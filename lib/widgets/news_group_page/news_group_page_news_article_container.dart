@@ -168,8 +168,8 @@ class _NewsGroupPageNewsArticleContainerState
   }
 
   Widget date2() {
-    var timestamp = _newsArticle.date;
-    var dateString = utils.timestampToDateString(timestamp);
+    var date = _newsArticle.date;
+    var dateString = utils.timestampToDateString(date);
     return Text(
       dateString,
       style: TextStyle(
