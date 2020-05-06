@@ -59,79 +59,38 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
   }
 
   Widget _getDefaultPhoto(double radius) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          //for grey outline
-          height: radius,
-          width: radius,
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(360),
-          ),
-        ),
-        Container(
-          //the placeholder
-          height: radius,
-          width: radius,
-          padding: EdgeInsets.all(0.5),
-          child: Container(
-            height: radius,
-            width: radius,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(360),
-            ),
-            child: Icon(
-              Icons.person,
-              color: Colors.blue,
-            ),
-          ),
-        ),
-      ],
+    return Container(
+      height: radius,
+      width: radius,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(360),
+      ),
+      child: Icon(
+        Icons.person,
+        color: Colors.blue,
+      ),
     );
   }
 
   Widget _getUserPhoto(Uint8List _photoInBytes, double radius) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          //for grey outline
-          height: radius,
-          width: radius,
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(360),
-          ),
-        ),
-        Container(
-          //the actual image
-          height: radius,
-          width: radius,
-          padding: EdgeInsets.all(0.4),
-          child: ClipOval(
-            child: Image.memory(_photoInBytes),
-          ),
-        ),
-      ],
+    return Container(
+      height: radius,
+      width: radius,
+      child: ClipOval(
+        child: Image.memory(_photoInBytes),
+      ),
     );
   }
 
   Widget _getLoadingPhoto(double radius) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          height: radius,
-          width: radius,
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(360),
-          ),
-        ),
-      ],
+    return Container(
+      height: radius,
+      width: radius,
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(360),
+      ),
     );
   }
 }

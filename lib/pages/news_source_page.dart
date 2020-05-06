@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
-import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
+import 'package:newspector_flutter/utilities.dart' as utils;
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -47,7 +48,16 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   Widget loadingScaffold() {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: app_const.backgroundColor,
+      appBar: AppBar(
+        title: Text(
+          "",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: app_const.backgroundColor,
+      ),
       body: Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
@@ -57,7 +67,11 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   Widget homeScaffold() {
     return Scaffold(
+      backgroundColor: app_const.backgroundColor,
       appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: app_const.backgroundColor,
         title: Text(_newsSource.name),
         actions: <Widget>[
           IconButton(

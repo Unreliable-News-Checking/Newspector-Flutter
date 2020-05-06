@@ -28,9 +28,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Newspector',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
-        accentColor: Colors.blue,
-        primaryTextTheme: TextTheme(),
+        textTheme: Theme.of(context)
+            .textTheme
+            .apply(bodyColor: Colors.white, displayColor: Colors.white),
       ),
       home: showHome(),
       routes: {},

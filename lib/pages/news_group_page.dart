@@ -73,6 +73,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   // shown when there is a feed with news groups
   Widget homeScaffold() {
     return Scaffold(
+      backgroundColor: app_const.backgroundColor,
       body: NewsGroupFeedContainer(
         sliverAppBar: sliverAppBar(),
         newsGroup: _newsGroup,

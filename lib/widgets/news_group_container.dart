@@ -220,6 +220,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           _newsGroup.category,
           style: TextStyle(
             fontSize: 12,
+            color: Colors.black,
           ),
         ),
       ),

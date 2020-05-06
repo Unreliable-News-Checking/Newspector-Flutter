@@ -181,7 +181,10 @@ class _NewsGroupPageNewsArticleContainerState
 
   Widget tweetButton() {
     return IconButton(
-      icon: Icon(EvaIcons.twitter),
+      icon: Icon(
+        EvaIcons.twitter,
+        color: Colors.white,
+      ),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
       },
@@ -193,6 +196,7 @@ class _NewsGroupPageNewsArticleContainerState
     return IconButton(
       icon: Icon(
         Icons.web,
+        color: Colors.white,
       ),
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);
