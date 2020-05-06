@@ -62,6 +62,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           fullCoverageButton(context),
           followButton(),
           firstReporterTag(),
+          categoryLabel(),
         ],
       ),
     );
@@ -137,8 +138,9 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           ),
           onPressed: () {
             NewsGroupService.toggleFollowNewsGroup(
-                newsGroupId: _newsGroup.id,
-                followed: _newsGroup.followedByUser);
+              newsGroupId: _newsGroup.id,
+              followed: _newsGroup.followedByUser,
+            );
             _newsGroup.followedByUser = !_newsGroup.followedByUser;
 
             if (mounted) setState(() {});
@@ -197,6 +199,30 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       left: 0,
       right: 0,
       child: dots,
+    );
+  }
+
+  Widget categoryLabel() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: horizontalMargin + 10,
+          vertical: 10,
+        ),
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(360),
+        ),
+        child: Text(
+          _newsGroup.category,
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+      ),
     );
   }
 

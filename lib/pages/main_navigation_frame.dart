@@ -80,7 +80,12 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
       onTap: _onTapToNavBar,
       activeColor: Colors.blue.shade400,
       inactiveColor: Colors.grey.shade300,
-      backgroundColor: app_const.tabBarColor,
+      backgroundColor: app_const.backgroundColor,
+      border: Border.all(
+        color: app_const.backgroundColor,
+        width: 0,
+        style: BorderStyle.solid,
+      ),
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.home),
