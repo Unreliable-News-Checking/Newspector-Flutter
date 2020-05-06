@@ -6,9 +6,8 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/home_page/home_page_news_article_container.dart';
-
-import '../../application_constants.dart' as app_consts;
+import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class NewsGroupContainer extends StatefulWidget {
   final String newsGroupId;
@@ -29,7 +28,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const double borderRadius = 10.0;
   static const double horizontalMargin = 20.0;
   NewsGroup _newsGroup;
-
 
   @override
   Widget build(BuildContext context) {
