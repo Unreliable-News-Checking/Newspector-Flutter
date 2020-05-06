@@ -38,7 +38,7 @@ class NewsSource extends Model {
     approvalCount = data['like_count'];
     reportCount = data['dislike_count'];
 
-    websiteLink = 'https://$website';
-    twitterLink = 'https//twitter/$twitterUsername';
+    websiteLink = website;
+    twitterLink = 'https://twitter/$twitterUsername';
   }
 }

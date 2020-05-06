@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
@@ -27,11 +29,24 @@ class _HomePageState extends State<HomePage> {
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
 
+  StreamController _loadMoreController;
+  Stream loadMoreStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreController = StreamController.broadcast();
+    loadMoreStream = _loadMoreController.stream;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (NewsFeedService.hasFeed()) {
       _newsFeed = NewsFeedService.getFeed();
-      loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
+      loadMoreVisible =
+          _newsFeed.getItemCount() < pageSize ? false : loadMoreVisible;
+      _loadMoreController.add(loadMoreVisible);
+
       return homeScaffold();
     }
 
@@ -77,9 +92,9 @@ class _HomePageState extends State<HomePage> {
         sliverAppBar: sliverAppBar(),
         feed: _newsFeed,
         scrollController: widget.scrollController,
-        onRefresh: getRefreshedFeed,
+        onRefresh: getFeed,
         onBottomReached: fetchAdditionalNewsGroups,
-        loadMoreVisible: loadMoreVisible,
+        loadMoreStream: loadMoreStream,
         emptyListMessage: "There are no news available yet.",
         buildContainer: (String newsGroupId) {
           return NewsGroupContainer(
@@ -122,19 +137,15 @@ class _HomePageState extends State<HomePage> {
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
-    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
-    print(_newsFeed.getItemCount());
-    return _newsFeed;
-  }
 
-  /// Forces a fresh fetch of the feed from the database.
-  Future<void> getRefreshedFeed() async {
-    _newsFeed = await getFeed();
-    if (mounted) setState(() {});
+    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
+    _loadMoreController.add(loadMoreVisible);
+    return _newsFeed;
   }
 
   /// Fetches the wanted documents after the specified document.
   Future<void> fetchAdditionalNewsGroups() async {
+    print("in fetch additional");
     var lastDocumentId = _newsFeed.getLastItem();
 
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
@@ -144,6 +155,6 @@ class _HomePageState extends State<HomePage> {
     );
 
     loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();
-    if (mounted) setState(() {});
+    _loadMoreController.add(loadMoreVisible);
   }
 }

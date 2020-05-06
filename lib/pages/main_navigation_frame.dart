@@ -169,8 +169,6 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
     if (canPop) {
       tabNavigationKeys[currentIndex].currentState.popUntil((r) => r.isFirst);
     } else {
-      //scroll to top
-      print("Scroll to top");
       scrollControllers[currentIndex].animateTo(
         0,
         duration: Duration(milliseconds: 500),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
@@ -17,12 +19,25 @@ class _FollowingPageState extends State<FollowingPage> {
   int newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
 
+  StreamController _loadMoreController;
+  Stream loadMoreStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreController = StreamController.broadcast();
+    loadMoreStream = _loadMoreController.stream;
+  }
+
   @override
   Widget build(BuildContext context) {
     // if there is an existing feed show that
     if (UserService.hasUserWithFeed()) {
       _user = UserService.getUser();
-      loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
+      loadMoreVisible = _user.followingFeed.getItemCount() < pageSize
+          ? false
+          : loadMoreVisible;
+
       return homeScaffold();
     }
 
@@ -69,9 +84,9 @@ class _FollowingPageState extends State<FollowingPage> {
       body: FeedContainer(
         sliverAppBar: sliverAppBar(),
         feed: _user.followingFeed,
-        onRefresh: getRefreshedFeed,
+        onRefresh: getFeed,
         onBottomReached: fetchAdditionalNewsGroups,
-        loadMoreVisible: loadMoreVisible,
+        loadMoreStream: null, //TODO
         emptyListMessage: "You are not following any news groups yet.",
         buildContainer: (String newsGroupId) {
           return NewsGroupContainer(
@@ -102,14 +117,9 @@ class _FollowingPageState extends State<FollowingPage> {
       newsGroupPageSize: newsGroupPageSize,
     );
     loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
-    return _user;
-  }
+    _loadMoreController.add(loadMoreVisible);
 
-  // this fetches an updated user async
-  // called when user tries to refresh the page
-  Future<void> getRefreshedFeed() async {
-    _user = await getFeed();
-    if (mounted) setState(() {});
+    return _user;
   }
 
   // this fetches additional items
@@ -124,6 +134,6 @@ class _FollowingPageState extends State<FollowingPage> {
     );
 
     loadMoreVisible = lastDocumentId != _user.followingFeed.getLastItem();
-    if (mounted) setState(() {});
+    _loadMoreController.add(loadMoreVisible);
   }
 }

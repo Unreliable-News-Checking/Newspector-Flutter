@@ -7,20 +7,20 @@ class FeedContainer<E> extends StatefulWidget {
   final Feed<E> feed;
   final Function onRefresh;
   final Function onBottomReached;
-  final bool loadMoreVisible;
   final Function buildContainer;
   final String emptyListMessage;
   final ScrollController scrollController;
+  final Stream loadMoreStream;
 
   FeedContainer({
     Key key,
     @required this.feed,
     @required this.onRefresh,
     @required this.onBottomReached,
-    @required this.loadMoreVisible,
     @required this.buildContainer,
     @required this.emptyListMessage,
     @required this.sliverAppBar,
+    @required this.loadMoreStream,
     this.scrollController,
   }) : super(key: key);
 
@@ -31,11 +31,17 @@ class FeedContainer<E> extends StatefulWidget {
 class _FeedContainerState extends State<FeedContainer> {
   ScrollController _scrollController;
   bool isLoading = false;
+  bool loadMoreVisible = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = widget.scrollController ?? ScrollController();
+    widget.loadMoreStream.listen((event) {
+      loadMoreVisible = event;
+      if (mounted) setState(() {});
+      print("ANANSISIKIM");
+    });
   }
 
   @override
@@ -103,7 +109,7 @@ class _FeedContainerState extends State<FeedContainer> {
   }
 
   Widget loadMoreContainer() {
-    if (!widget.loadMoreVisible) return Container();
+    if (!loadMoreVisible) return Container();
 
     return Container(
       height: 50,
@@ -115,7 +121,7 @@ class _FeedContainerState extends State<FeedContainer> {
   }
 
   void onBottomReached() async {
-    if (!widget.loadMoreVisible) return;
+    if (!loadMoreVisible) return;
     if (isLoading) return;
 
     setState(() {

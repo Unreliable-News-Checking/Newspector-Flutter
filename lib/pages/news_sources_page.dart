@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
@@ -16,20 +18,31 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   int pageSize = 11;
   bool loadMoreVisible = true;
 
+  StreamController _loadMoreController;
+  Stream loadMoreStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreController = StreamController.broadcast();
+    loadMoreStream = _loadMoreController.stream;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (NewsSourceService.hasFeed()) {
       _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
-      if (_newsSourceFeed.getItemCount() < pageSize) {
-        loadMoreVisible = false;
-      }
+      loadMoreVisible =
+          _newsSourceFeed.getItemCount() < pageSize ? false : loadMoreVisible;
+      _loadMoreController.add(loadMoreVisible);
+
       return homeScaffold();
     }
 
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: getInitialFeed(),
+      future: getFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -59,9 +72,9 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       body: FeedContainer(
         sliverAppBar: sliverAppBar(),
         feed: _newsSourceFeed,
-        loadMoreVisible: loadMoreVisible,
+        loadMoreStream: loadMoreStream,
         onBottomReached: fetchAdditionalNewsGroups,
-        onRefresh: getRefreshedFeed,
+        onRefresh: getFeed,
         emptyListMessage: "There are no news sources yet.",
         buildContainer: (String newsSourceId) {
           return NewsSourceContainer(
@@ -89,34 +102,14 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
     );
   }
 
-  Future<Feed<String>> getInitialFeed() async {
+  Future<Feed<String>> getFeed() async {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: pageSize,
     );
 
-    if (_newsSourceFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
+    loadMoreVisible = _newsSourceFeed.getItemCount() >= pageSize;
+    _loadMoreController.add(loadMoreVisible);
     return _newsSourceFeed;
-  }
-
-  // this fetches an updated user async
-  // called when user tries to refresh the page
-  Future<void> getRefreshedFeed() async {
-    _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
-      pageSize: pageSize,
-    );
-
-    if (_newsSourceFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) setState(() {});
   }
 
   // this fetches an updated user async
@@ -129,12 +122,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       lastDocumentId: lastDocumentId,
     );
 
-    if (lastDocumentId == _newsSourceFeed.getLastItem()) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) setState(() {});
+    loadMoreVisible = lastDocumentId != _newsSourceFeed.getLastItem();
+    _loadMoreController.add(loadMoreVisible);
   }
 }
