@@ -11,15 +11,15 @@ class NewsGroupFeedContainer extends StatefulWidget {
   final NewsGroup newsGroup;
   final Function onRefresh;
   final Function onBottomReached;
-  final bool loadMoreVisible;
+  final Stream loadMoreStream;
 
   NewsGroupFeedContainer({
     Key key,
     @required this.newsGroup,
     @required this.onRefresh,
     @required this.onBottomReached,
-    @required this.loadMoreVisible,
     @required this.sliverAppBar,
+    @required this.loadMoreStream,
   }) : super(key: key);
 
   @override
@@ -29,6 +29,16 @@ class NewsGroupFeedContainer extends StatefulWidget {
 class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
   ScrollController _scrollController = ScrollController();
   bool isLoading = false;
+  bool loadMoreVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.loadMoreStream.listen((event) {
+      loadMoreVisible = event;
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +97,7 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
   }
 
   Widget loadMoreContainer() {
-    if (!widget.loadMoreVisible) return Container();
+    if (!loadMoreVisible) return Container();
 
     return Container(
       height: 50,
@@ -99,7 +109,7 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
   }
 
   void onBottomReached() async {
-    if (!widget.loadMoreVisible) return;
+    if (!loadMoreVisible) return;
     if (isLoading) return;
 
     setState(() {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
@@ -19,20 +21,32 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   var pageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
 
+  StreamController _loadMoreController;
+  Stream loadMoreStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreController = StreamController.broadcast();
+    loadMoreStream = _loadMoreController.stream;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (NewsGroupService.hasNewsGroup(widget.newsGroupId)) {
       _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
-      if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
-        loadMoreVisible = false;
-      }
+      loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() < pageSize
+          ? false
+          : loadMoreVisible;
+      _loadMoreController.add(loadMoreVisible);
+
       return homeScaffold();
     }
 
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: getInitialFeed(),
+      future: getFeed(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -62,9 +76,9 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
       body: NewsGroupFeedContainer(
         sliverAppBar: sliverAppBar(),
         newsGroup: _newsGroup,
-        loadMoreVisible: loadMoreVisible,
         onBottomReached: fetchAdditionalNewsGroups,
-        onRefresh: getRefreshedFeed,
+        onRefresh: getFeed,
+        loadMoreStream: loadMoreStream,
       ),
     );
   }
@@ -80,36 +94,15 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
     );
   }
 
-  Future<NewsGroup> getInitialFeed() async {
+  Future<NewsGroup> getFeed() async {
     _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
       newsGroupId: widget.newsGroupId,
       pageSize: pageSize,
     );
 
-    if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
+    loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() >= pageSize;
+    _loadMoreController.add(loadMoreVisible);
     return _newsGroup;
-  }
-
-  // this fetches an updated user async
-  // called when user tries to refresh the page
-  Future<void> getRefreshedFeed() async {
-    _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
-      newsGroupId: widget.newsGroupId,
-      pageSize: pageSize,
-    );
-
-    if (_newsGroup.newsArticleFeed.getItemCount() < pageSize) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) setState(() {});
   }
 
   // this fetches an updated user async
@@ -123,12 +116,8 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
       lastDocumentId: lastDocumentId,
     );
 
-    if (lastDocumentId == _newsGroup.newsArticleFeed.getLastItem()) {
-      loadMoreVisible = false;
-    } else {
-      loadMoreVisible = true;
-    }
-
-    if (mounted) setState(() {});
+    loadMoreVisible =
+        lastDocumentId != _newsGroup.newsArticleFeed.getLastItem();
+    _loadMoreController.add(loadMoreVisible);
   }
 }

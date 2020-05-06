@@ -86,7 +86,7 @@ class _FollowingPageState extends State<FollowingPage> {
         feed: _user.followingFeed,
         onRefresh: getFeed,
         onBottomReached: fetchAdditionalNewsGroups,
-        loadMoreStream: null, //TODO
+        loadMoreStream: loadMoreStream,
         emptyListMessage: "You are not following any news groups yet.",
         buildContainer: (String newsGroupId) {
           return NewsGroupContainer(

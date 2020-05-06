@@ -40,7 +40,6 @@ class _FeedContainerState extends State<FeedContainer> {
     widget.loadMoreStream.listen((event) {
       loadMoreVisible = event;
       if (mounted) setState(() {});
-      print("ANANSISIKIM");
     });
   }
 
