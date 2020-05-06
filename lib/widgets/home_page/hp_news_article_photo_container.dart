@@ -81,10 +81,6 @@ class _HpNewsArticlePhotoContainerState
     newsArticle.photoInBytes = _photoInBytes;
   }
 
-  Widget _getDefaultPhoto() {
-    return _getLoadingPhoto();
-  }
-
   Widget _getNewsArticlePhoto(Uint8List _photoInBytes, bool doFade) {
     Widget image = Image.memory(_photoInBytes);
     Widget imageContainer = image;
@@ -139,6 +135,17 @@ class _HpNewsArticlePhotoContainerState
         height: widget.height,
         width: double.infinity,
         color: Colors.grey.shade800,
+      ),
+    );
+  }
+
+  Widget _getDefaultPhoto() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(widget.borderRadius),
+      child: Container(
+        height: widget.height,
+        width: double.infinity,
+        color: Colors.purple.shade800,
       ),
     );
   }

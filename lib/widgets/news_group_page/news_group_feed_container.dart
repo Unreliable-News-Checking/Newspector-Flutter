@@ -29,7 +29,7 @@ class NewsGroupFeedContainer extends StatefulWidget {
 class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
   ScrollController _scrollController = ScrollController();
   bool isLoading = false;
-  bool loadMoreVisible = true;
+  bool loadMoreVisible = false;
 
   @override
   void initState() {
@@ -37,6 +37,8 @@ class _NewsGroupFeedContainerState extends State<NewsGroupFeedContainer> {
     widget.loadMoreStream.listen((event) {
       loadMoreVisible = event;
       if (mounted) setState(() {});
+      print(loadMoreVisible);
+      print("hello");
     });
   }
 

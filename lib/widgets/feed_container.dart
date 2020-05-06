@@ -31,7 +31,7 @@ class FeedContainer<E> extends StatefulWidget {
 class _FeedContainerState extends State<FeedContainer> {
   ScrollController _scrollController;
   bool isLoading = false;
-  bool loadMoreVisible = true;
+  bool loadMoreVisible = false;
 
   @override
   void initState() {

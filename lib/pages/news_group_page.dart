@@ -39,7 +39,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
           ? false
           : loadMoreVisible;
       _loadMoreController.add(loadMoreVisible);
-
+      print(loadMoreVisible);
       return homeScaffold();
     }
 

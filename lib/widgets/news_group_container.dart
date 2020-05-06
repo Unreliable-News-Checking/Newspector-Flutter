@@ -23,10 +23,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
-  Color backgroundColor = app_consts.newsArticleBackgroundColor;
   static const double textContainerSize = 230;
   static const double borderRadius = 10.0;
   static const double horizontalMargin = 20.0;
+  Color backgroundColor = app_consts.newsArticleBackgroundColor;
   NewsGroup _newsGroup;
 
   @override
