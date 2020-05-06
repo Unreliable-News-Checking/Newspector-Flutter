@@ -47,8 +47,8 @@ class _FeedContainerState extends State<FeedContainer> {
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
-        var reachedBottom =
-            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent;
+        var reachedBottom = scrollInfo.metrics.pixels >=
+            scrollInfo.metrics.maxScrollExtent * 0.5;
 
         if (!reachedBottom) return true;
 
