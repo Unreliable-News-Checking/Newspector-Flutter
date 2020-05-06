@@ -123,6 +123,7 @@ class _HomePageState extends State<HomePage> {
       newsGroupPageSize: newsGroupPageSize,
     );
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
+    print(_newsFeed.getItemCount());
     return _newsFeed;
   }
 

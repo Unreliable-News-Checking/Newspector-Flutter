@@ -52,8 +52,6 @@ class NewsFeedService {
     // If there is no feed a refresh is required.
     if (lastDocumentId == null || !hasFeed()) {
       refreshWanted = true;
-      _newsFeed = Feed<String>();
-      _newsFeed.clearItems();
     }
 
     // get the right documents from the database
@@ -72,14 +70,14 @@ class NewsFeedService {
     );
 
     // if there is no feed create one
-    // if (!_hasFeed()) {
-    //   _newsFeed = NewsFeed();
-    // }
+    if (!hasFeed()) {
+      _newsFeed = Feed<String>();
+    }
 
     // if refresh is wanted clear the feed
-    // if (refreshWanted) {
-    //   _newsFeed.clearItems();
-    // }
+    if (refreshWanted) {
+      _newsFeed.clearItems();
+    }
 
     // add the items to feed
     _newsFeed.addAdditionalItems(newsGroupIds);

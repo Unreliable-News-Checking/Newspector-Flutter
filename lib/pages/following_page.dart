@@ -33,7 +33,6 @@ class _FollowingPageState extends State<FollowingPage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _user = snapshot.data;
             return homeScaffold();
             break;
           default:
