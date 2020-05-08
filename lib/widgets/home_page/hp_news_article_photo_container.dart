@@ -96,30 +96,25 @@ class _HpNewsArticlePhotoContainerState
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
       child: Stack(
+        alignment: Alignment.bottomCenter,
         children: <Widget>[
           Container(
             height: widget.height,
             width: double.infinity,
-            color: Colors.grey.shade800,
             child: FittedBox(
               child: imageContainer,
               fit: BoxFit.cover,
             ),
           ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              height: widget.height - 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                gradient: LinearGradient(
-                  colors: [Color.fromRGBO(0, 0, 0, 0.8), Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                ),
-                color: Colors.blue,
+          Container(
+            height: widget.height - 50,
+            width: 400,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(widget.borderRadius),
+              gradient: LinearGradient(
+                colors: [Color.fromRGBO(0, 0, 0, 0.8), Colors.transparent],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
               ),
             ),
           ),

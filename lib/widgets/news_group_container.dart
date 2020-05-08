@@ -59,7 +59,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             ),
           ),
           dotsIndicator(itemCount),
-          fullCoverageButton(context),
+          fullCoverageButton(itemCount),
           followButton(),
           firstReporterTag(),
           categoryLabel(),
@@ -103,23 +103,29 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     );
   }
 
-  Widget fullCoverageButton(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: FlatButton(
-          onPressed: goToNewsGroupPage,
-          child: Text(
-            "Full Coverage",
-            style: TextStyle(
-              color: Colors.white,
-              shadows: app_consts.shadowsForWhiteWidgets(),
-            ),
+  Widget fullCoverageButton(int itemCount) {
+    Widget button = Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: FlatButton(
+        onPressed: goToNewsGroupPage,
+        child: Text(
+          "Full Coverage",
+          style: TextStyle(
+            color: Colors.white,
+            shadows: app_consts.shadowsForWhiteWidgets(),
           ),
         ),
       ),
+    );
+
+    if (itemCount == 1) {
+      button = Container();
+    }
+
+    return Positioned(
+      bottom: 0,
+      right: 0,
+      child: button,
     );
   }
 

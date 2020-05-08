@@ -108,6 +108,7 @@ class _FollowingPageState extends State<FollowingPage> {
       floating: true,
       pinned: false,
       snap: false,
+      elevation: 0,
     );
   }
 
@@ -118,7 +119,7 @@ class _FollowingPageState extends State<FollowingPage> {
     );
     loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
     _loadMoreController.add(loadMoreVisible);
-
+    if (mounted) setState(() {});
     return _user;
   }
 

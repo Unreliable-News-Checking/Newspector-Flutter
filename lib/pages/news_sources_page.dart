@@ -114,6 +114,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       floating: true,
       pinned: false,
       snap: false,
+      elevation: 0,
       backgroundColor: app_const.backgroundColor,
     );
   }

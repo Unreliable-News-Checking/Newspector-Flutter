@@ -92,6 +92,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
       floating: true,
       pinned: false,
       snap: false,
+      elevation: 0,
     );
   }
 
@@ -103,6 +104,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
 
     loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() >= pageSize;
     _loadMoreController.add(loadMoreVisible);
+    if (mounted) setState(() {});
     return _newsGroup;
   }
 

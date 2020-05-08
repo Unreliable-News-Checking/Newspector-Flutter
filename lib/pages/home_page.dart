@@ -115,6 +115,7 @@ class _HomePageState extends State<HomePage> {
       floating: true,
       pinned: false,
       snap: false,
+      elevation: 0,
       backgroundColor: app_const.backgroundColor,
       actions: <Widget>[
         CloseButton(
@@ -140,6 +141,7 @@ class _HomePageState extends State<HomePage> {
 
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
     _loadMoreController.add(loadMoreVisible);
+    if (mounted) setState(() {});
     return _newsFeed;
   }
 
