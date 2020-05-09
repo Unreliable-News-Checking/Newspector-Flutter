@@ -121,21 +121,27 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         );
         break;
       case 1:
-        return CupertinoTabView(
-          navigatorKey: tabNavigationKeys[1],
-          builder: (BuildContext context) {
-            return FollowingPage();
-          },
-          defaultTitle: 'Followed',
+        return WillPopScope(
+          onWillPop: () => Future<bool>.value(false),
+          child: CupertinoTabView(
+            navigatorKey: tabNavigationKeys[1],
+            builder: (BuildContext context) {
+              return FollowingPage();
+            },
+            defaultTitle: 'Followed',
+          ),
         );
         break;
       case 2:
-        return CupertinoTabView(
-          navigatorKey: tabNavigationKeys[2],
-          builder: (BuildContext context) {
-            return NewsSourcesPage();
-          },
-          defaultTitle: 'Sources',
+        return WillPopScope(
+          onWillPop: () => Future<bool>.value(false),
+          child: CupertinoTabView(
+            navigatorKey: tabNavigationKeys[2],
+            builder: (BuildContext context) {
+              return NewsSourcesPage();
+            },
+            defaultTitle: 'Sources',
+          ),
         );
         break;
     }
