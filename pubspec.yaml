@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  firebase_database: 
+  firebase_core: any
   cloud_firestore:
   firebase_auth:
   google_sign_in:
