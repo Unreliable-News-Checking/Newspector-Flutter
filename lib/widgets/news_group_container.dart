@@ -38,7 +38,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
     List<Widget> listViewItems = [];
     for (var i = 0; i < itemCount; i++) {
-      var listViewItem = _buildNewsGroupItem(context, i);
+      var listViewItem = _buildNewsGroupItem(context, i, itemCount == 1);
       listViewItems.add(listViewItem);
     }
 
@@ -70,7 +70,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     );
   }
 
-  Widget _buildNewsGroupItem(BuildContext context, int index) {
+  Widget _buildNewsGroupItem(BuildContext context, int index, bool alone) {
     return Container(
       child: SizedBox(
         height: containerSize,
@@ -80,6 +80,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           height: containerSize,
           newsArticleId: _newsGroup.getNewsArticleId(index),
           shorten: true,
+          alone: alone,
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return NewsArticlePage(
