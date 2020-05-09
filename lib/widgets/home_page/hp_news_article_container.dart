@@ -1,8 +1,6 @@
-import 'package:animations/animations.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
-import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -17,7 +15,6 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   final double height;
   final double borderRadius;
   final double horizontalMargin;
-  final bool alone;
 
   HomePageNewsArticleContainer({
     Key key,
@@ -27,7 +24,6 @@ class HomePageNewsArticleContainer extends StatefulWidget {
     @required this.height,
     @required this.borderRadius,
     @required this.horizontalMargin,
-    @required this.alone,
   }) : super(key: key);
 
   @override
