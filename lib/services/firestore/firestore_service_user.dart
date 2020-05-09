@@ -116,20 +116,20 @@ Future<QuerySnapshot> getUserFollowsNewsGroupAfterDocument(
   return querySnapshot;
 }
 
-void reportNews(String documentID, String comment) async {
-  await db
-      .collection("reports")
-      .add({'date': DateTime.now(), 'news_id': documentID, 'user_id': UserService.getUser().id, 'comment': comment});
+void reportNews(String newsID, String comment) async {
+  await db.collection("reports").add({
+    'date': DateTime.now(),
+    'news_id': newsID,
+    'comment': comment,
+    'user_id': UserService.getUser().id
+  });
 }
 
-void likeAccount(String documentID) async {
-  await db
-      .collection("likes")
-      .add({'date': DateTime.now(), 'account_id': documentID, 'user_id': UserService.getUser().id});
-}
-
-void dislikeAccount(String documentID) async {
-  await db
-      .collection("dislikes")
-      .add({'date': DateTime.now(), 'account_id': documentID, 'user_id': UserService.getUser().id});
+void voteAccount(String accountID, bool like) async {
+  await db.collection("votes").add({
+    'account_id': accountID,
+    'user_id': UserService.getUser().id,
+    'like': like,
+    'date': DateTime.now()
+  });
 }
