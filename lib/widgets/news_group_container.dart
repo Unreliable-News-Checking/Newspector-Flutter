@@ -6,7 +6,9 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/widgets/dots_indicator.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
+import 'package:animations/animations.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class NewsGroupContainer extends StatefulWidget {
@@ -70,27 +72,22 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget _buildNewsGroupItem(BuildContext context, int index) {
     return Container(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: containerSize,
-            child: HomePageNewsArticleContainer(
-              borderRadius: borderRadius,
-              horizontalMargin: horizontalMargin,
-              height: containerSize,
-              newsArticleId: _newsGroup.getNewsArticleId(index),
-              shorten: true,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return NewsArticlePage(
-                    newsArticleId: _newsGroup.getNewsArticleId(index),
-                  );
-                }));
-              },
-            ),
-          ),
-        ],
+      child: SizedBox(
+        height: containerSize,
+        child: HomePageNewsArticleContainer(
+          borderRadius: borderRadius,
+          horizontalMargin: horizontalMargin,
+          height: containerSize,
+          newsArticleId: _newsGroup.getNewsArticleId(index),
+          shorten: true,
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return NewsArticlePage(
+                newsArticleId: _newsGroup.getNewsArticleId(index),
+              );
+            }));
+          },
+        ),
       ),
     );
   }
@@ -147,8 +144,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
               newsGroupId: _newsGroup.id,
               followed: _newsGroup.followedByUser,
             );
-            _newsGroup.followedByUser = !_newsGroup.followedByUser;
-
             if (mounted) setState(() {});
           },
         ),
@@ -239,62 +234,5 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return NewsGroupPage(newsGroupId: _newsGroup.id);
     }));
-  }
-}
-
-class DotsIndicator extends AnimatedWidget {
-  DotsIndicator({
-    this.controller,
-    this.itemCount,
-    this.onPageSelected,
-    this.color: Colors.white,
-  }) : super(listenable: controller);
-
-  final PageController controller;
-  final int itemCount;
-  final ValueChanged<int> onPageSelected;
-  final Color color;
-
-  static const double _dotSize = 4.0;
-  static const double _maxDotZoom = 2.0;
-  static const double _dotSpacing = 16.0;
-
-  Widget _buildDot(int index) {
-    double selectedness = Curves.easeOut.transform(
-      max(
-        0.0,
-        1.0 - ((controller.page ?? controller.initialPage) - index).abs(),
-      ),
-    );
-
-    double zoom = 1.0 + (_maxDotZoom - 1.0) * selectedness;
-
-    return Container(
-      width: _dotSpacing,
-      padding: EdgeInsets.all(2.5),
-      child: Center(
-        child: Material(
-          color: color,
-          type: MaterialType.circle,
-          child: Container(
-            width: _dotSize * zoom,
-            height: _dotSize * zoom,
-            child: InkWell(
-              onTap: () => onPageSelected(index),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List<Widget>.generate(
-        itemCount,
-        _buildDot,
-      ),
-    );
   }
 }

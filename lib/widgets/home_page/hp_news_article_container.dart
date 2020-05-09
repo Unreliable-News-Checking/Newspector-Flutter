@@ -39,12 +39,12 @@ class _HomePageNewsArticleContainerState
   Widget build(BuildContext context) {
     _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
 
-    return GestureDetector(
-      onTap: () {
-        widget.onTap();
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
+      child: GestureDetector(
+        onTap: () {
+          widget.onTap();
+        },
         child: Stack(
           children: <Widget>[
             Hero(
