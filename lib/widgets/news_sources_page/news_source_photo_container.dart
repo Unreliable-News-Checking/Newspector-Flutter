@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsSourcePhotoContainer extends StatefulWidget {
   final double radius;
@@ -64,7 +65,7 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
       width: radius,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(360),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(
         Icons.person,
@@ -77,7 +78,9 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
     return Container(
       height: radius,
       width: radius,
-      child: ClipOval(
+      // color: app_const.backgroundColor,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
         child: Image.memory(_photoInBytes),
       ),
     );
@@ -89,7 +92,7 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
       width: radius,
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(360),
+        borderRadius: BorderRadius.circular(10),
       ),
     );
   }

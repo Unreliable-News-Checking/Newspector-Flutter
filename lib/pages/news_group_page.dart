@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/news_group_page/news_group_feed_container.dart';
+import 'package:newspector_flutter/widgets/news_group_page/ngp_feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsGroupPage extends StatefulWidget {
