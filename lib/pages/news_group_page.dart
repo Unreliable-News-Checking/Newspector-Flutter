@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
+import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/news_group_page/news_group_feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
@@ -16,7 +17,7 @@ class NewsGroupPage extends StatefulWidget {
   _NewsGroupPageState createState() => _NewsGroupPageState();
 }
 
-class _NewsGroupPageState extends State<NewsGroupPage> {
+class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
   NewsGroup _newsGroup;
   var pageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
@@ -77,7 +78,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
       body: NewsGroupFeedContainer(
         sliverAppBar: sliverAppBar(),
         newsGroup: _newsGroup,
-        onBottomReached: fetchAdditionalNewsGroups,
+        onBottomReached: fetchAdditionalItems,
         onRefresh: getFeed,
         loadMoreStream: loadMoreStream,
       ),
@@ -85,15 +86,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
   }
 
   Widget sliverAppBar() {
-    return SliverAppBar(
-      title: Text("News Group Page"),
-      backgroundColor: app_const.backgroundColor,
-      centerTitle: true,
-      floating: true,
-      pinned: false,
-      snap: false,
-      elevation: 0,
-    );
+    return defaultSliverAppBar(titleText: 'News Group Page');
   }
 
   Future<NewsGroup> getFeed() async {
@@ -110,7 +103,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> {
 
   // this fetches an updated user async
   // called when user tries to refresh the page
-  Future<void> fetchAdditionalNewsGroups() async {
+  Future<void> fetchAdditionalItems() async {
     var lastDocumentId = _newsGroup.newsArticleFeed.getLastItem();
 
     _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(

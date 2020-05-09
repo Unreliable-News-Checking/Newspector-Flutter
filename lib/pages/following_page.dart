@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
+import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/widgets/news_group_container.dart';
@@ -13,7 +14,7 @@ class FollowingPage extends StatefulWidget {
   _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> {
+class _FollowingPageState extends State<FollowingPage> implements FeedPage {
   User _user;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;
@@ -85,7 +86,7 @@ class _FollowingPageState extends State<FollowingPage> {
         sliverAppBar: sliverAppBar(),
         feed: _user.followingFeed,
         onRefresh: getFeed,
-        onBottomReached: fetchAdditionalNewsGroups,
+        onBottomReached: fetchAdditionalItems,
         loadMoreStream: loadMoreStream,
         emptyListMessage: "You are not following any news groups yet.",
         buildContainer: (String newsGroupId) {
@@ -98,18 +99,7 @@ class _FollowingPageState extends State<FollowingPage> {
   }
 
   Widget sliverAppBar() {
-    return SliverAppBar(
-      title: Text(
-        "Following",
-        style: TextStyle(color: Colors.white),
-      ),
-      centerTitle: true,
-      backgroundColor: app_const.backgroundColor,
-      floating: true,
-      pinned: false,
-      snap: false,
-      elevation: 0,
-    );
+    return defaultSliverAppBar(titleText: "Following");
   }
 
   Future<User> getFeed() async {
@@ -125,7 +115,7 @@ class _FollowingPageState extends State<FollowingPage> {
 
   // this fetches additional items
   // called when user reached the bottom of the page
-  Future<void> fetchAdditionalNewsGroups() async {
+  Future<void> fetchAdditionalItems() async {
     var lastDocumentId = _user.followingFeed.getLastItem();
 
     _user = await UserService.updateAndGetUserWithFeed(
