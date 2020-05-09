@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/models/news_group.dart';
-import 'npg_news_article_container.dart';
+import 'ngp_news_article_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class NewsGroupFeedContainer extends StatefulWidget {

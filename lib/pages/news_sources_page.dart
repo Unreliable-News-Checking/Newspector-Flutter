@@ -2,19 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
-import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/news_sources_page/nsp_feed_container.dart';
 
 class NewsSourcesPage extends StatefulWidget {
   @override
   _NewsSourcesPageState createState() => _NewsSourcesPageState();
 }
 
-class _NewsSourcesPageState extends State<NewsSourcesPage> {
+class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
   Feed<String> _newsSourceFeed;
   int pageSize = 11;
   bool loadMoreVisible = true;
@@ -81,11 +82,11 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      body: FeedContainer(
+      body: NSPFeedContainer(
         sliverAppBar: sliverAppBar(),
         feed: _newsSourceFeed,
         loadMoreStream: loadMoreStream,
-        onBottomReached: fetchAdditionalNewsGroups,
+        onBottomReached: fetchAdditionalItems,
         onRefresh: getFeed,
         emptyListMessage: "There are no news sources yet.",
         buildContainer: (String newsSourceId) {
@@ -105,17 +106,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   }
 
   Widget sliverAppBar() {
-    return SliverAppBar(
-      title: Text(
-        "Sources",
-        style: TextStyle(color: Colors.white),
-      ),
-      centerTitle: true,
-      floating: true,
-      pinned: false,
-      snap: false,
-      backgroundColor: app_const.backgroundColor,
-    );
+    return defaultSliverAppBar(titleText: 'Sources');
   }
 
   Future<Feed<String>> getFeed() async {
@@ -130,7 +121,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
 
   // this fetches an updated user async
   // called when user tries to refresh the page
-  Future<void> fetchAdditionalNewsGroups() async {
+  Future<void> fetchAdditionalItems() async {
     var lastDocumentId = _newsSourceFeed.getLastItem();
 
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(

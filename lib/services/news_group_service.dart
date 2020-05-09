@@ -139,13 +139,16 @@ class NewsGroupService {
     @required String newsGroupId,
     @required bool followed,
   }) async {
+    NewsGroup _newsGroup = getNewsGroup(newsGroupId);
+    _newsGroup.followedByUser = !_newsGroup.followedByUser;
+
     // Futures for newsGroup and user.
     var newsGroupDocumentFuture = getOrFetchNewsGroup(newsGroupId);
     var _userFuture = UserService.getOrFetchUser();
 
     // Wait for futures.
     var futures = await Future.wait([newsGroupDocumentFuture, _userFuture]);
-    NewsGroup _newsGroup = futures[0];
+    _newsGroup = futures[0];
     // NewsGroup _newsGroup = NewsGroup.fromDocument(newsGroupDocument);
     User _user = futures[1];
 

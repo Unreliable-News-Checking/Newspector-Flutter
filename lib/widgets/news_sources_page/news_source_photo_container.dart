@@ -17,19 +17,39 @@ class NewsSourcePhotoContainer extends StatefulWidget {
       _NewsSourcePhotoContainerState();
 }
 
-class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
+class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer>
+    with SingleTickerProviderStateMixin {
   Uint8List photoInBytes;
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+
+    Tween(begin: 0, end: 1).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // No profile photo
-    if (widget.newsSource.photoUrl == "") {
+    if (widget.newsSource.photoUrl == null) {
       return _getDefaultPhoto(widget.radius);
     }
 
     // There is a cached image
     if (widget.newsSource.photoInBytes != null) {
       photoInBytes = widget.newsSource.photoInBytes;
-      return _getUserPhoto(photoInBytes, widget.radius);
+      return _getUserPhoto(photoInBytes, false);
     }
 
     // regular profile photo
@@ -40,10 +60,10 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
           case ConnectionState.done:
             photoInBytes = snapshot.data;
             storeCachedImage(widget.newsSource, photoInBytes);
-            return _getUserPhoto(photoInBytes, widget.radius);
+            return _getUserPhoto(photoInBytes, true);
             break;
           default:
-            return _getLoadingPhoto(widget.radius);
+            return _getLoadingPhoto();
         }
       },
     );
@@ -64,7 +84,7 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
       width: radius,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(360),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(
         Icons.person,
@@ -73,23 +93,35 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer> {
     );
   }
 
-  Widget _getUserPhoto(Uint8List _photoInBytes, double radius) {
+  Widget _getLoadingPhoto() {
     return Container(
-      height: radius,
-      width: radius,
-      child: ClipOval(
-        child: Image.memory(_photoInBytes),
+      height: widget.radius,
+      width: widget.radius,
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
       ),
     );
   }
 
-  Widget _getLoadingPhoto(double radius) {
+  Widget _getUserPhoto(Uint8List _photoInBytes, bool doFade) {
+    Widget image = Image.memory(_photoInBytes);
+    Widget imageContainer = image;
+
+    if (doFade) {
+      imageContainer = FadeTransition(
+        child: image,
+        opacity: _animationController,
+      );
+      _animationController.forward();
+    }
+
     return Container(
-      height: radius,
-      width: radius,
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(360),
+      height: widget.radius,
+      width: widget.radius,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: imageContainer,
       ),
     );
   }

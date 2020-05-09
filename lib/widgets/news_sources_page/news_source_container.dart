@@ -21,10 +21,17 @@ class NewsSourceContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        decoration: BoxDecoration(
+          // color: Colors.black,
+          borderRadius: BorderRadius.circular(10),
+        ),
         margin: EdgeInsets.all(10),
-        child: Row(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             sourcePhoto(newsSource),
+            SizedBox(height: 5),
             sourceInfo(newsSource.name, newsSource.followerCount),
           ],
         ),
@@ -33,17 +40,17 @@ class NewsSourceContainer extends StatelessWidget {
   }
 
   Widget sourcePhoto(NewsSource newsSource) {
-    return NewsSourcePhotoContainer(radius: 60, newsSource: newsSource);
+    return NewsSourcePhotoContainer(radius: 120, newsSource: newsSource);
   }
 
   Widget sourceInfo(String sourceName, int followerCount) {
     return Container(
-      padding: EdgeInsets.only(left: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
             sourceName,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

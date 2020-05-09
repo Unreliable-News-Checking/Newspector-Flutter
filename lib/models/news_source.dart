@@ -35,7 +35,7 @@ class NewsSource extends Model {
     photoUrl = data['profile_photo'];
     newsCount = data['news_count'];
     firstInGroupCount = data['news_group_leadership_count'];
-    approvalCount = data['like_count'];
+    approvalCount = 0;
     reportCount = data['dislike_count'];
 
     websiteLink = website;

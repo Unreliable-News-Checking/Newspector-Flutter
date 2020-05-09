@@ -22,8 +22,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   @override
   Widget build(BuildContext context) {
-    _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
-
     if (NewsSourceService.hasNewsSource(widget.newsSourceId)) {
       _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
       return homeScaffold();

@@ -6,7 +6,9 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/widgets/dots_indicator.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
+import 'package:animations/animations.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class NewsGroupContainer extends StatefulWidget {
@@ -36,7 +38,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
     List<Widget> listViewItems = [];
     for (var i = 0; i < itemCount; i++) {
-      var listViewItem = _buildNewsGroupItem(context, i);
+      var listViewItem = _buildNewsGroupItem(context, i, itemCount == 1);
       listViewItems.add(listViewItem);
     }
 
@@ -59,7 +61,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             ),
           ),
           dotsIndicator(itemCount),
-          fullCoverageButton(context),
+          fullCoverageButton(itemCount),
           followButton(),
           firstReporterTag(),
           categoryLabel(),
@@ -68,29 +70,25 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     );
   }
 
-  Widget _buildNewsGroupItem(BuildContext context, int index) {
+  Widget _buildNewsGroupItem(BuildContext context, int index, bool alone) {
     return Container(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: containerSize,
-            child: HomePageNewsArticleContainer(
-              borderRadius: borderRadius,
-              horizontalMargin: horizontalMargin,
-              height: containerSize,
-              newsArticleId: _newsGroup.getNewsArticleId(index),
-              shorten: true,
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return NewsArticlePage(
-                    newsArticleId: _newsGroup.getNewsArticleId(index),
-                  );
-                }));
-              },
-            ),
-          ),
-        ],
+      child: SizedBox(
+        height: containerSize,
+        child: HomePageNewsArticleContainer(
+          borderRadius: borderRadius,
+          horizontalMargin: horizontalMargin,
+          height: containerSize,
+          newsArticleId: _newsGroup.getNewsArticleId(index),
+          shorten: true,
+          alone: alone,
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return NewsArticlePage(
+                newsArticleId: _newsGroup.getNewsArticleId(index),
+              );
+            }));
+          },
+        ),
       ),
     );
   }
@@ -103,23 +101,29 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     );
   }
 
-  Widget fullCoverageButton(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: FlatButton(
-          onPressed: goToNewsGroupPage,
-          child: Text(
-            "Full Coverage",
-            style: TextStyle(
-              color: Colors.white,
-              shadows: app_consts.shadowsForWhiteWidgets(),
-            ),
+  Widget fullCoverageButton(int itemCount) {
+    Widget button = Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: FlatButton(
+        onPressed: goToNewsGroupPage,
+        child: Text(
+          "Full Coverage",
+          style: TextStyle(
+            color: Colors.white,
+            shadows: app_consts.shadowsForWhiteWidgets(),
           ),
         ),
       ),
+    );
+
+    if (itemCount == 1) {
+      button = Container();
+    }
+
+    return Positioned(
+      bottom: 0,
+      right: 0,
+      child: button,
     );
   }
 
@@ -141,8 +145,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
               newsGroupId: _newsGroup.id,
               followed: _newsGroup.followedByUser,
             );
-            _newsGroup.followedByUser = !_newsGroup.followedByUser;
-
             if (mounted) setState(() {});
           },
         ),
@@ -203,6 +205,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget categoryLabel() {
+    var categoryText =
+        _newsGroup.category != "-" ? _newsGroup.category : "Processing";
     return Positioned(
       top: 0,
       left: 0,
@@ -217,7 +221,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           borderRadius: BorderRadius.circular(360),
         ),
         child: Text(
-          _newsGroup.category,
+          categoryText,
           style: TextStyle(
             fontSize: 12,
             color: Colors.black,
@@ -231,62 +235,5 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return NewsGroupPage(newsGroupId: _newsGroup.id);
     }));
-  }
-}
-
-class DotsIndicator extends AnimatedWidget {
-  DotsIndicator({
-    this.controller,
-    this.itemCount,
-    this.onPageSelected,
-    this.color: Colors.white,
-  }) : super(listenable: controller);
-
-  final PageController controller;
-  final int itemCount;
-  final ValueChanged<int> onPageSelected;
-  final Color color;
-
-  static const double _dotSize = 4.0;
-  static const double _maxDotZoom = 2.0;
-  static const double _dotSpacing = 16.0;
-
-  Widget _buildDot(int index) {
-    double selectedness = Curves.easeOut.transform(
-      max(
-        0.0,
-        1.0 - ((controller.page ?? controller.initialPage) - index).abs(),
-      ),
-    );
-
-    double zoom = 1.0 + (_maxDotZoom - 1.0) * selectedness;
-
-    return Container(
-      width: _dotSpacing,
-      padding: EdgeInsets.all(2.5),
-      child: Center(
-        child: Material(
-          color: color,
-          type: MaterialType.circle,
-          child: Container(
-            width: _dotSize * zoom,
-            height: _dotSize * zoom,
-            child: InkWell(
-              onTap: () => onPageSelected(index),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List<Widget>.generate(
-        itemCount,
-        _buildDot,
-      ),
-    );
   }
 }

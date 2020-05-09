@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
+import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
 import 'package:newspector_flutter/widgets/news_group_page/ngp_news_article_photo_container.dart';
 
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
@@ -94,17 +94,10 @@ class _NewsGroupPageNewsArticleContainerState
     var photoUrl = _newsArticle.photoUrl;
     if (photoUrl == null) return Container();
 
-    return Container(
+    return HpNewsArticlePhotoContainer(
+      newsArticle: _newsArticle,
       height: 80,
-      width: 80,
-      margin: EdgeInsets.only(left: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(
-          image: CachedNetworkImageProvider(photoUrl),
-          fit: BoxFit.cover,
-        ),
-      ),
+      borderRadius: 8,
     );
   }
 
