@@ -24,9 +24,7 @@ dependencies:
   firebase_messaging:
   flushbar:
   eva_icons_flutter:
-  cached_network_image:
-  flutter_statusbarcolor:
-  flutter_tags:
+  animations:
   flutter:
     sdk: flutter
 
