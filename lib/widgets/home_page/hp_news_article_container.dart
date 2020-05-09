@@ -1,6 +1,8 @@
+import 'package:animations/animations.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -15,6 +17,7 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   final double height;
   final double borderRadius;
   final double horizontalMargin;
+  final bool alone;
 
   HomePageNewsArticleContainer({
     Key key,
@@ -24,6 +27,7 @@ class HomePageNewsArticleContainer extends StatefulWidget {
     @required this.height,
     @required this.borderRadius,
     @required this.horizontalMargin,
+    @required this.alone,
   }) : super(key: key);
 
   @override
@@ -39,48 +43,61 @@ class _HomePageNewsArticleContainerState
   Widget build(BuildContext context) {
     _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
 
+    Widget closed = Stack(
+      children: <Widget>[
+        Hero(
+          tag: "hp_nap_${widget.newsArticleId}",
+          child: Container(
+            child: HpNewsArticlePhotoContainer(
+              newsArticle: _newsArticle,
+              height: widget.height,
+              borderRadius: widget.borderRadius,
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(child: Container()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  source(),
+                  separatorDot(),
+                  date(),
+                  Expanded(child: Container()),
+                  websiteButton(),
+                  tweetButton(),
+                ],
+              ),
+              headline(),
+              widget.alone ? SizedBox(height: 12) : SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    Widget open = NewsArticlePage(
+      newsArticleId: widget.newsArticleId,
+    );
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
       child: GestureDetector(
         onTap: () {
           widget.onTap();
         },
-        child: Stack(
-          children: <Widget>[
-            Hero(
-              tag: "hp_nap_${widget.newsArticleId}",
-              child: Container(
-                child: HpNewsArticlePhotoContainer(
-                  newsArticle: _newsArticle,
-                  height: widget.height,
-                  borderRadius: widget.borderRadius,
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(child: Container()),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      source(),
-                      separatorDot(),
-                      date(),
-                      Expanded(child: Container()),
-                      websiteButton(),
-                      tweetButton(),
-                    ],
-                  ),
-                  headline(),
-                  SizedBox(height: 32),
-                ],
-              ),
-            ),
-          ],
+        child: OpenContainer(
+          closedBuilder: (context, open) => closed,
+          openBuilder: (context, close) => open,
+          closedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+          ),
+          closedColor: app_consts.backgroundColor,
         ),
       ),
     );
