@@ -15,6 +15,7 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   final double height;
   final double borderRadius;
   final double horizontalMargin;
+  final bool alone;
 
   HomePageNewsArticleContainer({
     Key key,
@@ -24,6 +25,7 @@ class HomePageNewsArticleContainer extends StatefulWidget {
     @required this.height,
     @required this.borderRadius,
     @required this.horizontalMargin,
+    @required this.alone,
   }) : super(key: key);
 
   @override
@@ -76,7 +78,7 @@ class _HomePageNewsArticleContainerState
                     ],
                   ),
                   headline(),
-                  SizedBox(height: 32),
+                  widget.alone ? SizedBox(height: 12) : SizedBox(height: 32),
                 ],
               ),
             ),
