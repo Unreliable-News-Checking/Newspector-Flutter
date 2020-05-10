@@ -108,8 +108,14 @@ class UserService {
       var newsGroupDocumentFuture = firestore.getNewsGroup(newsGroupId);
       newsGroupDocumentFutures.add(newsGroupDocumentFuture);
     }
-    List<DocumentSnapshot> newsGroupDocuments =
+    List<DocumentSnapshot> tempGroupDocuments =
         await Future.wait(newsGroupDocumentFutures);
+
+    List<DocumentSnapshot> newsGroupDocuments = List();
+    for (var document in tempGroupDocuments) {
+      if (!document.exists) continue;
+      newsGroupDocuments.add(document);
+    }
 
     List<String> newsGroupIds =
         await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(

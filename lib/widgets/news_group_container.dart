@@ -8,7 +8,6 @@ import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/dots_indicator.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
-import 'package:animations/animations.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class NewsGroupContainer extends StatefulWidget {

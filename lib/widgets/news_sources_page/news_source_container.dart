@@ -22,7 +22,6 @@ class NewsSourceContainer extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          // color: Colors.black,
           borderRadius: BorderRadius.circular(10),
         ),
         margin: EdgeInsets.all(10),

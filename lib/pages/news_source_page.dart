@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
+import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -66,26 +67,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: app_const.backgroundColor,
-        title: Text(_newsSource.name),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.alternate_email),
-            onPressed: () async {
-              await NewsSourceService.goToSourceTwitter(widget.newsSourceId);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.web),
-            onPressed: () async {
-              await NewsSourceService.goToSourceWebsite(widget.newsSourceId);
-            },
-          ),
-        ],
-      ),
       body: Container(
         margin: EdgeInsets.all(15),
         child: CupertinoScrollbar(
@@ -94,6 +75,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             physics: BouncingScrollPhysics()
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
+              sliverAppBar(),
               refreshControl(),
               SliverToBoxAdapter(
                 child: sourceHeader(),
@@ -117,6 +99,26 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
+  Widget sliverAppBar() {
+    return defaultSliverAppBar(
+      titleText: _newsSource.name,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.alternate_email),
+          onPressed: () async {
+            await NewsSourceService.goToSourceTwitter(widget.newsSourceId);
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.web),
+          onPressed: () async {
+            await NewsSourceService.goToSourceWebsite(widget.newsSourceId);
+          },
+        ),
+      ],
+    );
+  }
+
   Widget refreshControl() {
     return CupertinoSliverRefreshControl(onRefresh: () async {
       _newsSource =
@@ -126,57 +128,89 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   Widget sourceHeader() {
     return Container(
-      // margin: EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              NewsSourcePhotoContainer(radius: 80, newsSource: _newsSource),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    stackedCountContainer(
-                        count: _newsSource.newsCount, label: "News"),
-                    stackedCountContainer(
-                        count: _newsSource.approvalCount, label: "Approvals"),
-                    stackedCountContainer(
-                        count: _newsSource.followerCount, label: "Followers"),
-                  ],
-                ),
+              NewsSourcePhotoContainer(radius: 140, newsSource: _newsSource),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  headerLabel('Birthday: '),
+                  headerLabel('Followers: '),
+                  headerLabel('News: '),
+                  headerLabel('Rating: '),
+                ],
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  headerValue(_newsSource.birthday),
+                  headerValue(
+                    utils.countToMeaningfulString(_newsSource.followerCount),
+                  ),
+                  headerValue(
+                    utils.countToMeaningfulString(_newsSource.newsCount),
+                  ),
+                  headerValue(_newsSource.rating.toStringAsFixed(2)),
+                ],
+              )
             ],
           ),
-          bio(),
+          name(),
         ],
       ),
     );
   }
 
-  Widget stackedCountContainer({@required int count, @required String label}) {
-    return Column(
+  Widget headerLabel(String label) {
+    return Text(
+      label,
+      textAlign: TextAlign.start,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget headerValue(String value) {
+    return Text(
+      value,
+      textAlign: TextAlign.start,
+      style: TextStyle(
+        fontSize: 16,
+      ),
+    );
+  }
+
+  Widget stackedCountContainer({@required String label, @required int value}) {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(
-          utils.countToMeaningfulString(count),
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         Text(
           label,
           style: TextStyle(
             fontSize: 16,
           ),
         ),
+        Text(
+          utils.countToMeaningfulString(value),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }
 
-  Widget bio() {
+  Widget name() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(

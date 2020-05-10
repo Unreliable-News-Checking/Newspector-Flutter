@@ -34,13 +34,13 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.newsGroupId);
     if (NewsGroupService.hasNewsGroup(widget.newsGroupId)) {
       _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
       loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() < pageSize
           ? false
           : loadMoreVisible;
       _loadMoreController.add(loadMoreVisible);
-      print(loadMoreVisible);
       return homeScaffold();
     }
 

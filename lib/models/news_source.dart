@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'model.dart';
 
@@ -12,13 +14,19 @@ class NewsSource extends Model {
   String photoUrl;
 
   int followerCount;
-  int approvalCount;
   int newsCount;
+
+  int likes;
+  int dislikes;
+  int reports;
+  double rating;
 
   int firstInGroupCount;
   int reportCount;
   int newsGroupFollowerCount;
   int tweetCount;
+
+  String birthday;
 
   String websiteLink;
   String twitterLink;
@@ -35,10 +43,19 @@ class NewsSource extends Model {
     photoUrl = data['profile_photo'];
     newsCount = data['news_count'];
     firstInGroupCount = data['news_group_leadership_count'];
-    approvalCount = 0;
     reportCount = data['dislike_count'];
+    birthday = data['birthday'];
 
     websiteLink = website;
     twitterLink = 'https://twitter/$twitterUsername';
+  }
+
+  void updateRatingsFromDatabase(DataSnapshot dataSnapshot) {
+    var data = dataSnapshot.value;
+    likes = data['likes_count'];
+    dislikes = data['dislikes_count'];
+    reports = data['reports_count'];
+
+    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0);
   }
 }

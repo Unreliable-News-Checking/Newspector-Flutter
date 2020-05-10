@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:http/http.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'firestore/firestore_service.dart' as firestore;
+import 'realtime/realtime_service.dart' as realtime;
 import 'package:newspector_flutter/utilities.dart' as utils;
 
 class NewsSourceService {
@@ -98,11 +100,26 @@ class NewsSourceService {
           await firestore.getSourcesAfterDocument(lastDocumentId, pageSize);
     }
 
-    List<String> newsSourceIds = new List();
+    List<Future<DataSnapshot>> newsSourceRatingDocumentFutures = List();
+    List<String> newsSourceIds = List();
     for (var i = 0; i < newsSourceQuery.documents.length; i++) {
       var newsSourceDocument = newsSourceQuery.documents[i];
       var newsSourceId = createAndAddNewsSource(newsSourceDocument);
       newsSourceIds.add(newsSourceId);
+
+      var newsSourceRatingDocumentFuture =
+          realtime.getNewsSourceDocument(newsSourceId);
+      newsSourceRatingDocumentFutures.add(newsSourceRatingDocumentFuture);
+    }
+
+    var newsSourceRatingDocuments =
+        await Future.wait(newsSourceRatingDocumentFutures);
+
+    for (var i = 0; i < newsSourceQuery.documents.length; i++) {
+      var newsSourceRatingDocument = newsSourceRatingDocuments[i];
+      var newsSourceId = newsSourceIds[i];
+      var newsSource = getNewsSource(newsSourceId);
+      newsSource.updateRatingsFromDatabase(newsSourceRatingDocument);
     }
 
     // if there is no feed create one

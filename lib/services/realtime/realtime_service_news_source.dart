@@ -22,9 +22,9 @@ void rateAccount(
   });
 }
 
-Future<DataSnapshot> getNewsSourceFromRealtimeDB(String documentID) async {
+Future<DataSnapshot> getNewsSourceDocument(String documentID) async {
   DataSnapshot snapshot =
-      (await fb.reference().child('accounts/' + documentID).once()).value;
+      (await fb.reference().child('accounts/' + documentID).once());
 
   return snapshot;
 }
