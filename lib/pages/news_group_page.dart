@@ -6,7 +6,9 @@ import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
-import 'package:newspector_flutter/widgets/news_group_container.dart';
+import 'package:newspector_flutter/widgets/news_group_page/ngp_news_article_container.dart';
+
+import 'news_article_page.dart';
 
 class NewsGroupPage extends StatefulWidget {
   final String newsGroupId;
@@ -97,8 +99,11 @@ class _NewsGroupPageState extends State<NewsGroupPage>
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Container(
-            child: NewsGroupContainer(
-              newsGroupId: _newsGroup.newsArticleFeed.getItem(index),
+            child: TimelineItem(
+              newsArticleId: _newsGroup.getNewsArticleId(index),
+              dontShowTopLine: index == 0,
+              dontShowBottomDivider:
+                  index == _newsGroup.newsArticleFeed.getItemCount() - 1,
             ),
           );
         },
@@ -132,5 +137,94 @@ class _NewsGroupPageState extends State<NewsGroupPage>
 
     loadMoreVisible =
         lastDocumentId != _newsGroup.newsArticleFeed.getLastItem();
+  }
+}
+
+class TimelineItem extends StatelessWidget {
+  final String newsArticleId;
+  final bool dontShowTopLine;
+  final bool dontShowBottomDivider;
+
+  const TimelineItem({
+    Key key,
+    @required this.newsArticleId,
+    this.dontShowTopLine,
+    @required this.dontShowBottomDivider,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              height: double.infinity,
+              child: Column(
+                children: <Widget>[
+                  dontShowTopLine ? Container(height: 10) : line(heigth: 10),
+                  ball(),
+                  line(),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Container(
+                child: NewsGroupPageNewsArticleContainer(
+                  dontShowDivider: dontShowBottomDivider,
+                  newsArticleId: newsArticleId,
+                  topMargin: 10,
+                  backgroundColor: app_const.newsArticleBackgroundColor,
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return NewsArticlePage(
+                        newsArticleId: newsArticleId,
+                      );
+                    }));
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget line({double heigth}) {
+    var width = 1.0;
+    var color = Colors.grey;
+
+    if (heigth != null) {
+      return Container(
+        height: heigth,
+        width: width,
+        color: color,
+      );
+    }
+
+    return Expanded(
+      child: Container(
+        width: width,
+        color: color,
+      ),
+    );
+  }
+
+  Widget ball() {
+    var radius = 9.0;
+    var margin = 3.0;
+    return Container(
+      margin: EdgeInsets.all(margin),
+      height: radius,
+      width: radius,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.grey,
+      ),
+    );
   }
 }
