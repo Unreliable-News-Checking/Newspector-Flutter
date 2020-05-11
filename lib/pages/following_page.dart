@@ -20,7 +20,7 @@ class FollowingPage extends StatefulWidget {
   _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> with FeedContainerTest {
+class _FollowingPageState extends State<FollowingPage> with FeedContainer {
   User _user;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;

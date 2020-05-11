@@ -17,7 +17,7 @@ class NewsGroupPage extends StatefulWidget {
   _NewsGroupPageState createState() => _NewsGroupPageState();
 }
 
-class _NewsGroupPageState extends State<NewsGroupPage> with FeedContainerTest {
+class _NewsGroupPageState extends State<NewsGroupPage> with FeedContainer {
   NewsGroup _newsGroup;
   ScrollController _scrollController;
   var pageSize = app_const.newsGroupPageSize;

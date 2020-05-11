@@ -23,7 +23,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with FeedContainerTest {
+class _HomePageState extends State<HomePage> with FeedContainer {
   Feed<String> _newsFeed;
   ScrollController _scrollController;
   var pageSize = app_const.homePagePageSize;

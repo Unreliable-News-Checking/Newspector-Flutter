@@ -22,7 +22,7 @@ class NewsSourcesPage extends StatefulWidget {
 }
 
 class _NewsSourcesPageState extends State<NewsSourcesPage>
-    with FeedContainerTest {
+    with FeedContainer {
   Feed<String> _newsSourceFeed;
   ScrollController _scrollController;
   var pageSize = 11;
