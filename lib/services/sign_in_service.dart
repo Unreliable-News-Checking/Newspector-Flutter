@@ -78,7 +78,7 @@ Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
     user = User.fromDocument(userDocument);
   }
 
-  UserService.assingUser(user);
+  UserService.assingUser(user, firebaseUserId);
 
   return user;
 }

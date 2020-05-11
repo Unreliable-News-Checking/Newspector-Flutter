@@ -44,8 +44,9 @@ class UserService {
   }
 
   /// Assigns a new user to the service.
-  static void assingUser(User user) {
+  static void assingUser(User user, String firebaseUserId) {
     UserService._user = user;
+    UserService.userFirebaseId = firebaseUserId;
   }
 
   /// Clears the existing user.
