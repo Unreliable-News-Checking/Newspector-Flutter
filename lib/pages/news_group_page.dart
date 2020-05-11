@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
-import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/news_group_page/ngp_feed_container.dart';
+import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/news_group_container.dart';
 
 class NewsGroupPage extends StatefulWidget {
   final String newsGroupId;
@@ -17,19 +17,16 @@ class NewsGroupPage extends StatefulWidget {
   _NewsGroupPageState createState() => _NewsGroupPageState();
 }
 
-class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
+class _NewsGroupPageState extends State<NewsGroupPage> with FeedContainerTest {
   NewsGroup _newsGroup;
+  ScrollController _scrollController;
   var pageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
-
-  StreamController _loadMoreController;
-  Stream loadMoreStream;
+  var isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadMoreController = StreamController.broadcast();
-    loadMoreStream = _loadMoreController.stream;
   }
 
   @override
@@ -40,7 +37,6 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
       loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() < pageSize
           ? false
           : loadMoreVisible;
-      _loadMoreController.add(loadMoreVisible);
       return homeScaffold();
     }
 
@@ -55,19 +51,9 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
             return homeScaffold();
             break;
           default:
-            return loadingScaffold();
+            return loadingScaffold('');
         }
       },
-    );
-  }
-
-  // shown when the page is loading the new feed
-  Widget loadingScaffold() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 
@@ -75,18 +61,49 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      body: NewsGroupFeedContainer(
-        sliverAppBar: sliverAppBar(),
-        newsGroup: _newsGroup,
-        onBottomReached: fetchAdditionalItems,
-        onRefresh: getFeed,
-        loadMoreStream: loadMoreStream,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          return onScrollNotification(
+            loadMoreVisible,
+            isLoading,
+            scrollInfo,
+            fetchAdditionalItems,
+            (loading) => isLoading = loading,
+          );
+        },
+        child: CupertinoScrollbar(
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: BouncingScrollPhysics()
+                .applyTo(AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              sliverAppBar("Following"),
+              refreshControl(getFeed),
+              itemList(),
+              loadMoreContainer(loadMoreVisible),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget sliverAppBar() {
-    return defaultSliverAppBar(titleText: 'News Group Page');
+  Widget itemList() {
+    if (_newsGroup.newsArticleFeed.getItemCount() == 0)
+      return emptyList("You are not following any news groups yet.");
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Container(
+            child: NewsGroupContainer(
+              newsGroupId: _newsGroup.newsArticleFeed.getItem(index),
+            ),
+          );
+        },
+        childCount: _newsGroup.newsArticleFeed.getItemCount(),
+      ),
+    );
   }
 
   Future<NewsGroup> getFeed() async {
@@ -96,7 +113,6 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
     );
 
     loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() >= pageSize;
-    _loadMoreController.add(loadMoreVisible);
     if (mounted) setState(() {});
     return _newsGroup;
   }
@@ -114,6 +130,5 @@ class _NewsGroupPageState extends State<NewsGroupPage> implements FeedPage {
 
     loadMoreVisible =
         lastDocumentId != _newsGroup.newsArticleFeed.getLastItem();
-    _loadMoreController.add(loadMoreVisible);
   }
 }

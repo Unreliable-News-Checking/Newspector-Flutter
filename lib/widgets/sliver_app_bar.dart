@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 
-abstract class FeedPage {
-  getFeed();
-  fetchAdditionalItems();
-  sliverAppBar();
-  loadingScaffold();
-  homeScaffold();
-}
-
 Widget defaultSliverAppBar({
   @required String titleText,
   List<Widget> actions,

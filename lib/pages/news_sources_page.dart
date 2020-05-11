@@ -2,32 +2,37 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
-import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
+import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
-import 'package:newspector_flutter/widgets/news_sources_page/nsp_feed_container.dart';
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
 
 class NewsSourcesPage extends StatefulWidget {
+  final ScrollController scrollController;
+
+  NewsSourcesPage({
+    Key key,
+    @required this.scrollController,
+  }) : super(key: key);
+
   @override
   _NewsSourcesPageState createState() => _NewsSourcesPageState();
 }
 
-class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
+class _NewsSourcesPageState extends State<NewsSourcesPage>
+    with FeedContainerTest {
   Feed<String> _newsSourceFeed;
-  int pageSize = 11;
-  bool loadMoreVisible = true;
-
-  StreamController _loadMoreController;
-  Stream loadMoreStream;
+  ScrollController _scrollController;
+  var pageSize = 11;
+  var loadMoreVisible = true;
+  var isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadMoreController = StreamController.broadcast();
-    loadMoreStream = _loadMoreController.stream;
+    _scrollController = widget.scrollController ?? ScrollController();
   }
 
   @override
@@ -36,7 +41,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
       _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
       loadMoreVisible =
           _newsSourceFeed.getItemCount() < pageSize ? false : loadMoreVisible;
-      _loadMoreController.add(loadMoreVisible);
 
       return homeScaffold();
     }
@@ -52,29 +56,9 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
             return homeScaffold();
             break;
           default:
-            return loadingScaffold();
+            return loadingScaffold("Sources");
         }
       },
-    );
-  }
-
-  // shown when the page is loading the new feed
-  Widget loadingScaffold() {
-    return Scaffold(
-      backgroundColor: app_const.backgroundColor,
-      appBar: AppBar(
-        title: Text(
-          "Sources",
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: app_const.backgroundColor,
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 
@@ -82,31 +66,61 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      body: NSPFeedContainer(
-        sliverAppBar: sliverAppBar(),
-        feed: _newsSourceFeed,
-        loadMoreStream: loadMoreStream,
-        onBottomReached: fetchAdditionalItems,
-        onRefresh: getFeed,
-        emptyListMessage: "There are no news sources yet.",
-        buildContainer: (String newsSourceId) {
-          return NewsSourceContainer(
-            newsSourceId: newsSourceId,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return NewsSourcePage(
-                  newsSourceId: newsSourceId,
-                );
-              }));
-            },
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          return onScrollNotification(
+            loadMoreVisible,
+            isLoading,
+            scrollInfo,
+            fetchAdditionalItems,
+            (loading) => isLoading = loading,
           );
         },
+        child: CupertinoScrollbar(
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: BouncingScrollPhysics()
+                .applyTo(AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              sliverAppBar("Sources"),
+              refreshControl(getFeed),
+              itemList(),
+              loadMoreContainer(loadMoreVisible),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget sliverAppBar() {
-    return defaultSliverAppBar(titleText: 'Sources');
+  Widget itemList() {
+    if (_newsSourceFeed.getItemCount() == 0)
+      return emptyList("You are not following any news groups yet.");
+
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        // crossAxisSpacing: 1,
+        crossAxisCount: 2,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Container(
+            child: NewsSourceContainer(
+              newsSourceId: _newsSourceFeed.getItem(index),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return NewsSourcePage(
+                    newsSourceId: _newsSourceFeed.getItem(index),
+                  );
+                }));
+              },
+            ),
+          );
+        },
+        childCount: _newsSourceFeed.getItemCount(),
+      ),
+    );
   }
 
   Future<Feed<String>> getFeed() async {
@@ -115,7 +129,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
     );
 
     loadMoreVisible = _newsSourceFeed.getItemCount() >= pageSize;
-    _loadMoreController.add(loadMoreVisible);
     return _newsSourceFeed;
   }
 
@@ -130,6 +143,5 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> implements FeedPage {
     );
 
     loadMoreVisible = lastDocumentId != _newsSourceFeed.getLastItem();
-    _loadMoreController.add(loadMoreVisible);
   }
 }

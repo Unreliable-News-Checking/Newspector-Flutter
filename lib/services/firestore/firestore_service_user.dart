@@ -102,14 +102,16 @@ Future<QuerySnapshot> getUserFollowsNewsGroups(
 /// Fetched the user follows news group documents after a given document given the user document id.
 Future<QuerySnapshot> getUserFollowsNewsGroupAfterDocument(
     String userId, String lastDocumentId, int pageLimit) async {
-  var lastDocument =
-      await db.collection('news_groups').document(lastDocumentId).get();
+  var documents = await db
+      .collection('user_follows_news_group')
+      .where('news_group_id', isEqualTo: lastDocumentId)
+      .getDocuments();
 
   QuerySnapshot querySnapshot = await db
       .collection('user_follows_news_group')
       .where('user_id', isEqualTo: userId)
       .orderBy("date", descending: true)
-      .startAfterDocument(lastDocument)
+      .startAfterDocument(documents.documents[0])
       .limit(pageLimit)
       .getDocuments();
 

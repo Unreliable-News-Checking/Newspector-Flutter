@@ -204,8 +204,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget categoryLabel() {
-    var categoryText =
-        _newsGroup.category != "-" ? _newsGroup.category : "Processing";
+    if (_newsGroup.category == "-") {
+      return Positioned(top: 0, left: 0, child: Container());
+    }
+
     return Positioned(
       top: 0,
       left: 0,
@@ -220,7 +222,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           borderRadius: BorderRadius.circular(360),
         ),
         child: Text(
-          categoryText,
+          _newsGroup.category,
           style: TextStyle(
             fontSize: 12,
             color: Colors.black,

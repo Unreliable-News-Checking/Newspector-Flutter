@@ -108,7 +108,7 @@ class _HpNewsArticlePhotoContainerState
           ),
           Container(
             height: widget.height - 50,
-            width: 400,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.borderRadius),
               gradient: LinearGradient(
