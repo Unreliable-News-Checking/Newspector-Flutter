@@ -23,7 +23,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with FeedContainer {
+class _HomePageState extends State<HomePage>
+    with FeedContainer<HomePage, Feed<String>> {
   Feed<String> _newsFeed;
   ScrollController _scrollController;
   var pageSize = app_const.homePagePageSize;
@@ -126,6 +127,7 @@ class _HomePageState extends State<HomePage> with FeedContainer {
 
   /// If there is an existing feed returns it,
   /// if not fetches the feed from the database and returns it.
+  @override
   Future<Feed<String>> getFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,

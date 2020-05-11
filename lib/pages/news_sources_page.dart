@@ -22,7 +22,7 @@ class NewsSourcesPage extends StatefulWidget {
 }
 
 class _NewsSourcesPageState extends State<NewsSourcesPage>
-    with FeedContainer {
+    with FeedContainer<NewsSourcesPage, Feed<String>> {
   Feed<String> _newsSourceFeed;
   ScrollController _scrollController;
   var pageSize = 11;
@@ -99,7 +99,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        // crossAxisSpacing: 1,
         crossAxisCount: 2,
       ),
       delegate: SliverChildBuilderDelegate(
@@ -123,6 +122,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     );
   }
 
+  @override
   Future<Feed<String>> getFeed() async {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: pageSize,

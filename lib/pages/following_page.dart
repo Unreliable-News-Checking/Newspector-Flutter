@@ -20,7 +20,8 @@ class FollowingPage extends StatefulWidget {
   _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> with FeedContainer {
+class _FollowingPageState extends State<FollowingPage>
+    with FeedContainer<FollowingPage, User> {
   User _user;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;
@@ -112,6 +113,7 @@ class _FollowingPageState extends State<FollowingPage> with FeedContainer {
   }
 
   ///
+  @override
   Future<User> getFeed() async {
     _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,

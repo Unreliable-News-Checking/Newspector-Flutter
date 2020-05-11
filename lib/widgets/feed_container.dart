@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
+mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
+  Widget homeScaffold();
+  Widget itemList();
+  Future<E> getFeed();
+  Future<void> fetchAdditionalItems();
 
-mixin FeedContainer<T extends StatefulWidget> on State<T> {
   // shown when the page is loading the new feed
   Widget loadingScaffold(String title) {
     return Scaffold(

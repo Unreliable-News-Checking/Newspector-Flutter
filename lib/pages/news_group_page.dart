@@ -17,7 +17,8 @@ class NewsGroupPage extends StatefulWidget {
   _NewsGroupPageState createState() => _NewsGroupPageState();
 }
 
-class _NewsGroupPageState extends State<NewsGroupPage> with FeedContainer {
+class _NewsGroupPageState extends State<NewsGroupPage>
+    with FeedContainer<NewsGroupPage, NewsGroup> {
   NewsGroup _newsGroup;
   ScrollController _scrollController;
   var pageSize = app_const.newsGroupPageSize;
@@ -106,6 +107,7 @@ class _NewsGroupPageState extends State<NewsGroupPage> with FeedContainer {
     );
   }
 
+  @override
   Future<NewsGroup> getFeed() async {
     _newsGroup = await NewsGroupService.updateAndGetNewsGroupFeed(
       newsGroupId: widget.newsGroupId,
