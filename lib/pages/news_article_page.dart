@@ -1,13 +1,15 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
-
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
+import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
 class NewsArticlePage extends StatefulWidget {
   final String newsArticleId;
@@ -19,104 +21,129 @@ class NewsArticlePage extends StatefulWidget {
 }
 
 class _NewsArticlePageState extends State<NewsArticlePage> {
+  NewsArticle _newsArticle;
+
   @override
   Widget build(BuildContext context) {
-    // _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
+    if (NewsArticleService.hasNewsArticle(widget.newsArticleId)) {
+      _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
+      return homeScaffold();
+    }
+
+    // if there is no existing feed,
+    // get the latest feed and display it
+    return FutureBuilder(
+      future: NewsArticleService.updateAndGetNewsArticle(widget.newsArticleId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            _newsArticle = snapshot.data;
+            return homeScaffold();
+            break;
+          default:
+            return loadingScaffold();
+        }
+      },
+    );
+  }
+
+  Widget loadingScaffold() {
     return Scaffold(
-      appBar: appBar(),
-      backgroundColor: app_consts.backgroundColor,
-      body: Center(
-        child: Container(
-          child: NewsArticleContainer(
-            newsArticleId: widget.newsArticleId,
-            photoHeight: 200,
+      backgroundColor: app_const.backgroundColor,
+      appBar: AppBar(
+        title: Text(
+          "",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: app_const.backgroundColor,
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget homeScaffold() {
+    return Scaffold(
+      backgroundColor: app_const.backgroundColor,
+      body: Container(
+        margin: EdgeInsets.all(20),
+        child: CupertinoScrollbar(
+          child: CustomScrollView(
+            physics: BouncingScrollPhysics()
+                .applyTo(AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              sliverAppBar(),
+              refreshControl(),
+              SliverToBoxAdapter(
+                child: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Hero(
+                        tag: "hp_nap_${widget.newsArticleId}",
+                        child: Container(
+                          child: HpNewsArticlePhotoContainer(
+                            newsArticle: _newsArticle,
+                            height: 200,
+                            width: double.infinity,
+                            borderRadius: 10,
+                            shadow: false,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        child: source(),
+                      ),
+                      headline(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          date(),
+                          Expanded(child: Container()),
+                          websiteButton(),
+                          tweetButton(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget appBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: app_consts.backgroundColor,
+  Widget sliverAppBar() {
+    return defaultSliverAppBar(
+      titleText: "",
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.fullscreen),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return NewsGroupPage(
+                newsGroupId: _newsArticle.newsGroupId,
+              );
+            }));
+          },
+        ),
+      ],
     );
   }
-}
 
-class NewsArticleContainer extends StatefulWidget {
-  final String newsArticleId;
-  final double photoHeight;
-
-  NewsArticleContainer({
-    Key key,
-    @required this.newsArticleId,
-    @required this.photoHeight,
-  }) : super(key: key);
-
-  @override
-  NewsArticleContainerState createState() => NewsArticleContainerState();
-}
-
-class NewsArticleContainerState extends State<NewsArticleContainer> {
-  NewsArticle _newsArticle;
-
-  @override
-  Widget build(BuildContext context) {
-    _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Hero(
-            tag: "hp_nap_${widget.newsArticleId}",
-            child: Container(
-              child: HpNewsArticlePhotoContainer(
-                newsArticle: _newsArticle,
-                height: widget.photoHeight,
-                width: double.infinity,
-                borderRadius: 10,
-                shadow: false,
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 15),
-            child: source(),
-          ),
-          headline(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              date(),
-              Expanded(child: Container()),
-              websiteButton(),
-              tweetButton(),
-            ],
-          ),
-          RaisedButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return NewsGroupPage(
-                  newsGroupId: _newsArticle.newsGroupId,
-                );
-              }));
-            },
-            // color: Colors.white,
-            child: Text(
-              "See Full Coverage",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.blue,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+  Widget refreshControl() {
+    return CupertinoSliverRefreshControl(onRefresh: () async {
+      _newsArticle = await NewsArticleService.updateAndGetNewsArticle(
+          widget.newsArticleId);
+    });
   }
 
   Widget headline() {

@@ -59,7 +59,14 @@ class NewsSourceService {
   /// and assigns the photo to the news version while the new photo is fetched online.
   /// By this the old photo can be used for display while the possibly new photo is fetched.
   static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {
-    var newsSourceDocument = await firestore.getSource(newsSourceId);
+    var newsSourceDocumentFuture = firestore.getSource(newsSourceId);
+    var newsSourceRatingDocumentFuture =
+        realtime.getNewsSourceDocument(newsSourceId);
+
+    var futures = await Future.wait(
+        [newsSourceDocumentFuture, newsSourceRatingDocumentFuture]);
+    var newsSourceDocument = futures[0];
+    var newsSourceRatingDocument = futures[1];
 
     Uint8List photoInBytes;
     if (NewsSourceService.hasNewsSource(newsSourceId)) {
@@ -69,6 +76,7 @@ class NewsSourceService {
     var newsSource = NewsSource.fromDocument(newsSourceDocument);
     NewsSourceService.updateOrAddNewsSource(newsSource);
     newsSource.photoInBytes = photoInBytes;
+    newsSource.updateRatingsFromDatabase(newsSourceRatingDocument);
 
     return newsSource;
   }

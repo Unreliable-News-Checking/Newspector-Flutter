@@ -152,7 +152,7 @@ mixin PhotoContainer {
       child: Container(
         height: height,
         width: width,
-        color: Colors.purple.shade800,
+        color: Color(0xFF3484F0),
       ),
     );
   }

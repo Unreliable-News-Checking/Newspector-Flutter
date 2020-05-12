@@ -1,10 +1,10 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'package:http/http.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
+import 'firestore/firestore_service.dart' as firestore;
 
 class NewsArticleService {
   static Store<NewsArticle> newsArticleStore = Store<NewsArticle>();
@@ -15,7 +15,7 @@ class NewsArticleService {
   }
 
   /// Checks if a news article exists with the given id.
-  static bool _hasNewsArticle(String newsArticleId) {
+  static bool hasNewsArticle(String newsArticleId) {
     return newsArticleStore.hasItem(newsArticleId);
   }
 
@@ -43,14 +43,36 @@ class NewsArticleService {
     return await utils.goToUrl(url);
   }
 
+  /// Fetches the news source with the given [newsArticleId] from the database.
+  ///
+  /// If the newly created news article already exists in the store, saves the photo
+  /// and assigns the photo to the news version while the new photo is fetched online.
+  /// By this the old photo can be used for display while the possibly new photo is fetched.
+  static Future<NewsArticle> updateAndGetNewsArticle(
+      String newsArticleId) async {
+    var newsSourceDocument = await firestore.getNewsArticle(newsArticleId);
+
+    Uint8List photoInBytes;
+    if (NewsArticleService.hasNewsArticle(newsArticleId)) {
+      photoInBytes =
+          NewsArticleService.getNewsArticle(newsArticleId).photoInBytes;
+    }
+
+    var newsSource = NewsArticle.fromDocument(newsSourceDocument);
+    NewsArticleService._updateOrAddNewsArticle(newsSource);
+    newsSource.photoInBytes = photoInBytes;
+
+    return newsSource;
+  }
+
   /// Creates a news article from a document and adds the news article to the store.
-  /// 
+  ///
   /// If the newly created news article already exists in the store, saves the photo
   /// and assigns the photo to the news version while the new photo is fetched online.
   /// By this the old photo can be used for display while the possibly new photo is fetched.
   static String createAndAddNewsArticle(DocumentSnapshot newsArticleDoc) {
     Uint8List oldPhoto;
-    if (NewsArticleService._hasNewsArticle(newsArticleDoc.documentID)) {
+    if (NewsArticleService.hasNewsArticle(newsArticleDoc.documentID)) {
       var oldNewsArticle =
           NewsArticleService.getNewsArticle(newsArticleDoc.documentID);
       oldPhoto = oldNewsArticle.photoInBytes;

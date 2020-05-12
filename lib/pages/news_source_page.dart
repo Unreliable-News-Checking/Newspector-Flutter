@@ -21,8 +21,6 @@ class NewsSourcePage extends StatefulWidget {
 class _NewsSourcePageState extends State<NewsSourcePage> {
   NewsSource _newsSource;
 
-  ScrollController _scrollController = ScrollController();
-
   @override
   Widget build(BuildContext context) {
     if (NewsSourceService.hasNewsSource(widget.newsSourceId)) {
@@ -73,7 +71,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         margin: EdgeInsets.all(15),
         child: CupertinoScrollbar(
           child: CustomScrollView(
-            controller: _scrollController,
             physics: BouncingScrollPhysics()
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
