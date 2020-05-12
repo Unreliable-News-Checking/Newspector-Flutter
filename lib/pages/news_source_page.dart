@@ -130,40 +130,20 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               NewsSourcePhotoContainer(
                 size: 140,
                 newsSource: _newsSource,
                 borderRadius: 10,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  headerLabel('Birthday: '),
-                  headerLabel('Followers: '),
-                  headerLabel('News: '),
-                  headerLabel('Rating: '),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  headerValue(_newsSource.birthday),
-                  headerValue(
-                    utils.countToMeaningfulString(_newsSource.followerCount),
-                  ),
-                  headerValue(
-                    utils.countToMeaningfulString(_newsSource.newsCount),
-                  ),
-                  headerValue(_newsSource.rating.toStringAsFixed(2)),
-                ],
-              )
+              SizedBox(width: 30),
+              Expanded(child: headerRow()),
             ],
           ),
           name(),
@@ -172,23 +152,83 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
+  Widget headerRow() {
+    return Column(
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                headerLabel('Birthday:'),
+                headerLabel('Followers:'),
+                headerLabel('News:'),
+                headerLabel('Rating:'),
+              ],
+            ),
+            SizedBox(width: 15),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                headerValue(_newsSource.birthday),
+                headerValue(
+                  utils.countToMeaningfulString(_newsSource.followerCount),
+                ),
+                headerValue(
+                  utils.countToMeaningfulString(_newsSource.newsCount),
+                ),
+                headerValue(_newsSource.rating.toStringAsFixed(2)),
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: RaisedButton(
+            onPressed: showRateSheet,
+            color: Colors.white,
+            child: Text("Rate News Source"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void showRateSheet() {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      builder: (context) {
+        return NewsSourceSheet(newsSourceId: widget.newsSourceId);
+      },
+    );
+  }
+
   Widget headerLabel(String label) {
-    return Text(
-      label,
-      textAlign: TextAlign.start,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
+    return Container(
+      padding: EdgeInsets.all(2),
+      child: Text(
+        label,
+        textAlign: TextAlign.start,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
   Widget headerValue(String value) {
-    return Text(
-      value,
-      textAlign: TextAlign.start,
-      style: TextStyle(
-        fontSize: 16,
+    return Container(
+      padding: EdgeInsets.all(2),
+      child: Text(
+        value,
+        textAlign: TextAlign.start,
+        style: TextStyle(
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -225,5 +265,91 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         ),
       ),
     );
+  }
+}
+
+class NewsSourceSheet extends StatefulWidget {
+  final String newsSourceId;
+
+  const NewsSourceSheet({Key key, @required this.newsSourceId})
+      : super(key: key);
+
+  @override
+  _NewsSourceSheetState createState() => _NewsSourceSheetState();
+}
+
+class _NewsSourceSheetState extends State<NewsSourceSheet> {
+  bool rated = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (rated) {
+      return Container(
+        height: 200,
+        color: app_const.backgroundColor,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Thank you for your feedback!",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      height: 200,
+      color: app_const.backgroundColor,
+      padding: EdgeInsets.all(10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "Do you enjoy this News Source?",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 150,
+                padding: EdgeInsets.all(5),
+                child: RaisedButton(
+                  onPressed: () => rateNewsSource(Rating.Good),
+                  color: Colors.green,
+                  child: Text("Yes"),
+                ),
+              ),
+              Container(
+                width: 150,
+                padding: EdgeInsets.all(5),
+                child: RaisedButton(
+                  onPressed: () => rateNewsSource(Rating.Bad),
+                  color: Colors.red,
+                  child: Text("No"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void rateNewsSource(Rating rating) {
+    NewsSourceService.rateNewsSource(
+      widget.newsSourceId,
+      rating,
+    );
+    setState(() {
+      rated = true;
+    });
   }
 }

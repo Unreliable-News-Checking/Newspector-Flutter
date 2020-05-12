@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:http/http.dart';
+import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'firestore/firestore_service.dart' as firestore;
 import 'realtime/realtime_service.dart' as realtime;
@@ -187,4 +188,14 @@ class NewsSourceService {
     var url = newsArticle.twitterLink;
     return await utils.goToUrl(url);
   }
+
+  static rateNewsSource(String newsSourceId, Rating rating) {
+    var userId = UserService.getUser().id;
+    var numRating = 0;
+    if (rating == Rating.Bad) numRating = -1;
+    if (rating == Rating.Good) numRating = 1;
+    realtime.rateAccount(newsSourceId, userId, numRating);
+  }
 }
+
+enum Rating { Good, Bad }
