@@ -125,7 +125,7 @@ void reportNews(String newsID, String comment) async {
   });
 }
 
-void voteAccount(String accountID, bool like) async {
+void voteAccount(String accountID, int like) async {
   await db.collection("votes").add({
     'account_id': accountID,
     'user_id': UserService.getUser().id,
