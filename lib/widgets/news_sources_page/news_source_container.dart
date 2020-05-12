@@ -39,7 +39,11 @@ class NewsSourceContainer extends StatelessWidget {
   }
 
   Widget sourcePhoto(NewsSource newsSource) {
-    return NewsSourcePhotoContainer(radius: 120, newsSource: newsSource);
+    return NewsSourcePhotoContainer(
+      size: 120,
+      newsSource: newsSource,
+      borderRadius: 10,
+    );
   }
 
   Widget sourceInfo(String sourceName, int followerCount) {

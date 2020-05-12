@@ -54,8 +54,10 @@ class _HomePageNewsArticleContainerState
               child: Container(
                 child: HpNewsArticlePhotoContainer(
                   newsArticle: _newsArticle,
+                  width: double.infinity,
                   height: widget.height,
                   borderRadius: widget.borderRadius,
+                  shadow: true,
                 ),
               ),
             ),

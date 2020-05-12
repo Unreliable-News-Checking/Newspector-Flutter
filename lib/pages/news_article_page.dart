@@ -76,7 +76,9 @@ class NewsArticleContainerState extends State<NewsArticleContainer> {
               child: HpNewsArticlePhotoContainer(
                 newsArticle: _newsArticle,
                 height: widget.photoHeight,
+                width: double.infinity,
                 borderRadius: 10,
+                shadow: false,
               ),
             ),
           ),

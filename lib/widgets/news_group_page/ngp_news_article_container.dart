@@ -5,7 +5,6 @@ import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
-import 'package:newspector_flutter/widgets/news_group_page/ngp_news_article_photo_container.dart';
 
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
@@ -63,13 +62,7 @@ class _NewsGroupPageNewsArticleContainerState
                       ],
                     ),
                   ),
-                  NgpNewsArticlePhotoContainer(
-                    newsArticle: _newsArticle,
-                    height: 80,
-                    width: 80,
-                    borderRadius: 8,
-                  ),
-                  // getArticleImage(),
+                  getArticleImage(),
                 ],
               ),
               Row(
@@ -96,8 +89,10 @@ class _NewsGroupPageNewsArticleContainerState
 
     return HpNewsArticlePhotoContainer(
       newsArticle: _newsArticle,
+      width: 80,
       height: 80,
       borderRadius: 8,
+      shadow: false,
     );
   }
 

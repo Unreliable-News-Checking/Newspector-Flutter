@@ -93,6 +93,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     );
   }
 
+  @override
   Widget itemList() {
     if (_newsSourceFeed.getItemCount() == 0)
       return emptyList("You are not following any news groups yet.");
@@ -134,6 +135,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
 
   // this fetches an updated user async
   // called when user tries to refresh the page
+  @override
   Future<void> fetchAdditionalItems() async {
     var lastDocumentId = _newsSourceFeed.getLastItem();
 

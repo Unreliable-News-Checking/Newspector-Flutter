@@ -135,7 +135,11 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              NewsSourcePhotoContainer(radius: 140, newsSource: _newsSource),
+              NewsSourcePhotoContainer(
+                size: 140,
+                newsSource: _newsSource,
+                borderRadius: 10,
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
