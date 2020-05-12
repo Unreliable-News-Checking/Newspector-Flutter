@@ -126,7 +126,6 @@ class UserService {
     // if there is no feed create one
     if (!hasUserWithFeed()) {
       _user.followingFeed = Feed<String>();
-      // _user.assignFeedToUser(Feed<String>());
     }
 
     // if refresh is wanted clear the feed

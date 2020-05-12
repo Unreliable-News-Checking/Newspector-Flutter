@@ -3,31 +3,36 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/user.dart';
-import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/widgets/news_group_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class FollowingPage extends StatefulWidget {
+  final ScrollController scrollController;
+
+  FollowingPage({
+    Key key,
+    @required this.scrollController,
+  }) : super(key: key);
+
   @override
   _FollowingPageState createState() => _FollowingPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> implements FeedPage {
+class _FollowingPageState extends State<FollowingPage>
+    with FeedContainer<FollowingPage, User> {
   User _user;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;
+  ScrollController _scrollController;
   var loadMoreVisible = true;
-
-  StreamController _loadMoreController;
-  Stream loadMoreStream;
+  var isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadMoreController = StreamController.broadcast();
-    loadMoreStream = _loadMoreController.stream;
+    _scrollController = widget.scrollController ?? ScrollController();
   }
 
   @override
@@ -52,29 +57,9 @@ class _FollowingPageState extends State<FollowingPage> implements FeedPage {
             return homeScaffold();
             break;
           default:
-            return loadingScaffold();
+            return loadingScaffold('Following');
         }
       },
-    );
-  }
-
-  // shown when the page is loading the new feed
-  Widget loadingScaffold() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Following",
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: app_const.backgroundColor,
-      ),
-      backgroundColor: app_const.backgroundColor,
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 
@@ -82,39 +67,65 @@ class _FollowingPageState extends State<FollowingPage> implements FeedPage {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      body: FeedContainer(
-        sliverAppBar: sliverAppBar(),
-        feed: _user.followingFeed,
-        onRefresh: getFeed,
-        onBottomReached: fetchAdditionalItems,
-        loadMoreStream: loadMoreStream,
-        emptyListMessage: "You are not following any news groups yet.",
-        buildContainer: (String newsGroupId) {
-          return NewsGroupContainer(
-            newsGroupId: newsGroupId,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          return onScrollNotification(
+            loadMoreVisible,
+            isLoading,
+            scrollInfo,
+            fetchAdditionalItems,
+            (loading) => isLoading = loading,
           );
         },
+        child: CupertinoScrollbar(
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: BouncingScrollPhysics()
+                .applyTo(AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              sliverAppBar("Following"),
+              refreshControl(getFeed),
+              itemList(),
+              loadMoreContainer(loadMoreVisible),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget sliverAppBar() {
-    return defaultSliverAppBar(titleText: "Following");
+  Widget itemList() {
+    if (_user.followingFeed.getItemCount() == 0)
+      return emptyList("You are not following any news groups yet.");
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Container(
+            child: NewsGroupContainer(
+              newsGroupId: _user.followingFeed.getItem(index),
+            ),
+          );
+        },
+        childCount: _user.followingFeed.getItemCount(),
+      ),
+    );
   }
 
+  ///
+  @override
   Future<User> getFeed() async {
     _user = await UserService.updateAndGetUserWithFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
     );
     loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
-    _loadMoreController.add(loadMoreVisible);
     if (mounted) setState(() {});
     return _user;
   }
 
-  // this fetches additional items
-  // called when user reached the bottom of the page
+  /// this fetches additional items
+  /// called when user reached the bottom of the page
   Future<void> fetchAdditionalItems() async {
     var lastDocumentId = _user.followingFeed.getLastItem();
 
@@ -125,6 +136,6 @@ class _FollowingPageState extends State<FollowingPage> implements FeedPage {
     );
 
     loadMoreVisible = lastDocumentId != _user.followingFeed.getLastItem();
-    _loadMoreController.add(loadMoreVisible);
+    if (mounted) setState(() {});
   }
 }

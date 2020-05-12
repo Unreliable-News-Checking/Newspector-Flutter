@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
-import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;

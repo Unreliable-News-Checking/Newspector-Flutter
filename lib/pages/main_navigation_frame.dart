@@ -126,7 +126,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[1],
             builder: (BuildContext context) {
-              return FollowingPage();
+              return FollowingPage(
+                scrollController: scrollControllers[1],
+              );
             },
             defaultTitle: 'Followed',
           ),
@@ -138,7 +140,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[2],
             builder: (BuildContext context) {
-              return NewsSourcesPage();
+              return NewsSourcesPage(
+                scrollController: scrollControllers[2],
+              );
             },
             defaultTitle: 'Sources',
           ),

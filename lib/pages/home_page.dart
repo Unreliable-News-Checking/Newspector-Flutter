@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
-import 'package:newspector_flutter/pages/feed_page.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
@@ -24,20 +23,19 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements FeedPage {
+class _HomePageState extends State<HomePage>
+    with FeedContainer<HomePage, Feed<String>> {
   Feed<String> _newsFeed;
+  ScrollController _scrollController;
   var pageSize = app_const.homePagePageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var loadMoreVisible = true;
+  var isLoading = false;
 
-  StreamController _loadMoreController;
-  Stream loadMoreStream;
-  
   @override
   void initState() {
     super.initState();
-    _loadMoreController = StreamController.broadcast();
-    loadMoreStream = _loadMoreController.stream;
+    _scrollController = widget.scrollController ?? ScrollController();
   }
 
   @override
@@ -46,7 +44,6 @@ class _HomePageState extends State<HomePage> implements FeedPage {
       _newsFeed = NewsFeedService.getFeed();
       loadMoreVisible =
           _newsFeed.getItemCount() < pageSize ? false : loadMoreVisible;
-      _loadMoreController.add(loadMoreVisible);
 
       return homeScaffold();
     }
@@ -59,29 +56,9 @@ class _HomePageState extends State<HomePage> implements FeedPage {
             return homeScaffold();
             break;
           default:
-            return loadingScaffold();
+            return loadingScaffold("Newspector");
         }
       },
-    );
-  }
-
-  // shown when the page is loading the new feed
-  Widget loadingScaffold() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Newspector",
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: app_const.backgroundColor,
-      ),
-      backgroundColor: app_const.backgroundColor,
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 
@@ -89,42 +66,68 @@ class _HomePageState extends State<HomePage> implements FeedPage {
   Widget homeScaffold() {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      body: FeedContainer<String>(
-        sliverAppBar: sliverAppBar(),
-        feed: _newsFeed,
-        scrollController: widget.scrollController,
-        onRefresh: getFeed,
-        onBottomReached: fetchAdditionalItems,
-        loadMoreStream: loadMoreStream,
-        emptyListMessage: "There are no news available yet.",
-        buildContainer: (String newsGroupId) {
-          return NewsGroupContainer(
-            newsGroupId: newsGroupId,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          return onScrollNotification(
+            loadMoreVisible,
+            isLoading,
+            scrollInfo,
+            fetchAdditionalItems,
+            (loading) => isLoading = loading,
           );
         },
+        child: CupertinoScrollbar(
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: BouncingScrollPhysics()
+                .applyTo(AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              sliverAppBar(
+                "Newspector",
+                actions: <Widget>[
+                  CloseButton(
+                    onPressed: () {
+                      sign_in_service.signOutGoogle();
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                        return SignPage();
+                      }));
+                    },
+                  ),
+                ],
+              ),
+              refreshControl(getFeed),
+              itemList(),
+              loadMoreContainer(loadMoreVisible),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget sliverAppBar() {
-    return defaultSliverAppBar(
-      titleText: 'Newspector',
-      actions: <Widget>[
-        CloseButton(
-          onPressed: () {
-            sign_in_service.signOutGoogle();
-            Navigator.of(context, rootNavigator: true)
-                .pushReplacement(MaterialPageRoute(builder: (context) {
-              return SignPage();
-            }));
-          },
-        ),
-      ],
+  Widget itemList() {
+    if (_newsFeed.getItemCount() == 0)
+      return emptyList("You are not following any news groups yet.");
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Container(
+            child: NewsGroupContainer(
+              newsGroupId: _newsFeed.getItem(index),
+            ),
+          );
+        },
+        childCount: _newsFeed.getItemCount(),
+      ),
     );
   }
 
   /// If there is an existing feed returns it,
   /// if not fetches the feed from the database and returns it.
+  @override
   Future<Feed<String>> getFeed() async {
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
@@ -132,7 +135,6 @@ class _HomePageState extends State<HomePage> implements FeedPage {
     );
 
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
-    _loadMoreController.add(loadMoreVisible);
     if (mounted) setState(() {});
     return _newsFeed;
   }
@@ -148,6 +150,5 @@ class _HomePageState extends State<HomePage> implements FeedPage {
     );
 
     loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();
-    _loadMoreController.add(loadMoreVisible);
   }
 }
