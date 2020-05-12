@@ -124,6 +124,7 @@ class NewsArticleContainerState extends State<NewsArticleContainer> {
     return Container(
       child: Text(
         headline,
+        textAlign: TextAlign.start,
         style: TextStyle(
           fontSize: 22,
           color: Colors.white,

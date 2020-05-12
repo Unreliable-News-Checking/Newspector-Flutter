@@ -219,6 +219,8 @@ class NewsGroupService {
         newsArticleIds.add(newsArticleId);
       }
 
+      if (newsArticleIds.length == 0) continue;
+
       // Create a news group and add the news articles and the followed information.
       NewsGroup newsGroup = NewsGroup.fromDocument(newsGroupDoc);
       newsGroup.addNewsArticles(newsArticleIds);
