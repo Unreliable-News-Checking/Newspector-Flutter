@@ -13,7 +13,7 @@ class NewsArticle extends Model {
   String tweetLink;
   String websiteLink;
   bool isRetweet;
-  String newsSourceId; 
+  String newsSourceId;
   String category;
   double sentiment;
 
@@ -43,5 +43,17 @@ class NewsArticle extends Model {
     if (documentSnapshot.data['urls'].length > 0) {
       websiteLink = documentSnapshot.data['urls'][0];
     }
+  }
+
+  String readableSentiment() {
+    var rangeSteps = [0.2, 0.4, 0.8];
+    if (sentiment >= rangeSteps[2]) return "Strongly Positive";
+    if (sentiment >= rangeSteps[1]) return "Positive";
+    if (sentiment >= rangeSteps[0]) return "Slightly Positive";
+    if (sentiment >= -rangeSteps[0]) return "Neutral";
+    if (sentiment >= -rangeSteps[1]) return "Slightly Negative";
+    if (sentiment >= -rangeSteps[2]) return "Negative";
+
+    return "Strongly Negative";
   }
 }

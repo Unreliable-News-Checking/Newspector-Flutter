@@ -83,22 +83,8 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Hero(
-                        tag: "hp_nap_${widget.newsArticleId}",
-                        child: Container(
-                          child: HpNewsArticlePhotoContainer(
-                            newsArticle: _newsArticle,
-                            height: 200,
-                            width: double.infinity,
-                            borderRadius: 10,
-                            shadow: false,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 15),
-                        child: source(),
-                      ),
+                      newsArticlePhoto(),
+                      source(),
                       headline(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,6 +94,13 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                           Expanded(child: Container()),
                           websiteButton(),
                           tweetButton(),
+                        ],
+                      ),
+                      Wrap(
+                        spacing: 10,
+                        children: <Widget>[
+                          sentimentResult(),
+                          category(),
                         ],
                       ),
                     ],
@@ -146,6 +139,21 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     });
   }
 
+  Widget newsArticlePhoto() {
+    return Hero(
+      tag: "hp_nap_${widget.newsArticleId}",
+      child: Container(
+        child: HpNewsArticlePhotoContainer(
+          newsArticle: _newsArticle,
+          height: 200,
+          width: double.infinity,
+          borderRadius: 10,
+          shadow: false,
+        ),
+      ),
+    );
+  }
+
   Widget headline() {
     String headline = _newsArticle.headline;
     return Container(
@@ -163,33 +171,36 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   }
 
   Widget source() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return NewsSourcePage(
-            newsSourceId: _newsArticle.newsSourceId,
-          );
-        }));
-      },
-      child: Container(
-        child: Row(
-          children: <Widget>[
-            Text(
-              _newsArticle.newsSourceId,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                shadows: app_consts.shadowsForWhiteWidgets(),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 15),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return NewsSourcePage(
+              newsSourceId: _newsArticle.newsSourceId,
+            );
+          }));
+        },
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              Text(
+                _newsArticle.newsSourceId,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  shadows: app_consts.shadowsForWhiteWidgets(),
+                ),
               ),
-            ),
-            _newsArticle.isRetweet
-                ? Icon(
-                    Icons.repeat,
-                    color: Colors.white,
-                  )
-                : Container(),
-          ],
+              _newsArticle.isRetweet
+                  ? Icon(
+                      Icons.repeat,
+                      color: Colors.white,
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );
@@ -244,5 +255,16 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
         color: Colors.white,
       ),
     );
+  }
+
+  Widget sentimentResult() {
+    return Chip(label: Text(_newsArticle.readableSentiment())
+        //  + _newsArticle.sentiment.toString()),
+        );
+  }
+
+  Widget category() {
+    if (_newsArticle.category == "-") return Container();
+    return Chip(label: Text(_newsArticle.category));
   }
 }

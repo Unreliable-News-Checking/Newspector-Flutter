@@ -127,7 +127,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget followButton() {
-    var icon = _newsGroup.followedByUser ? Icons.bookmark : Icons.bookmark_border;
+    var icon =
+        _newsGroup.followedByUser ? Icons.bookmark : Icons.bookmark_border;
 
     return Positioned(
       top: 0,
@@ -157,7 +158,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          color: Colors.black87,
+          color: Color(0xFF3484F0),
         ),
         margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
         child: Center(
@@ -167,6 +168,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
               fontSize: 16,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              shadows: app_consts.shadowsForWhiteWidgets(),
             ),
           ),
         ),
@@ -214,18 +216,15 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: horizontalMargin + 10,
-          vertical: 10,
+          vertical: 2,
         ),
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(360),
-        ),
-        child: Text(
-          _newsGroup.category,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.black,
+        child: Chip(
+          label: Text(
+            _newsGroup.category,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
