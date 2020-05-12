@@ -1,3 +1,5 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
@@ -77,21 +79,8 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             slivers: <Widget>[
               sliverAppBar(),
               refreshControl(),
-              SliverToBoxAdapter(
-                child: sourceHeader(),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("First in Group: ${_newsSource.firstInGroupCount}"),
-                    Text("Report Count: ${_newsSource.reportCount}"),
-                    Text(
-                        "News Group Follower Count: ${_newsSource.newsGroupFollowerCount}"),
-                    Text("Tweet Count: ${_newsSource.tweetCount}"),
-                  ],
-                ),
-              ),
+              sourceHeader(),
+              sourceBody(),
             ],
           ),
         ),
@@ -104,7 +93,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       titleText: _newsSource.name,
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.alternate_email),
+          icon: Icon(EvaIcons.twitter),
           onPressed: () async {
             await NewsSourceService.goToSourceTwitter(widget.newsSourceId);
           },
@@ -127,32 +116,43 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   }
 
   Widget sourceHeader() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              NewsSourcePhotoContainer(
-                size: 140,
-                newsSource: _newsSource,
-                borderRadius: 10,
-              ),
-              SizedBox(width: 30),
-              Expanded(child: headerRow()),
-            ],
-          ),
-          name(),
-        ],
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                NewsSourcePhotoContainer(
+                  size: 140,
+                  newsSource: _newsSource,
+                  borderRadius: 10,
+                ),
+                SizedBox(width: 30),
+                Expanded(child: labelsRow()),
+              ],
+            ),
+            sourceName(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget headerRow() {
+  Widget newsSourcePhoto() {
+    return NewsSourcePhotoContainer(
+      size: 140,
+      newsSource: _newsSource,
+      borderRadius: 10,
+    );
+  }
+
+  Widget labelsRow() {
     return Column(
       children: <Widget>[
         Row(
@@ -196,16 +196,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
-  void showRateSheet() {
-    showModalBottomSheet(
-      useRootNavigator: true,
-      context: context,
-      builder: (context) {
-        return NewsSourceSheet(newsSourceId: widget.newsSourceId);
-      },
-    );
-  }
-
   Widget headerLabel(String label) {
     return Container(
       padding: EdgeInsets.all(2),
@@ -233,28 +223,17 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
-  Widget stackedCountContainer({@required String label, @required int value}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        Text(
-          utils.countToMeaningfulString(value),
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+  void showRateSheet() {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      builder: (context) {
+        return NewsSourceSheet(newsSourceId: widget.newsSourceId);
+      },
     );
   }
 
-  Widget name() {
+  Widget sourceName() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(
@@ -264,6 +243,173 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
           fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+
+  Widget sourceBody() {
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                bigCountLabel(
+                  "First Reporter",
+                  _newsSource.firstInGroupCount.toString(),
+                ),
+                SizedBox(width: 20),
+                bigCountLabel(
+                  "Group Member",
+                  _newsSource.membershipCount.toString(),
+                ),
+              ],
+            ),
+          ),
+          categoryPie(),
+        ],
+      ),
+    );
+  }
+
+  Widget bigCountLabel(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 120,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget categoryPie() {
+    var radius = 70.0;
+    var sections = List<PieChartSectionData>();
+    var indicators = List<Indicator>();
+    var colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.pink,
+      Colors.amber,
+      Colors.deepOrange,
+      Colors.teal,
+      Colors.indigo,
+      Colors.brown,
+      Colors.lime,
+      Colors.deepPurple,
+      Colors.lightBlue,
+      Colors.yellow,
+      Colors.lightGreen
+    ];
+
+    var colorIndex = 0;
+    for (var i = 0; i < _newsSource.categoryMap.map.length; i++) {
+      var category = _newsSource.categoryMap.map.keys.elementAt(i);
+      var count = _newsSource.categoryMap.map[category];
+
+      if (count == -1) continue;
+
+      var section = PieChartSectionData(
+        color: colors[colorIndex],
+        value: count.toDouble(),
+        showTitle: false,
+        titlePositionPercentageOffset: 0,
+        radius: radius,
+      );
+
+      var indicator = Indicator(
+        color: colors[colorIndex],
+        text: category.toReadableString(),
+        isSquare: true,
+      );
+
+      colorIndex++;
+      sections.add(section);
+      indicators.add(indicator);
+    }
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: radius * 2,
+            height: radius * 2,
+            margin: EdgeInsets.only(right: 20),
+            child: PieChart(
+              PieChartData(
+                startDegreeOffset: 150,
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 0,
+                sections: sections,
+              ),
+            ),
+          ),
+          Wrap(
+            spacing: 2,
+            direction: Axis.vertical,
+            children: indicators,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class Indicator extends StatelessWidget {
+  final Color color;
+  final String text;
+  final bool isSquare;
+  final double size;
+
+  const Indicator({
+    Key key,
+    this.color,
+    this.text,
+    this.isSquare,
+    this.size = 16,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
+            color: color,
+          ),
+        ),
+        const SizedBox(
+          width: 4,
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        )
+      ],
     );
   }
 }

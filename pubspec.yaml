@@ -14,19 +14,19 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
-  firebase_database: 
-  firebase_core: any
-  cloud_firestore:
-  firebase_auth:
-  google_sign_in:
-  url_launcher:
-  firebase_messaging:
-  flushbar:
-  eva_icons_flutter:
-  animations:
+  firebase_database: ^3.1.5
+  firebase_core: ^0.4.4+3
+  cloud_firestore: ^0.13.5
+  firebase_auth: ^0.16.0
+  google_sign_in: ^4.4.6
+  url_launcher: ^5.4.7
+  firebase_messaging: ^6.0.13
+  flushbar: ^1.10.2
+  eva_icons_flutter: ^2.0.0
+  fl_chart: ^0.9.4
   flutter:
     sdk: flutter
 
