@@ -159,9 +159,9 @@ class NewsSource extends Model {
 
   void updateRatingsFromDatabase(DataSnapshot dataSnapshot) {
     var data = dataSnapshot.value;
-    likes = data['likes_count'];
-    dislikes = data['dislikes_count'];
-    reports = data['reports_count'];
+    likes = data['likes'];
+    dislikes = data['dislikes'];
+    reports = data['reports'];
 
     rating = max((likes - dislikes) / max(likes + dislikes, 1), 0);
   }
