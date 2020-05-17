@@ -78,25 +78,31 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   Widget tabBar() {
     return CupertinoTabBar(
       onTap: _onTapToNavBar,
-      activeColor: Colors.blue.shade400,
-      inactiveColor: Colors.grey.shade300,
+      activeColor: app_const.selectedColor,
+      inactiveColor: app_const.defaultTextColor,
       backgroundColor: app_const.backgroundColor,
       border: Border.all(
         color: app_const.backgroundColor,
         width: 0,
         style: BorderStyle.solid,
       ),
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.home),
+          icon: currentIndex == 0
+              ? Icon(EvaIcons.home)
+              : Icon(EvaIcons.homeOutline),
           title: null,
         ),
         BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.bookmark),
+          icon: currentIndex == 1
+              ? Icon(EvaIcons.bookOpen)
+              : Icon(EvaIcons.bookOpenOutline),
           title: null,
         ),
         BottomNavigationBarItem(
-          icon: Icon(CupertinoIcons.search),
+          icon: currentIndex == 2
+              ? Icon(EvaIcons.search)
+              : Icon(EvaIcons.searchOutline),
           title: null,
         ),
       ],
