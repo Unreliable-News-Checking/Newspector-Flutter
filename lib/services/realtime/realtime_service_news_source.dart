@@ -2,27 +2,15 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'realtime_service.dart';
 
-void rateAccount(
-  String newsSourceId,
-  String userId,
-  int rating,
-  // int changeInLike,
-  // int changeInDislike,
-) {
+void rateAccount(String newsSourceId, String userId, int rating, bool vote) {
+  String field = vote == true ? "likes" : "dislikes";
 
-  // final DatabaseReference likeRef =
-  //     fb.reference().child('accounts/' + newsSourceId + '/likes');
-  // likeRef.runTransaction((MutableData transaction) async {
-  //   transaction.value = (transaction.value ?? 0) + changeInLike;
-  //   return transaction;
-  // });
-
-  // final DatabaseReference dislikeRef =
-  //     fb.reference().child('accounts/' + newsSourceId + '/dislikes');
-  // dislikeRef.runTransaction((MutableData transaction) async {
-  //   transaction.value = (transaction.value ?? 0) + changeInDislike;
-  //   return transaction;
-  // });
+  final DatabaseReference likeRef =
+      fb.reference().child("accounts/" + newsSourceId + "/" + field);
+  likeRef.runTransaction((MutableData transaction) async {
+    transaction.value = (transaction.value ?? 0) + 1;
+    return transaction;
+  });
 }
 
 Future<DataSnapshot> getNewsSourceDocument(String documentID) async {
