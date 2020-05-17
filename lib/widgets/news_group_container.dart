@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
@@ -126,8 +127,9 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget followButton() {
-    var icon =
-        _newsGroup.followedByUser ? Icons.bookmark : Icons.bookmark_border;
+    var icon = _newsGroup.followedByUser
+        ? EvaIcons.bookmark
+        : EvaIcons.bookmarkOutline;
 
     return Positioned(
       top: 0,
@@ -138,6 +140,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           icon: Icon(
             icon,
             color: Colors.white,
+            size: 28,
           ),
           onPressed: () {
             NewsGroupService.toggleFollowNewsGroup(
