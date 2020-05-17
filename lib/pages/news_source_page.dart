@@ -70,7 +70,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       body: Container(
         child: CupertinoScrollbar(
           child: Container(
-            margin: EdgeInsets.all(15),
             child: CustomScrollView(
               physics: BouncingScrollPhysics()
                   .applyTo(AlwaysScrollableScrollPhysics()),
@@ -117,26 +116,28 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   Widget sourceHeader() {
     return SliverToBoxAdapter(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            labelsRow(),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                NewsSourcePhotoContainer(
-                  size: 140,
-                  newsSource: _newsSource,
-                  borderRadius: 10,
+                SizedBox(
+                  width: 170,
+                  child: sourceName(),
                 ),
-                SizedBox(width: 30),
-                Expanded(child: labelsRow()),
+                Expanded(
+                  child: RaisedButton(
+                    onPressed: showRateSheet,
+                    color: Colors.white,
+                    child: Text("Rate News Source"),
+                  ),
+                ),
               ],
             ),
-            sourceName(),
           ],
         ),
       ),
@@ -152,45 +153,49 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   }
 
   Widget labelsRow() {
-    return Column(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                headerLabel('Birthday:'),
-                headerLabel('Followers:'),
-                headerLabel('News:'),
-                headerLabel('Rating:'),
-              ],
-            ),
-            SizedBox(width: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                headerValue(_newsSource.birthday),
-                headerValue(
-                  utils.countToMeaningfulString(_newsSource.followerCount),
-                ),
-                headerValue(
-                  utils.countToMeaningfulString(_newsSource.newsCount),
-                ),
-                headerValue(_newsSource.rating.toStringAsFixed(2)),
-              ],
-            )
-          ],
+        NewsSourcePhotoContainer(
+          size: 140,
+          newsSource: _newsSource,
+          borderRadius: 10,
         ),
+        SizedBox(width: 30),
         SizedBox(
-          width: double.infinity,
-          child: RaisedButton(
-            onPressed: showRateSheet,
-            color: Colors.white,
-            child: Text("Rate News Source"),
+          height: 140,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              headerLabel('Birthday:'),
+              headerLabel('Followers:'),
+              headerLabel('News:'),
+              headerLabel('Rating:'),
+            ],
           ),
         ),
+        SizedBox(width: 10),
+        SizedBox(
+          height: 140,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              headerValue(_newsSource.birthday),
+              headerValue(
+                utils.countToMeaningfulString(_newsSource.followerCount),
+              ),
+              headerValue(
+                utils.countToMeaningfulString(_newsSource.newsCount),
+              ),
+              headerValue(_newsSource.rating.toStringAsFixed(2)),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -202,7 +207,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         label,
         textAlign: TextAlign.start,
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -259,6 +264,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             mainAxisSpacing: 0,
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(0),
+            childAspectRatio: 1.2,
             children: <Widget>[
               bigCountLabel(
                 "First Reporter",
@@ -295,6 +301,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   Widget bigCountLabel(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
           label,
@@ -360,6 +367,8 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       sections.add(section);
       indicators.add(indicator);
     }
+
+    if (sections.isEmpty) return Container();
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
