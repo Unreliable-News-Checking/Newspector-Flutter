@@ -94,10 +94,13 @@ class NewsArticleService {
     // There is a cached image
     if (newsArticle.photoInBytes != null) return;
 
-    // There is an imageUrl but no cached image
-    var response = await get(newsArticle.photoUrl);
-    var photoInBytes = response.bodyBytes;
-    newsArticle.photoInBytes = photoInBytes;
+    try {
+      // There is an imageUrl but no cached image
+      var response = await get(newsArticle.photoUrl);
+      var photoInBytes = response.bodyBytes;
+      newsArticle.photoInBytes = photoInBytes;
+    } catch (e) {}
+
     return;
   }
 }

@@ -108,6 +108,12 @@ class NewsSource extends Model {
 
   CategoryMap categoryMap;
 
+  int firstReporterCount;
+  int closeSecondCount;
+  int lateComerCount;
+  int slowPokeCount;
+  int followUpCount;
+
   String birthday;
 
   String websiteLink;
@@ -124,7 +130,6 @@ class NewsSource extends Model {
     website = data['website'];
     photoUrl = data['profile_photo'];
     newsCount = data['news_count'];
-    firstInGroupCount = data['news_group_leadership_count'];
     membershipCount = data['news_group_membership_count'];
     reportCount = data['dislike_count'];
     birthday = data['birthday'];
@@ -133,6 +138,12 @@ class NewsSource extends Model {
     twitterLink = 'https://twitter/$twitterUsername';
 
     populateCategoryMap(data['category_map']);
+
+    firstReporterCount = data['first_reporter'];
+    closeSecondCount = data['close_second'];
+    lateComerCount = data['late_comer'];
+    slowPokeCount = data['slow_poke'];
+    followUpCount = data['follow_up'];
   }
 
   void populateCategoryMap(Map categoryData) {

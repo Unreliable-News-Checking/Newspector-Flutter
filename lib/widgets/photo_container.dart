@@ -64,8 +64,12 @@ mixin PhotoContainer {
   }
 
   Future<Uint8List> fetchImage(String photoUrl) async {
-    Response response = await get(photoUrl);
-    return response.bodyBytes;
+    try {
+      Response response = await get(photoUrl);
+      return response.bodyBytes;
+    } catch (e) {
+      return null;
+    }
   }
 
   Widget getPhoto(

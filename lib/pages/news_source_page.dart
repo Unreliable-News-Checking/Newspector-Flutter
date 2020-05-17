@@ -68,17 +68,19 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
       body: Container(
-        margin: EdgeInsets.all(15),
         child: CupertinoScrollbar(
-          child: CustomScrollView(
-            physics: BouncingScrollPhysics()
-                .applyTo(AlwaysScrollableScrollPhysics()),
-            slivers: <Widget>[
-              sliverAppBar(),
-              refreshControl(),
-              sourceHeader(),
-              sourceBody(),
-            ],
+          child: Container(
+            margin: EdgeInsets.all(15),
+            child: CustomScrollView(
+              physics: BouncingScrollPhysics()
+                  .applyTo(AlwaysScrollableScrollPhysics()),
+              slivers: <Widget>[
+                sliverAppBar(),
+                refreshControl(),
+                sourceHeader(),
+                sourceBody(),
+              ],
+            ),
           ),
         ),
       ),
@@ -224,6 +226,8 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     showModalBottomSheet(
       useRootNavigator: true,
       context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       builder: (context) {
         return NewsSourceSheet(newsSourceId: widget.newsSourceId);
       },
@@ -248,21 +252,39 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                bigCountLabel(
-                  "First Reporter",
-                  _newsSource.firstInGroupCount.toString(),
-                ),
-                SizedBox(width: 20),
-                bigCountLabel(
-                  "Group Member",
-                  _newsSource.membershipCount.toString(),
-                ),
-              ],
-            ),
+          GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 0,
+            padding: EdgeInsets.all(0),
+            children: <Widget>[
+              bigCountLabel(
+                "First Reporter",
+                _newsSource.firstReporterCount.toString(),
+              ),
+              bigCountLabel(
+                "Close Second",
+                _newsSource.closeSecondCount.toString(),
+              ),
+              bigCountLabel(
+                "Late Comer",
+                _newsSource.lateComerCount.toString(),
+              ),
+              bigCountLabel(
+                "Slow Poke",
+                _newsSource.slowPokeCount.toString(),
+              ),
+              bigCountLabel(
+                "Follow Ups",
+                _newsSource.followUpCount.toString(),
+              ),
+              bigCountLabel(
+                "Group Member",
+                _newsSource.membershipCount.toString(),
+              ),
+            ],
           ),
           categoryPie(),
         ],
@@ -277,14 +299,14 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         Text(
           label,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           value,
           style: TextStyle(
-            fontSize: 120,
+            fontSize: 100,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -429,7 +451,13 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
     if (rated) {
       return Container(
         height: 200,
-        color: app_const.backgroundColor,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+          color: app_const.backgroundColor,
+        ),
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -447,8 +475,14 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
 
     return Container(
       height: 200,
-      color: app_const.backgroundColor,
       padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        color: app_const.backgroundColor,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
