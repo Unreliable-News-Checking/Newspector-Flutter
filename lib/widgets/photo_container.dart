@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 mixin PhotoContainer {
   void storeCachedImage(Uint8List photoInBytes);
@@ -141,7 +142,7 @@ mixin PhotoContainer {
       child: Container(
         height: height,
         width: width,
-        color: Colors.grey.shade800,
+        color: app_const.inactiveColor,
       ),
     );
   }
@@ -156,7 +157,7 @@ mixin PhotoContainer {
       child: Container(
         height: height,
         width: width,
-        color: Color(0xFF3484F0),
+        color: app_const.activeColor,//Color(0xFF3484F0),
       ),
     );
   }

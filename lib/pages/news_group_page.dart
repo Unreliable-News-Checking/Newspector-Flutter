@@ -195,7 +195,7 @@ class TimelineItem extends StatelessWidget {
 
   Widget line({double heigth}) {
     var width = 1.0;
-    var color = Colors.grey;
+    var color = app_const.inactiveColor;
 
     if (heigth != null) {
       return Container(
@@ -222,7 +222,7 @@ class TimelineItem extends StatelessWidget {
       width: radius,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.grey,
+        color: app_const.inactiveColor,
       ),
     );
   }

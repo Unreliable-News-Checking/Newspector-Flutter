@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
 
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
@@ -73,7 +74,10 @@ class _NewsGroupPageNewsArticleContainerState
               ),
               widget.dontShowDivider
                   ? Container()
-                  : Container(height: 1, color: Colors.grey),
+                  : Container(
+                      height: 1,
+                      color: app_const.inactiveColor,
+                    ),
             ],
           ),
         ),
@@ -126,10 +130,12 @@ class _NewsGroupPageNewsArticleContainerState
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(width: 2),
             _newsArticle.isRetweet
                 ? Icon(
                     Icons.repeat,
                     size: 16,
+                    color: app_const.defaultTextColor,
                   )
                 : Container(),
           ],
@@ -147,7 +153,7 @@ class _NewsGroupPageNewsArticleContainerState
         dateString,
         style: TextStyle(
           fontSize: 13,
-          color: Colors.grey.shade600,
+          color: app_const.defaultTextColor,
         ),
       ),
     );
@@ -160,7 +166,7 @@ class _NewsGroupPageNewsArticleContainerState
       dateString,
       style: TextStyle(
         fontSize: 13,
-        color: Colors.grey.shade600,
+        color: app_const.defaultTextColor,
       ),
     );
   }
@@ -169,7 +175,7 @@ class _NewsGroupPageNewsArticleContainerState
     return IconButton(
       icon: Icon(
         EvaIcons.twitter,
-        color: Colors.white,
+        color: app_const.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
@@ -182,7 +188,7 @@ class _NewsGroupPageNewsArticleContainerState
     return IconButton(
       icon: Icon(
         Icons.web,
-        color: Colors.white,
+        color: app_const.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);

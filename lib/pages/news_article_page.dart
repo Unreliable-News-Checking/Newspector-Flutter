@@ -52,10 +52,6 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
       appBar: AppBar(
-        title: Text(
-          "",
-          style: TextStyle(color: Colors.white),
-        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: app_const.backgroundColor,
@@ -164,7 +160,6 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
         textAlign: TextAlign.start,
         style: TextStyle(
           fontSize: 22,
-          color: Colors.white,
           fontWeight: FontWeight.bold,
           shadows: app_consts.shadowsForWhiteWidgets(),
         ),
@@ -191,14 +186,13 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
                   shadows: app_consts.shadowsForWhiteWidgets(),
                 ),
               ),
               _newsArticle.isRetweet
                   ? Icon(
                       Icons.repeat,
-                      color: Colors.white,
+                      color: app_consts.defaultTextColor,
                     )
                   : Container(),
             ],
@@ -216,7 +210,6 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        color: Colors.white,
         shadows: app_consts.shadowsForWhiteWidgets(),
       ),
     );
@@ -226,7 +219,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return IconButton(
       icon: Icon(
         EvaIcons.twitter,
-        color: Colors.white,
+        color: app_consts.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
@@ -239,7 +232,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return IconButton(
       icon: Icon(
         Icons.web,
-        color: Colors.white,
+        color: app_consts.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);
@@ -247,17 +240,17 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     );
   }
 
-  Widget separatorDot() {
-    return Container(
-      width: 3,
-      height: 3,
-      margin: EdgeInsets.symmetric(horizontal: 3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(360),
-        color: Colors.white,
-      ),
-    );
-  }
+  // Widget separatorDot() {
+  //   return Container(
+  //     width: 3,
+  //     height: 3,
+  //     margin: EdgeInsets.symmetric(horizontal: 3),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(360),
+  //           color: app_consts.defaultTextColor,
+  //     ),
+  //   );
+  // }
 
   Widget sentimentResult() {
     return Chip(label: Text(_newsArticle.readableSentiment())

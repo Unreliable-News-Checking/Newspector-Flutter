@@ -108,7 +108,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
         child: Text(
           "Full Coverage",
           style: TextStyle(
-            color: Colors.white,
+            color: app_consts.defaultTextColor,
             shadows: app_consts.shadowsForWhiteWidgets(),
           ),
         ),
@@ -139,7 +139,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
         child: IconButton(
           icon: Icon(
             icon,
-            color: Colors.white,
+            color: app_consts.defaultTextColor,
             size: 28,
           ),
           onPressed: () {
@@ -168,7 +168,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             "Tap to see Full Coverage",
             style: TextStyle(
               fontSize: 16,
-              color: Colors.white,
+              color: app_consts.defaultTextColor,
               fontWeight: FontWeight.bold,
               shadows: app_consts.shadowsForWhiteWidgets(),
             ),
@@ -184,7 +184,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: DotsIndicator(
         controller: _controller,
         itemCount: itemCount + 1,
-        color: Colors.white,
         onPageSelected: (page) {
           _controller.animateToPage(
             page,
@@ -227,7 +226,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             categoryText,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.black,
             ),
           ),
         ),

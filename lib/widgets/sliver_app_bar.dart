@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 
@@ -8,7 +9,9 @@ Widget defaultSliverAppBar({
   return SliverAppBar(
     title: Text(
       titleText,
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(
+        color: app_const.defaultTextColor,
+      ),
     ),
     centerTitle: true,
     floating: true,

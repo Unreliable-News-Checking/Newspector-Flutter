@@ -1,14 +1,13 @@
-
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class DotsIndicator extends AnimatedWidget {
   DotsIndicator({
     this.controller,
     this.itemCount,
     this.onPageSelected,
-    this.color: Colors.white,
+    this.color = app_const.defaultTextColor,
   }) : super(listenable: controller);
 
   final PageController controller;

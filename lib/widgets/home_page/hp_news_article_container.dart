@@ -102,7 +102,6 @@ class _HomePageNewsArticleContainerState
         maxLines: maxLines,
         style: TextStyle(
           fontSize: 22,
-          color: Colors.white,
           fontWeight: FontWeight.bold,
           shadows: app_consts.shadowsForWhiteWidgets(),
         ),
@@ -128,14 +127,14 @@ class _HomePageNewsArticleContainerState
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
                 shadows: app_consts.shadowsForWhiteWidgets(),
               ),
             ),
+            SizedBox(width: 2),
             _newsArticle.isRetweet
                 ? Icon(
                     Icons.repeat,
-                    color: Colors.white,
+                    color: app_consts.defaultTextColor,
                   )
                 : Container(),
           ],
@@ -152,7 +151,6 @@ class _HomePageNewsArticleContainerState
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        color: Colors.white,
         shadows: app_consts.shadowsForWhiteWidgets(),
       ),
     );
@@ -162,7 +160,7 @@ class _HomePageNewsArticleContainerState
     return IconButton(
       icon: Icon(
         EvaIcons.twitter,
-        color: Colors.white,
+        color: app_consts.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
@@ -175,7 +173,7 @@ class _HomePageNewsArticleContainerState
     return IconButton(
       icon: Icon(
         Icons.web,
-        color: Colors.white,
+        color: app_consts.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);
@@ -190,7 +188,7 @@ class _HomePageNewsArticleContainerState
       margin: EdgeInsets.symmetric(horizontal: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(360),
-        color: Colors.white,
+        color: app_consts.defaultTextColor,
       ),
     );
   }

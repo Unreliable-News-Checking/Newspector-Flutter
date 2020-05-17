@@ -15,7 +15,7 @@ mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
       appBar: AppBar(
         title: Text(
           title,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: app_const.defaultTextColor),
         ),
         centerTitle: true,
         elevation: 0,
@@ -59,7 +59,6 @@ mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
     return SliverToBoxAdapter(
       child: Container(
         height: 50,
-        color: Colors.transparent,
         child: Center(
           child: CircularProgressIndicator(),
         ),

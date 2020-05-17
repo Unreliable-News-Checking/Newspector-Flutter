@@ -79,8 +79,8 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   Widget tabBar() {
     return CupertinoTabBar(
       onTap: _onTapToNavBar,
-      activeColor: app_const.selectedColor,
-      inactiveColor: app_const.defaultTextColor,
+      activeColor: app_const.activeColor,
+      inactiveColor: app_const.inactiveColor,
       backgroundColor: app_const.backgroundColor,
       border: Border.all(
         color: app_const.backgroundColor,

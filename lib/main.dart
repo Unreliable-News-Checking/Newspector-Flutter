@@ -25,13 +25,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // FlutterStatusbarcolor.setStatusBarColor(Colors.grey);
     return MaterialApp(
       title: 'Newspector',
       theme: ThemeData(
-        textTheme: Theme.of(context)
-            .textTheme
-            .apply(bodyColor: Colors.white, displayColor: Colors.white),
+        primaryColor: app_const.backgroundColor,
+        textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: app_const.defaultTextColor,
+              displayColor: app_const.defaultTextColor,
+            ),
+        accentColor: app_const.inactiveColor,
       ),
       home: showHome(),
       routes: {},

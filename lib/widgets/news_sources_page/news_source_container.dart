@@ -3,6 +3,7 @@ import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsSourceContainer extends StatelessWidget {
   final String newsSourceId;
@@ -57,13 +58,13 @@ class NewsSourceContainer extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: app_const.defaultTextColor,
             ),
           ),
           Text(
             "Followers: ${utils.countToMeaningfulString(followerCount)}",
             style: TextStyle(
-              color: Colors.white,
+              color: app_const.defaultTextColor,
             ),
           ),
         ],

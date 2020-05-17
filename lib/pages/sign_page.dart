@@ -28,7 +28,7 @@ class _SignPageState extends State<SignPage> {
                 child: Icon(
                   Icons.web,
                   size: 150,
-                  color: Colors.white,
+                  color: app_const.defaultTextColor,
                 ),
               ),
               SizedBox(height: 10),
@@ -69,13 +69,15 @@ class GoogleSignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlineButton(
-      splashColor: Colors.grey,
+      color: app_const.defaultTextColor,
       onPressed: onPressed,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(40),
       ),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.white),
+      borderSide: BorderSide(
+        color: app_const.defaultTextColor,
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
@@ -92,7 +94,7 @@ class GoogleSignInButton extends StatelessWidget {
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white,
+                  color: app_const.defaultTextColor,
                 ),
               ),
             )

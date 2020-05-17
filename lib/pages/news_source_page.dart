@@ -128,7 +128,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
                 Expanded(
                   child: RaisedButton(
                     onPressed: showRateSheet,
-                    color: Colors.white,
+                    color: app_const.defaultTextColor,
                     child: Text("Rate News Source"),
                   ),
                 ),
