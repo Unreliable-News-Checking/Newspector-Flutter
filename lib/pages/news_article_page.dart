@@ -94,6 +94,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                         ],
                       ),
                       Wrap(
+                        direction: Axis.horizontal,
                         spacing: 10,
                         children: <Widget>[
                           tag(),
@@ -259,8 +260,14 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   }
 
   Widget category() {
-    if (_newsArticle.category == "-") return Container();
-    return Chip(label: Text(_newsArticle.category));
+    var _newsGroupId = _newsArticle.newsGroupId;
+    var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
+    String categoryText = _newsGroup.category;
+
+    if (_newsGroup.category == "-") {
+      categoryText = "Other";
+    }
+    return Chip(label: Text(categoryText));
   }
 
   Widget tag() {
