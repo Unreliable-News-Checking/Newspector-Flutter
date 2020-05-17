@@ -39,11 +39,13 @@ Future<QuerySnapshot> getSourcesAfterDocument(
 void rateSource(
   String newsSourceId,
   String userId,
+  bool rating,
 ) {
   Map<String, dynamic> data = Map<String, dynamic>();
   data['user_id'] = userId;
   data['news_source_id'] = newsSourceId;
   data['date'] = Timestamp.now();
+  data['vote'] = rating;
 
   db.collection('user_rates_news_source').add(data);
 }

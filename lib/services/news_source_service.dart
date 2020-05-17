@@ -229,8 +229,8 @@ class NewsSourceService {
     var boolRating = false;
     if (rating == Rating.Bad) boolRating = false;
     if (rating == Rating.Good) boolRating = true;
-    realtime.rateSource(newsSourceId, userId, boolRating);
-    firestore.rateSource(newsSourceId, userId);
+    // realtime.rateSource(newsSourceId, userId, boolRating);
+    firestore.rateSource(newsSourceId, userId, boolRating);
   }
 }
 
