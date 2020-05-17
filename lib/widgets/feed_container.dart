@@ -34,9 +34,7 @@ mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
   }
 
   Widget refreshControl(Function onRefresh) {
-    return CupertinoSliverRefreshControl(
-      onRefresh: onRefresh,
-    );
+    return defaultRefreshControl(onRefresh: onRefresh);
   }
 
   // shown when the page is loading the new feed
