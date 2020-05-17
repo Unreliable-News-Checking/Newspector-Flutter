@@ -19,3 +19,17 @@ Widget defaultSliverAppBar({
     actions: actions,
   );
 }
+
+Widget defaultRefreshControl({
+  @required Function onRefresh,
+}) {
+  return Theme(
+    data: ThemeData(
+      brightness: Brightness.dark,
+      cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark),
+    ),
+    child: CupertinoSliverRefreshControl(
+      onRefresh: onRefresh,
+    ),
+  );
+}
