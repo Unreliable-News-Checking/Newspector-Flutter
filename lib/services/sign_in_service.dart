@@ -61,6 +61,8 @@ Future<bool> hasSignedInUser() async {
   var firebaseUser = await _firebaseAuth.currentUser();
   var hasSignedInUser = firebaseUser != null;
 
+  if (hasSignedInUser) UserService.userFirebaseId = firebaseUser.uid;
+
   return hasSignedInUser;
 }
 

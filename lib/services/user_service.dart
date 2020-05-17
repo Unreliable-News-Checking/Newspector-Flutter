@@ -52,6 +52,7 @@ class UserService {
   /// Clears the existing user.
   static void clearUser() {
     _user = null;
+    userFirebaseId = null;
   }
 
   /// Fetched the user with the matching [userFirebaseId] from the database.
