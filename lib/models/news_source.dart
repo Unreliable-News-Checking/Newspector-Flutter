@@ -125,25 +125,25 @@ class NewsSource extends Model {
     id = documentSnapshot.documentID;
     twitterUsername = data['username'];
     name = data['name'];
-    followerCount = data['followers_count'];
-    tweetCount = data['tweets_count'];
     website = data['website'];
     photoUrl = data['profile_photo'];
-    newsCount = data['news_count'];
-    membershipCount = data['news_group_membership_count'];
-    reportCount = data['dislike_count'];
     birthday = data['birthday'];
-
     websiteLink = website;
     twitterLink = 'https://twitter/$twitterUsername';
 
+    followerCount = data['followers_count'] ?? 0;
+    tweetCount = data['tweets_count'] ?? 0;
+    newsCount = data['news_count'] ?? 0;
+    membershipCount = data['news_group_membership_count'] ?? 0;
+    reportCount = data['dislike_count'] ?? 0;
+
     populateCategoryMap(data['category_map']);
 
-    firstReporterCount = data['first_reporter'];
-    closeSecondCount = data['close_second'];
-    lateComerCount = data['late_comer'];
-    slowPokeCount = data['slow_poke'];
-    followUpCount = data['follow_up'];
+    firstReporterCount = data['first_reporter'] ?? 0;
+    closeSecondCount = data['close_second'] ?? 0;
+    lateComerCount = data['late_comer'] ?? 0;
+    slowPokeCount = data['slow_poke'] ?? 0;
+    followUpCount = data['follow_up'] ?? 0;
   }
 
   void populateCategoryMap(Map categoryData) {
@@ -170,9 +170,9 @@ class NewsSource extends Model {
 
   void updateRatingsFromDatabase(DataSnapshot dataSnapshot) {
     var data = dataSnapshot.value;
-    likes = data['likes'];
-    dislikes = data['dislikes'];
-    reports = data['reports'];
+    likes = data['likes'] ?? 0;
+    dislikes = data['dislikes'] ?? 0;
+    reports = data['reports'] ?? 0;
 
     rating = max((likes - dislikes) / max(likes + dislikes, 1), 0);
   }

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'feed.dart';
 import 'model.dart';
 
-class NewsGroup extends Model{
+class NewsGroup extends Model {
   String id;
   String category;
   DateTime creationDate;
@@ -23,13 +23,15 @@ class NewsGroup extends Model{
     id = documentSnapshot.documentID;
 
     category = data['category'];
-    creationDate = DateTime.fromMillisecondsSinceEpoch(data['created_at'].toInt());
-    updateDate = DateTime.fromMillisecondsSinceEpoch(data['updated_at'].toInt());
     leaderId = data['group_leader'];
-
     firstReporterId = data['first_reporter'];
     closeSecondId = data['close_second'];
     lateComerId = data['late_comer'];
+
+    var createdAt = data['created_at']?.toInt() ?? 0;
+    var updatedAt = data['updated_at']?.toInt() ?? 0;
+    creationDate = DateTime.fromMillisecondsSinceEpoch(createdAt);
+    updateDate = DateTime.fromMillisecondsSinceEpoch(updatedAt);
 
     sourceCounts = data['source_count_map'].cast<String, int>();
   }

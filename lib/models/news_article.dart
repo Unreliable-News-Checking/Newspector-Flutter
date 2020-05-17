@@ -25,16 +25,17 @@ class NewsArticle extends Model {
   NewsArticle.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
-
-    date = DateTime.fromMillisecondsSinceEpoch(data['date'].toInt());
+    newsSourceId = data['username'];
     isRetweet = data['is_retweet'];
     newsGroupId = data['news_group_id'];
     category = data['perceived_category'];
-    sentiment = data['sentiment_score'];
     headline = data['text'];
     tweetId = data['tweet_id'];
     tweetLink = "https://twitter.com/user/status/$tweetId";
-    newsSourceId = data['username'];
+
+    var _date = data['date']?.toInt() ?? 0;
+    date = DateTime.fromMillisecondsSinceEpoch(_date);
+    sentiment = data['sentiment_score'] ?? 0.0;
 
     if (documentSnapshot.data['photos'].length > 0) {
       photoUrl = documentSnapshot.data['photos'][0];

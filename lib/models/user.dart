@@ -5,7 +5,6 @@ import 'feed.dart';
 class User {
   String id;
   String firebaseId;
-  String notificationToken;
   Feed<String> followingFeed;
 
   User.fromDocument(DocumentSnapshot documentSnapshot) {
