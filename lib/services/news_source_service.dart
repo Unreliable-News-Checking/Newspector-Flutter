@@ -59,14 +59,22 @@ class NewsSourceService {
   /// and assigns the photo to the news version while the new photo is fetched online.
   /// By this the old photo can be used for display while the possibly new photo is fetched.
   static Future<NewsSource> updateAndGetNewsSource(String newsSourceId) async {
+    var _user = UserService.getUser();
+
     var newsSourceDocumentFuture = firestore.getSource(newsSourceId);
     var newsSourceRatingDocumentFuture =
         realtime.getNewsSourceDocument(newsSourceId);
+    var newsSourceAlreadyRatedFuture =
+        firestore.getSourceRatingDocument(newsSourceId, _user.id);
 
-    var futures = await Future.wait(
-        [newsSourceDocumentFuture, newsSourceRatingDocumentFuture]);
+    var futures = await Future.wait([
+      newsSourceDocumentFuture,
+      newsSourceRatingDocumentFuture,
+      newsSourceAlreadyRatedFuture
+    ]);
     var newsSourceDocument = futures[0];
     var newsSourceRatingDocument = futures[1];
+    var newsSourceAlreadyRated = futures[2];
 
     Uint8List photoInBytes;
     if (NewsSourceService.hasNewsSource(newsSourceId)) {
@@ -76,7 +84,8 @@ class NewsSourceService {
     var newsSource = NewsSource.fromDocument(newsSourceDocument);
     NewsSourceService.updateOrAddNewsSource(newsSource);
     newsSource.photoInBytes = photoInBytes;
-    newsSource.updateRatingsFromDatabase(newsSourceRatingDocument);
+    newsSource.updateRatingsFromDatabase(
+        newsSourceRatingDocument, newsSourceAlreadyRated);
 
     return newsSource;
   }
@@ -94,6 +103,8 @@ class NewsSourceService {
   }) async {
     bool refreshWanted = false;
 
+    var _user = UserService.getUser();
+
     // if there is no timestamp a refresh is wanted
     // if there is no feed a refresh is required
     if (lastDocumentId == null || !hasFeed()) {
@@ -110,6 +121,7 @@ class NewsSourceService {
     }
 
     List<Future<DataSnapshot>> newsSourceRatingDocumentFutures = List();
+    List<Future<bool>> newsSourceAlreadyRatedFutures = List();
     List<String> newsSourceIds = List();
     for (var i = 0; i < newsSourceQuery.documents.length; i++) {
       var newsSourceDocument = newsSourceQuery.documents[i];
@@ -119,16 +131,28 @@ class NewsSourceService {
       var newsSourceRatingDocumentFuture =
           realtime.getNewsSourceDocument(newsSourceId);
       newsSourceRatingDocumentFutures.add(newsSourceRatingDocumentFuture);
+
+      var newsSourceAlreadyRatedFuture =
+          firestore.getSourceRatingDocument(newsSourceId, _user.id);
+      newsSourceAlreadyRatedFutures.add(newsSourceAlreadyRatedFuture);
     }
 
-    var newsSourceRatingDocuments =
-        await Future.wait(newsSourceRatingDocumentFutures);
+    var futures = await Future.wait([
+      Future.wait(newsSourceRatingDocumentFutures),
+      Future.wait(newsSourceAlreadyRatedFutures)
+    ]);
 
+    var newsSourceRatingDocuments = futures[0];
+    var newsSourceAlreadyRateds = futures[1];
     for (var i = 0; i < newsSourceQuery.documents.length; i++) {
       var newsSourceRatingDocument = newsSourceRatingDocuments[i];
+      var newsSourceAlreadyRated = newsSourceAlreadyRateds[i];
       var newsSourceId = newsSourceIds[i];
       var newsSource = getNewsSource(newsSourceId);
-      newsSource.updateRatingsFromDatabase(newsSourceRatingDocument);
+      newsSource.updateRatingsFromDatabase(
+        newsSourceRatingDocument,
+        newsSourceAlreadyRated,
+      );
     }
 
     // if there is no feed create one
@@ -205,7 +229,8 @@ class NewsSourceService {
     var numRating = 0;
     if (rating == Rating.Bad) numRating = -1;
     if (rating == Rating.Good) numRating = 1;
-    realtime.rateAccount(newsSourceId, userId, numRating);
+    realtime.rateSource(newsSourceId, userId, numRating);
+    firestore.rateSource(newsSourceId, userId);
   }
 }
 

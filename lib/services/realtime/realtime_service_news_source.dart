@@ -2,7 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'realtime_service.dart';
 
-void rateAccount(
+void rateSource(
   String newsSourceId,
   String userId,
   int rating,

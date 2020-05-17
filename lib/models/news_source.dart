@@ -114,6 +114,8 @@ class NewsSource extends Model {
   int slowPokeCount;
   int followUpCount;
 
+  bool rated;
+
   String birthday;
 
   String websiteLink;
@@ -168,12 +170,13 @@ class NewsSource extends Model {
     categoryMap.orderMap();
   }
 
-  void updateRatingsFromDatabase(DataSnapshot dataSnapshot) {
+  void updateRatingsFromDatabase(DataSnapshot dataSnapshot, bool rated) {
     var data = dataSnapshot.value;
     likes = data['likes'] ?? 0;
     dislikes = data['dislikes'] ?? 0;
     reports = data['reports'] ?? 0;
 
-    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0);
+    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0) * 100;
+    this.rated = rated;
   }
 }

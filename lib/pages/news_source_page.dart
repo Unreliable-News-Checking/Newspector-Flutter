@@ -122,9 +122,10 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 SizedBox(
-                  width: 170,
+                  width: 140,
                   child: sourceName(),
                 ),
+                SizedBox(width: 30),
                 Expanded(
                   child: RaisedButton(
                     onPressed: showRateSheet,
@@ -188,7 +189,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
               headerValue(
                 utils.countToMeaningfulString(_newsSource.newsCount),
               ),
-              headerValue(_newsSource.rating.toStringAsFixed(2)),
+              headerValue(_newsSource.rating.toInt().toString()),
             ],
           ),
         )
@@ -240,6 +241,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(
         _newsSource.name,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -450,10 +452,12 @@ class NewsSourceSheet extends StatefulWidget {
 
 class _NewsSourceSheetState extends State<NewsSourceSheet> {
   bool rated = false;
-
+  NewsSource _newsSource;
   @override
   Widget build(BuildContext context) {
-    if (rated) {
+    _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
+
+    if (_newsSource.rated) {
       return Container(
         height: 200,
         decoration: BoxDecoration(
@@ -470,7 +474,14 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
             Text(
               "Thank you for your feedback!",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "You can rate again next day.",
+              style: TextStyle(
+                fontSize: 18,
               ),
             ),
           ],
@@ -494,9 +505,10 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
           Text(
             "Do you enjoy this News Source?",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 22,
             ),
           ),
+          SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -505,8 +517,14 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
                 padding: EdgeInsets.all(5),
                 child: RaisedButton(
                   onPressed: () => rateNewsSource(Rating.Good),
-                  color: Colors.green,
-                  child: Text("Yes"),
+                  color: Color(0xFF68B55B),
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(
+                      color: app_const.backgroundColor,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -514,8 +532,14 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
                 padding: EdgeInsets.all(5),
                 child: RaisedButton(
                   onPressed: () => rateNewsSource(Rating.Bad),
-                  color: Colors.red,
-                  child: Text("No"),
+                  color: Color(0xFFD04444),
+                  child: Text(
+                    "No",
+                    style: TextStyle(
+                      color: app_const.backgroundColor,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -531,7 +555,7 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
       rating,
     );
     setState(() {
-      rated = true;
+      _newsSource.rated = true;
     });
   }
 }
