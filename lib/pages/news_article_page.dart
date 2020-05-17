@@ -5,6 +5,7 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -99,8 +100,9 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                       Wrap(
                         spacing: 10,
                         children: <Widget>[
-                          sentimentResult(),
+                          tag(),
                           category(),
+                          sentimentResult(),
                         ],
                       ),
                     ],
@@ -266,5 +268,25 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   Widget category() {
     if (_newsArticle.category == "-") return Container();
     return Chip(label: Text(_newsArticle.category));
+  }
+
+  Widget tag() {
+    var _newsGroupId = _newsArticle.newsGroupId;
+    var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
+    var newsFromSourceNo = _newsGroup.sourceCounts[_newsArticle.newsSourceId];
+    var tagText = "";
+    if (_newsGroup.firstReporterId == _newsArticle.id) {
+      tagText = "First Reporter";
+    } else if (newsFromSourceNo != null && newsFromSourceNo > 1) {
+      tagText = "Follow Up";
+    } else if (_newsGroup.closeSecondId == _newsArticle.id) {
+      tagText = "Close Second";
+    } else if (_newsGroup.lateComerId == _newsArticle.id) {
+      tagText = "Late Comer";
+    } else {
+      tagText = "Slow Poke";
+    }
+
+    return Chip(label: Text(tagText));
   }
 }

@@ -44,6 +44,12 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer>
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Uint8List getPhotoInBytes() {
     return widget.newsSource.photoInBytes;
   }

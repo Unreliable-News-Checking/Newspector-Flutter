@@ -12,6 +12,12 @@ class NewsGroup extends Model{
   bool followedByUser;
   String leaderId;
 
+  String firstReporterId;
+  String closeSecondId;
+  String lateComerId;
+
+  Map<String, int> sourceCounts;
+
   NewsGroup.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
@@ -20,6 +26,12 @@ class NewsGroup extends Model{
     creationDate = DateTime.fromMillisecondsSinceEpoch(data['created_at'].toInt());
     updateDate = DateTime.fromMillisecondsSinceEpoch(data['updated_at'].toInt());
     leaderId = data['group_leader'];
+
+    firstReporterId = data['first_reporter'];
+    closeSecondId = data['close_second'];
+    lateComerId = data['late_comer'];
+
+    sourceCounts = data['source_count_map'].cast<String, int>();
   }
 
   void addNewsArticles(List<String> newsArticleIds) {

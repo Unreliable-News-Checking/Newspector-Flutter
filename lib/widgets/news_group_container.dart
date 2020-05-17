@@ -206,8 +206,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget categoryLabel() {
+    String categoryText = _newsGroup.category;
+
     if (_newsGroup.category == "-") {
-      return Positioned(top: 0, left: 0, child: Container());
+      categoryText = "Other";
     }
 
     return Positioned(
@@ -220,7 +222,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
         ),
         child: Chip(
           label: Text(
-            _newsGroup.category,
+            categoryText,
             style: TextStyle(
               fontSize: 12,
               color: Colors.black,

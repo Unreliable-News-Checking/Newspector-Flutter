@@ -14,26 +14,35 @@ class _SignPageState extends State<SignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: app_const.backgroundColor,
-        elevation: 0,
-        title: Text("Sign In"),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: app_const.backgroundColor,
+      //   elevation: 0,
+      //   title: Text("Sign In"),
+      // ),
       body: Container(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.symmetric(vertical: 120),
-                child: Text(
-                  "Newspector",
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.white,
-                  ),
+                child: Icon(
+                  Icons.web,
+                  size: 150,
+                  color: Colors.white,
                 ),
               ),
+              SizedBox(height: 10),
+              Text(
+                "Welcome to",
+                style: TextStyle(fontSize: 15),
+              ),
+              Container(
+                child: Text(
+                  "Newspector",
+                  style: TextStyle(fontSize: 42),
+                ),
+              ),
+              SizedBox(height: 40),
               GoogleSignInButton(onPressed: signIn),
             ],
           ),

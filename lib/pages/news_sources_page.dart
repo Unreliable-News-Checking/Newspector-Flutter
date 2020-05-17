@@ -25,7 +25,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     with FeedContainer<NewsSourcesPage, Feed<String>> {
   Feed<String> _newsSourceFeed;
   ScrollController _scrollController;
-  var pageSize = 11;
+  var pageSize = 20;
   var loadMoreVisible = true;
   var isLoading = false;
 
@@ -130,6 +130,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     );
 
     loadMoreVisible = _newsSourceFeed.getItemCount() >= pageSize;
+    if (mounted) setState(() {});
     return _newsSourceFeed;
   }
 
