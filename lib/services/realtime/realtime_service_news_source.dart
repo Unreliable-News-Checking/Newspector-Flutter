@@ -2,7 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'realtime_service.dart';
 
-void rateAccount(String newsSourceId, String userId, int rating, bool vote) {
+void rateSource(String newsSourceId, String userId, bool vote) {
   String field = vote == true ? "likes" : "dislikes";
 
   final DatabaseReference likeRef =

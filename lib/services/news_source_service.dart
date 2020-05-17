@@ -226,10 +226,10 @@ class NewsSourceService {
 
   static rateNewsSource(String newsSourceId, Rating rating) {
     var userId = UserService.getUser().id;
-    var numRating = 0;
-    if (rating == Rating.Bad) numRating = -1;
-    if (rating == Rating.Good) numRating = 1;
-    realtime.rateSource(newsSourceId, userId, numRating);
+    var boolRating = false;
+    if (rating == Rating.Bad) boolRating = false;
+    if (rating == Rating.Good) boolRating = true;
+    realtime.rateSource(newsSourceId, userId, boolRating);
     firestore.rateSource(newsSourceId, userId);
   }
 }
