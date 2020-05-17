@@ -27,7 +27,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const double containerSize = 230;
   static const double borderRadius = 10.0;
   static const double horizontalMargin = 20.0;
-  Color backgroundColor = app_consts.newsArticleBackgroundColor;
   NewsGroup _newsGroup;
 
   @override

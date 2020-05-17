@@ -49,10 +49,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
       appBar: AppBar(
-        title: Text(
-          "",
-          style: TextStyle(color: Colors.white),
-        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: app_const.backgroundColor,

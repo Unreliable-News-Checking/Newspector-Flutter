@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,7 +68,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
       child: DefaultTextStyle(
         style: CupertinoTheme.of(context).textTheme.textStyle,
         child: CupertinoTabScaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: app_const.backgroundColor,
           tabBar: tabBar(),
           tabBuilder: tabBuilder,
         ),

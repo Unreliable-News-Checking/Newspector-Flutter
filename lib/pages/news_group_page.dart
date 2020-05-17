@@ -176,7 +176,6 @@ class TimelineItem extends StatelessWidget {
                   dontShowDivider: dontShowBottomDivider,
                   newsArticleId: newsArticleId,
                   topMargin: 10,
-                  backgroundColor: app_const.newsArticleBackgroundColor,
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {

@@ -4,9 +4,9 @@ const int homePagePageSize = 8;
 const int followingPagePageSize = 8;
 const int newsGroupPageSize = 10;
 const int maxNewsArticleInNewsGroup = 5;
-Color newsArticleBackgroundColor = Colors.grey.shade900;
-Color backgroundColor = Colors.grey.shade800;
-Color tabBarColor = Colors.grey.shade700;
+Color backgroundColor = Color(0xFF263140);
+Color selectedColor = Color(0xFF429AEC);
+Color defaultTextColor = Color(0xFF9BA5AF);
 
 List<BoxShadow> shadowsForWhiteWidgets() {
   return <BoxShadow>[

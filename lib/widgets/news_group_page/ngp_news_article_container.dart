@@ -9,7 +9,6 @@ import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_conta
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
   final Function onTap;
-  final Color backgroundColor;
   final double topMargin;
   final bool dontShowDivider;
 
@@ -17,7 +16,6 @@ class NewsGroupPageNewsArticleContainer extends StatefulWidget {
     Key key,
     @required this.newsArticleId,
     @required this.onTap,
-    @required this.backgroundColor,
     @required this.topMargin,
     @required this.dontShowDivider,
   }) : super(key: key);
