@@ -42,6 +42,10 @@ Future<FirebaseUser> signInWithGoogle() async {
   return user;
 }
 
+Future<void> debugSignIn() async {
+  await createOrGetUserFromDatabase('JexMFfY4vTV33Gk60Ldu3vAVICt1');
+}
+
 /// Signs out the user from both google and firebase.
 void signOutGoogle() async {
   var googleSignOut = googleSignIn.signOut();

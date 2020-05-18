@@ -44,6 +44,10 @@ class _SignPageState extends State<SignPage> {
               ),
               SizedBox(height: 40),
               GoogleSignInButton(onPressed: signIn),
+              RaisedButton(
+                onPressed: debugSignIn,
+                child: Text("Debug Sign In"),
+              ),
             ],
           ),
         ),
@@ -53,6 +57,14 @@ class _SignPageState extends State<SignPage> {
 
   Future<void> signIn() async {
     await sign_in_service.signInWithGoogle();
+    Navigator.of(context, rootNavigator: true)
+        .pushReplacement(MaterialPageRoute(builder: (context) {
+      return MainNavigationFrame();
+    }));
+  }
+
+  Future<void> debugSignIn() async {
+    await sign_in_service.debugSignIn();
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();
