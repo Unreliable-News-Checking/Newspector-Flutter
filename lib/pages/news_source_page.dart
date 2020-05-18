@@ -1,5 +1,4 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
@@ -8,6 +7,8 @@ import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_c
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
+import 'package:newspector_flutter/widgets/pie_chart.dart';
+import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -320,9 +321,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   }
 
   Widget categoryPie() {
-    var radius = 70.0;
-    var sections = List<PieChartSectionData>();
-    var indicators = List<Indicator>();
+    List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
     var colors = [
       Colors.blue,
       Colors.red,
@@ -340,103 +339,31 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       Colors.lightGreen
     ];
 
-    var colorIndex = 0;
+    bool noData = true;
     for (var i = 0; i < _newsSource.categoryMap.map.length; i++) {
       var category = _newsSource.categoryMap.map.keys.elementAt(i);
       var count = _newsSource.categoryMap.map[category];
 
       if (count == -1) continue;
 
-      var section = PieChartSectionData(
-        color: colors[colorIndex],
-        value: count.toDouble(),
-        showTitle: false,
-        titlePositionPercentageOffset: 0,
-        radius: radius,
+      CircularSegmentEntry item = CircularSegmentEntry(
+        count.toDouble(),
+        colors[i],
+        rankKey: category.toReadableString(),
       );
-
-      var indicator = Indicator(
-        color: colors[colorIndex],
-        text: category.toReadableString(),
-        isSquare: true,
-      );
-
-      colorIndex++;
-      sections.add(section);
-      indicators.add(indicator);
+      items.add(item);
+      noData = false;
     }
 
-    if (sections.isEmpty) return Container();
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: radius * 2,
-            height: radius * 2,
-            margin: EdgeInsets.only(right: 20),
-            child: PieChart(
-              PieChartData(
-                startDegreeOffset: 150,
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                sectionsSpace: 0,
-                centerSpaceRadius: 0,
-                sections: sections,
-              ),
-            ),
-          ),
-          Wrap(
-            spacing: 2,
-            direction: Axis.vertical,
-            children: indicators,
-          )
-        ],
+    List<CircularStackEntry> data = <CircularStackEntry>[
+      new CircularStackEntry(
+        items,
       ),
-    );
-  }
-}
+    ];
+    if (noData) return Container();
 
-class Indicator extends StatelessWidget {
-  final Color color;
-  final String text;
-  final bool isSquare;
-  final double size;
-
-  const Indicator({
-    Key key,
-    this.color,
-    this.text,
-    this.isSquare,
-    this.size = 16,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
-            color: color,
-          ),
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        )
-      ],
-    );
+    return PieContainer(
+        title: "", data: data, colors: colors);
   }
 }
 
