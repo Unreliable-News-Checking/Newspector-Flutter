@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
+import 'package:newspector_flutter/widgets/pie_chart.dart';
+import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 
 class NewsSourcesPage extends StatefulWidget {
   final ScrollController scrollController;
@@ -146,5 +149,54 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     );
 
     loadMoreVisible = lastDocumentId != _newsSourceFeed.getLastItem();
+  }
+
+  Widget firstReporterPie() {
+    List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
+    var colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.pink,
+      Colors.amber,
+      Colors.deepOrange,
+      Colors.teal,
+      Colors.indigo,
+      Colors.brown,
+      Colors.lime,
+      Colors.deepPurple,
+      Colors.lightBlue,
+      Colors.yellow,
+      Colors.lightGreen,
+      Colors.yellow[900],
+      Colors.green[900],
+      Colors.blue[900]
+    ];
+
+    bool noData = true;
+    for (var i = 0; i < _newsSourceFeed.getItemCount(); i++) {
+      var newsSourceId = _newsSourceFeed.getItem(i);
+      var newsSource = NewsSourceService.getNewsSource(newsSourceId);
+
+      if (newsSource.firstReporterCount == 0) continue;
+
+      CircularSegmentEntry item = CircularSegmentEntry(
+        newsSource.firstReporterCount.toDouble(),
+        colors[i],
+        rankKey: newsSource.name,
+      );
+      items.add(item);
+      noData = false;
+    }
+
+    List<CircularStackEntry> data = <CircularStackEntry>[
+      new CircularStackEntry(
+        items,
+      ),
+    ];
+    if (noData) return Container();
+
+    return PieContainer(
+        title: "First Reporter", data: data, colors: colors);
   }
 }
