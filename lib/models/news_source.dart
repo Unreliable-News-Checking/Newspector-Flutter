@@ -7,6 +7,32 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'model.dart';
 
+enum Tags {
+  FirstReporter,
+  CloseSecond,
+  LateComer,
+  SlowPoke,
+  FollowUp
+}
+
+extension TagNaming on Tags {
+  String toReadableString() {
+    switch (this) {
+      case Tags.FirstReporter:
+        return "First Reporter";
+      case Tags.CloseSecond:
+        return "Close Second";
+      case Tags.LateComer:
+        return "Late Comer";
+      case Tags.SlowPoke:
+        return "Slow Poke";
+      default:
+        return "FollowUp";
+    }
+  }
+}
+
+
 extension CategoryNaming on Categories {
   String toReadableString() {
     switch (this) {
@@ -59,12 +85,12 @@ enum Categories {
   Other,
 }
 
-class CategoryMap {
-  Map<Categories, int> temp;
-  LinkedHashMap<Categories, int> map;
+class GenericMap<T> {
+  Map<T, int> temp;
+  LinkedHashMap<T, int> map;
   List sortedList;
 
-  CategoryMap() {
+  GenericMap() {
     temp = Map();
     map = LinkedHashMap();
   }
@@ -76,7 +102,7 @@ class CategoryMap {
 
     var sortedKeys = temp.keys.toList(growable: false)
       ..sort((k2, k1) => temp[k1].compareTo(temp[k2]));
-    LinkedHashMap<Categories, int> sortedMap = LinkedHashMap.fromIterable(
+    LinkedHashMap<T, int> sortedMap = LinkedHashMap.fromIterable(
       sortedKeys,
       key: (k) => k,
       value: (k) => temp[k],
@@ -106,13 +132,8 @@ class NewsSource extends Model {
   int newsGroupFollowerCount;
   int tweetCount;
 
-  CategoryMap categoryMap;
-
-  int firstReporterCount;
-  int closeSecondCount;
-  int lateComerCount;
-  int slowPokeCount;
-  int followUpCount;
+  GenericMap<Categories> categoryMap;
+  GenericMap<Tags> tagMap;
 
   bool rated;
 
@@ -121,6 +142,7 @@ class NewsSource extends Model {
   String websiteLink;
   String twitterLink;
   Uint8List photoInBytes;
+ 
 
   NewsSource.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
@@ -141,15 +163,11 @@ class NewsSource extends Model {
 
     populateCategoryMap(data['category_map']);
 
-    firstReporterCount = data['first_reporter'] ?? 0;
-    closeSecondCount = data['close_second'] ?? 0;
-    lateComerCount = data['late_comer'] ?? 0;
-    slowPokeCount = data['slow_poke'] ?? 0;
-    followUpCount = data['follow_up'] ?? 0;
+    populateTagMap(data);
   }
 
   void populateCategoryMap(Map categoryData) {
-    categoryMap = CategoryMap();
+    categoryMap = GenericMap<Categories>();
     var map = categoryMap.temp;
     map[Categories.Finance] = categoryData['Finance'];
     map[Categories.JobsEducation] = categoryData['Jobs & Education'];
@@ -168,6 +186,18 @@ class NewsSource extends Model {
     map[Categories.Other] = categoryData['Others'];
 
     categoryMap.orderMap();
+  }
+
+  void populateTagMap(Map data) {
+    tagMap = GenericMap<Tags>();
+    var map = tagMap.temp;
+    map[Tags.FirstReporter] = data['first_reporter'] ?? 0;
+    map[Tags.CloseSecond] = data['close_second'] ?? 0;
+    map[Tags.LateComer] =  data['late_comer'] ?? 0;
+    map[Tags.SlowPoke] = data['slow_poke'] ?? 0;
+    map[Tags.FollowUp] = data['follow_up'] ?? 0;
+    
+    tagMap.orderMap();
   }
 
   void updateRatingsFromDatabase(DataSnapshot dataSnapshot, bool rated) {
