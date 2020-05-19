@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
-import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';

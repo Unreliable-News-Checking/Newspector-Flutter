@@ -93,9 +93,11 @@ class NewsSourceService {
   /// Fetches news sources from the database and returns them in a feed.
   ///
   /// The number of news sources that will be fetched is determined by [pageSize].
-  /// The function will return at maximum [pageSize] number of news groups. The [lastDocumentId]
-  /// is optional and is used for pagination. If [lastDocumentId] is specified only documents
-  /// after that document will be fetched. When [lastDocumenId] is a non null value, the fetched documents
+  /// The function will return at maximum [pageSize] number of news groups. 
+  /// If [pageSize] is -1, the entire collection will be returned.
+  /// The [lastDocumentId] is optional and is used for pagination. 
+  /// If [lastDocumentId] is specified only documents after that document will be fetched.
+  ///  When [lastDocumenId] is a non null value, the fetched documents
   /// will be added at the end of the existing feed.
   static Future<Feed<String>> updateAndGetNewsSourceFeed({
     @required int pageSize,

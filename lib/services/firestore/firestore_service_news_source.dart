@@ -11,11 +11,11 @@ Future<DocumentSnapshot> getSource(String newsSourceId) async {
 
 /// Fetches specified number of news sources from the database.
 Future<QuerySnapshot> getSources(int pageLimit) async {
-  QuerySnapshot querySnapshot = await db
-      .collection('accounts')
-      .orderBy("name", descending: false)
-      .limit(pageLimit)
-      .getDocuments();
+  var query = db.collection('accounts').orderBy("name", descending: false);
+
+  if (pageLimit != -1) query = query.limit(pageLimit);
+
+  QuerySnapshot querySnapshot = await query.getDocuments();
 
   return querySnapshot;
 }
