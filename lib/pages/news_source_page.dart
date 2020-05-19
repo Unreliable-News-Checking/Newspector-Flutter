@@ -267,23 +267,23 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             children: <Widget>[
               bigCountLabel(
                 "First Reporter",
-                _newsSource.firstReporterCount.toString(),
+                _newsSource.tagMap.map[Tags.FirstReporter].toString(),
               ),
               bigCountLabel(
                 "Close Second",
-                _newsSource.closeSecondCount.toString(),
+                _newsSource.tagMap.map[Tags.CloseSecond].toString(),
               ),
               bigCountLabel(
                 "Late Comer",
-                _newsSource.lateComerCount.toString(),
+                _newsSource.tagMap.map[Tags.LateComer].toString(),
               ),
               bigCountLabel(
                 "Slow Poke",
-                _newsSource.slowPokeCount.toString(),
+                _newsSource.tagMap.map[Tags.SlowPoke].toString(),
               ),
               bigCountLabel(
                 "Follow Ups",
-                _newsSource.followUpCount.toString(),
+                _newsSource.tagMap.map[Tags.FollowUp].toString(),
               ),
               bigCountLabel(
                 "Group Member",
@@ -362,7 +362,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     ];
     if (noData) return Container();
 
-    return PieContainer(
+    return PieChartContainer(
         title: "", data: data, colors: colors);
   }
 }
