@@ -151,7 +151,8 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     loadMoreVisible = lastDocumentId != _newsSourceFeed.getLastItem();
   }
 
-  Widget firstReporterPie() {
+  Widget pieChart(String title, String field) {
+
     List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
     var colors = [
       Colors.blue,
@@ -161,16 +162,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
       Colors.amber,
       Colors.deepOrange,
       Colors.teal,
-      Colors.indigo,
-      Colors.brown,
-      Colors.lime,
-      Colors.deepPurple,
-      Colors.lightBlue,
-      Colors.yellow,
-      Colors.lightGreen,
-      Colors.yellow[900],
-      Colors.green[900],
-      Colors.blue[900]
     ];
 
     bool noData = true;
@@ -178,10 +169,10 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
       var newsSourceId = _newsSourceFeed.getItem(i);
       var newsSource = NewsSourceService.getNewsSource(newsSourceId);
 
-      if (newsSource.firstReporterCount == 0) continue;
+      if (newsSource.tagMap.map[field] == 0) continue;
 
       CircularSegmentEntry item = CircularSegmentEntry(
-        newsSource.firstReporterCount.toDouble(),
+        newsSource.tagMap.map[field].toDouble(),
         colors[i],
         rankKey: newsSource.name,
       );
@@ -196,7 +187,6 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
     ];
     if (noData) return Container();
 
-    return PieContainer(
-        title: "First Reporter", data: data, colors: colors);
+    return PieChartContainer(title: title, data: data, colors: colors);
   }
 }
