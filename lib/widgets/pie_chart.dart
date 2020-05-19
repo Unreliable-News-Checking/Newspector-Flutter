@@ -6,23 +6,53 @@ import 'package:flutter_circular_text/circular_text.dart';
 class PieChartContainer extends StatelessWidget {
   final String title;
   final List<CircularStackEntry> data;
-  final List<Color> colors;
+
+  final int count;
 
   const PieChartContainer(
       {Key key,
       @required this.title,
       @required this.data,
-      @required this.colors})
+      @required this.count})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<CircularSegmentEntry> dataToDisplay = List<CircularSegmentEntry>();
+
+    if (data[0].entries.length > count) {
+      int otherTotal = 0;
+      for (int i = 0; i < data[0].entries.length; i++) {
+        if (i > count) {
+          otherTotal += data[0].entries.elementAt(i).value.toInt();
+        }
+      }
+      dataToDisplay = data[0].entries.sublist(0, count + 1);
+
+      CircularSegmentEntry otherSegment = CircularSegmentEntry(
+        otherTotal.toDouble(),
+        Colors.grey,
+        rankKey: "Other",
+      );
+
+      dataToDisplay.add(otherSegment);
+    } else {
+      dataToDisplay = data[0].entries;
+    }
+
+    List<CircularStackEntry> stackEntry = <CircularStackEntry>[
+      new CircularStackEntry(
+        dataToDisplay,
+      ),
+    ];
+
     return Container(
+      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: Column(
         children: <Widget>[
           header(title),
-          pieChart(data),
-          legend(context, data),
+          pieChart(stackEntry),
+          legend(context, stackEntry),
         ],
       ),
     );
@@ -75,24 +105,38 @@ Widget pieChart(List<CircularStackEntry> data) {
 
 Widget circularLabels(List<CircularStackEntry> data, double total) {
   List<double> startAngles = List<double>();
+  List<int> percentages = List<int>();
   double lastAngle = -90;
+  int leftPercentage = 100;
+  int percentage = 0;
 
-  for (var entry in data[0].entries) {
-    double occupiedAngle = (entry.value / total) * 360;
+  for (int i = 0; i < data[0].entries.length; i++) {
+    double occupiedAngle = (data[0].entries.elementAt(i).value / total) * 360;
     startAngles.add(lastAngle + occupiedAngle / 2);
     lastAngle += occupiedAngle;
+
+    if (i == data[0].entries.length - 1) {
+      percentages.add(leftPercentage);
+    } else {
+      percentage =
+          ((data[0].entries.elementAt(i).value / total) * 100).round();
+      percentages.add(percentage);
+    }
+
+    leftPercentage -= percentage;
   }
 
   int index = 0;
   return CircularText(
     children: [
-      for (var entry in data[0].entries)
+      for (int i = 0; i < data[0].entries.length; i++)
         TextItem(
+          space: 5,
           text: Text(
-            entry.value.toInt().toString(),
+            percentages[i].toString() + "%",
             style: TextStyle(
               fontSize: 20,
-              color: entry.color,
+              color: data[0].entries.elementAt(i).color,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -111,6 +155,7 @@ Widget legend(BuildContext context, List<CircularStackEntry> data) {
       margin: EdgeInsets.all(10),
       child: Center(
           child: GridView.count(
+        physics: const NeverScrollableScrollPhysics(),
         childAspectRatio: MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 10),
         shrinkWrap: true,
@@ -139,7 +184,7 @@ Widget legendItem(String text, Color color) {
             color: color,
           ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: 5),
         Text(text),
       ],
     ),
