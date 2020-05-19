@@ -10,6 +10,7 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
+
 class NewsSourcesPage extends StatefulWidget {
   final ScrollController scrollController;
 

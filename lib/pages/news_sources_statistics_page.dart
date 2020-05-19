@@ -7,6 +7,9 @@ import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
+import 'package:newspector_flutter/widgets/pie_chart.dart';
+import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:newspector_flutter/models/news_source.dart';
 
 class NewsSourcesStatisticsPage extends StatefulWidget {
   final ScrollController scrollController;
@@ -98,11 +101,11 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+        crossAxisCount: 1,
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return Container(child: Text("Ibne Deniz"));
+          return pie(Tags.values[index]);
         },
         childCount: _newsSourceFeed.getItemCount(),
       ),
@@ -115,5 +118,51 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     );
 
     return _newsSourceFeed;
+  }
+
+  Widget pie(Tags tag) {
+    List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
+    var colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.pink,
+      Colors.amber,
+      Colors.deepOrange,
+      Colors.teal,
+      Colors.indigo,
+      Colors.brown,
+      Colors.lime,
+      Colors.deepPurple,
+      Colors.lightBlue,
+      Colors.yellow,
+      Colors.lightGreen
+    ];
+
+    bool noData = true;
+    for (var i = 0; i < _newsSourceFeed.getItemCount(); i++) {
+      var newsSourceId = _newsSourceFeed.getItem(i);
+      var newsSource = NewsSourceService.getNewsSource(newsSourceId);
+
+      if (newsSource.tagMap.map[tag] == 0) continue;
+
+      CircularSegmentEntry item = CircularSegmentEntry(
+        newsSource.tagMap.map[tag].toDouble(),
+        colors[i],
+        rankKey: newsSource.name,
+      );
+      items.add(item);
+      noData = false;
+    }
+
+    List<CircularStackEntry> data = <CircularStackEntry>[
+      new CircularStackEntry(
+        items,
+      ),
+    ];
+    if (noData) return Container();
+
+    return PieChartContainer(
+        title: tag.toReadableString(), data: data, colors: colors);
   }
 }
