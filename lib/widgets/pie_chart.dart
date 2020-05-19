@@ -6,7 +6,6 @@ import 'package:flutter_circular_text/circular_text.dart';
 class PieChartContainer extends StatelessWidget {
   final String title;
   final List<CircularStackEntry> data;
-
   final int count;
 
   const PieChartContainer(
@@ -157,10 +156,10 @@ Widget legend(BuildContext context, List<CircularStackEntry> data) {
           child: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         childAspectRatio: MediaQuery.of(context).size.width /
-            (MediaQuery.of(context).size.height / 10),
+            (MediaQuery.of(context).size.height / 20),
         shrinkWrap: true,
         primary: false,
-        padding: const EdgeInsets.fromLTRB(40, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
         crossAxisSpacing: 0,
         mainAxisSpacing: 0,
         crossAxisCount: 2,
