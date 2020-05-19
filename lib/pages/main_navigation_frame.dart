@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class MainNavigationFrame extends StatefulWidget {
 
 class _MainNavigationFrameState extends State<MainNavigationFrame> {
   int currentIndex = 0;
+  StreamController scrollStreamController;
+  Stream scrollStream;
 
   final List<GlobalKey<NavigatorState>> tabNavigationKeys = [
     GlobalKey<NavigatorState>(),
@@ -59,6 +63,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         ).show(context);
       },
     );
+
+    scrollStreamController = StreamController.broadcast();
+    scrollStream = scrollStreamController.stream;
   }
 
   @override
@@ -137,7 +144,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
                 scrollController: scrollControllers[1],
               );
             },
-            defaultTitle: 'Followed',
+            defaultTitle: 'Following',
           ),
         );
         break;
@@ -148,7 +155,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
             navigatorKey: tabNavigationKeys[2],
             builder: (BuildContext context) {
               return NewsSourcesTabbedView(
-                scrollController: scrollControllers[2],
+                getScrollStream: () => scrollStreamController.stream,
               );
             },
             defaultTitle: 'Sources',
@@ -190,12 +197,18 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
     var canPop = tabNavigationKeys[currentIndex].currentState.canPop();
     if (canPop) {
       tabNavigationKeys[currentIndex].currentState.popUntil((r) => r.isFirst);
-    } else {
+      return;
+    }
+
+    if (scrollControllers[currentIndex].hasClients) {
       scrollControllers[currentIndex].animateTo(
         0,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeOut,
       );
+      return;
     }
+
+    scrollStreamController.add("scroll_to_top");
   }
 }
