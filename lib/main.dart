@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
@@ -29,10 +30,12 @@ class _MyAppState extends State<MyApp> {
       title: 'Newspector',
       theme: ThemeData(
         primaryColor: app_const.backgroundColor,
-        textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: app_const.defaultTextColor,
-              displayColor: app_const.defaultTextColor,
-            ),
+        textTheme: GoogleFonts.ralewayTextTheme(
+          Theme.of(context).textTheme.apply(
+                bodyColor: app_const.defaultTextColor,
+                displayColor: app_const.defaultTextColor,
+              ),
+        ),
         accentColor: app_const.inactiveColor,
       ),
       home: showHome(),

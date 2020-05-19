@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/services/sign_in_service.dart'
@@ -31,18 +32,18 @@ class _SignPageState extends State<SignPage> {
                   color: app_const.defaultTextColor,
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 30),
               Text(
                 "Welcome to",
                 style: TextStyle(fontSize: 15),
               ),
               Container(
                 child: Text(
-                  "Newspector",
-                  style: TextStyle(fontSize: 42),
+                  "Breakpoint",
+                  style: GoogleFonts.raleway(fontSize: 45),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               GoogleSignInButton(onPressed: signIn),
               RaisedButton(
                 onPressed: debugSignIn,

@@ -4,13 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
+import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
-import 'package:newspector_flutter/widgets/pie_chart.dart';
-import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 
 class NewsSourcesPage extends StatefulWidget {
   final ScrollController scrollController;
@@ -85,7 +84,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
             physics: BouncingScrollPhysics()
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
-              sliverAppBar("Sources"),
+              // sliverAppBar("Sources"),
               refreshControl(getFeed),
               itemList(),
               loadMoreContainer(loadMoreVisible),
@@ -99,7 +98,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
   @override
   Widget itemList() {
     if (_newsSourceFeed.getItemCount() == 0)
-      return emptyList("You are not following any news groups yet.");
+      return emptyList("Currently there are no news sources.");
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -150,43 +149,46 @@ class _NewsSourcesPageState extends State<NewsSourcesPage>
 
     loadMoreVisible = lastDocumentId != _newsSourceFeed.getLastItem();
   }
+}
 
-  Widget pieChart(String title, String field) {
+class NewsSourcesTabbedView extends StatefulWidget {
+  @override
+  _NewsSourcesTabbedViewState createState() => _NewsSourcesTabbedViewState();
+}
 
-    List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
-    var colors = [
-      Colors.blue,
-      Colors.red,
-      Colors.green,
-      Colors.pink,
-      Colors.amber,
-      Colors.deepOrange,
-      Colors.teal,
-    ];
-
-    bool noData = true;
-    for (var i = 0; i < _newsSourceFeed.getItemCount(); i++) {
-      var newsSourceId = _newsSourceFeed.getItem(i);
-      var newsSource = NewsSourceService.getNewsSource(newsSourceId);
-
-      if (newsSource.tagMap.map[field] == 0) continue;
-
-      CircularSegmentEntry item = CircularSegmentEntry(
-        newsSource.tagMap.map[field].toDouble(),
-        colors[i],
-        rankKey: newsSource.name,
-      );
-      items.add(item);
-      noData = false;
-    }
-
-    List<CircularStackEntry> data = <CircularStackEntry>[
-      new CircularStackEntry(
-        items,
+class _NewsSourcesTabbedViewState extends State<NewsSourcesTabbedView> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: app_const.backgroundColor,
+          appBar: TabBar(
+            tabs: [
+              Tab(
+                icon: Text("Sources"),
+              ),
+              Tab(
+                icon: Text("Statistics"),
+              ),
+            ],
+          ),
+          body: TabBarView(
+            children: [
+              NewsSourcesPage(
+                scrollController: ScrollController(),
+              ),
+              Scaffold(
+                backgroundColor: app_const.backgroundColor,
+                body: Center(
+                  child: Text('TODO'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-    ];
-    if (noData) return Container();
-
-    return PieChartContainer(title: title, data: data, colors: colors);
+    );
   }
 }
