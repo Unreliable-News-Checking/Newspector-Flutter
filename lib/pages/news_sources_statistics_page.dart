@@ -3,26 +3,25 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
-import 'package:newspector_flutter/widgets/news_sources_page/news_source_container.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
-class NewsSourcesPage extends StatefulWidget {
+class NewsSourcesStatisticsPage extends StatefulWidget {
   final ScrollController scrollController;
 
-  NewsSourcesPage({
+  NewsSourcesStatisticsPage({
     Key key,
     @required this.scrollController,
   }) : super(key: key);
 
   @override
-  _NewsSourcesPageState createState() => _NewsSourcesPageState();
+  _NewsSourcesStatisticsPageState createState() =>
+      _NewsSourcesStatisticsPageState();
 }
 
-class _NewsSourcesPageState extends State<NewsSourcesPage> {
+class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
   Feed<String> _newsSourceFeed;
   ScrollController _scrollController;
 
@@ -103,19 +102,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return Container(
-            child: NewsSourceContainer(
-              newsSourceId: _newsSourceFeed.getItem(index),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return NewsSourcePage(
-                    newsSourceId: _newsSourceFeed.getItem(index),
-                  );
-                }));
-              },
-            ),
-          );
+          return Container(child: Text("Ibne Deniz"));
         },
         childCount: _newsSourceFeed.getItemCount(),
       ),
@@ -126,6 +113,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: -1,
     );
+
     return _newsSourceFeed;
   }
 }

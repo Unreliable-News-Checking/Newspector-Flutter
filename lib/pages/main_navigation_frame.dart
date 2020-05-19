@@ -2,7 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:newspector_flutter/pages/news_sources_page.dart';
+import 'package:newspector_flutter/pages/news_sources_tabbed_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
@@ -147,10 +147,9 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[2],
             builder: (BuildContext context) {
-              return NewsSourcesTabbedView();
-              // NewsSourcesPage(
-              //   scrollController: scrollControllers[2],
-              // );
+              return NewsSourcesTabbedView(
+                scrollController: scrollControllers[2],
+              );
             },
             defaultTitle: 'Sources',
           ),
