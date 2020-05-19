@@ -99,15 +99,12 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     if (_newsSourceFeed.getItemCount() == 0)
       return Text("Currently there are no news sources.");
 
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
-      ),
+    return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return pie(Tags.values[index]);
         },
-        childCount: _newsSourceFeed.getItemCount(),
+        childCount: Tags.values.length,
       ),
     );
   }
@@ -127,16 +124,20 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
       Colors.red,
       Colors.green,
       Colors.pink,
-      Colors.amber,
+      Colors.cyanAccent,
       Colors.deepOrange,
-      Colors.teal,
+      Colors.greenAccent,
       Colors.indigo,
       Colors.brown,
-      Colors.lime,
+      Colors.yellow,
       Colors.deepPurple,
       Colors.lightBlue,
-      Colors.yellow,
-      Colors.lightGreen
+      Colors.teal,
+      Colors.lightGreen,
+      Colors.limeAccent,
+      Colors.blueGrey,
+      Colors.white,
+      Colors.greenAccent
     ];
 
     bool noData = true;
@@ -155,6 +156,8 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
       noData = false;
     }
 
+    items.sort((a, b) => b.value.compareTo(a.value));
+
     List<CircularStackEntry> data = <CircularStackEntry>[
       new CircularStackEntry(
         items,
@@ -163,6 +166,6 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     if (noData) return Container();
 
     return PieChartContainer(
-        title: tag.toReadableString(), data: data, colors: colors);
+        title: tag.toReadableString(), data: data, count: 5);
   }
 }
