@@ -49,18 +49,14 @@ class _NewsGroupPageNewsArticleContainerState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               date(),
+              source(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        source(),
-                        headline(),
-                      ],
-                    ),
+                    child: headline(),
                   ),
+                  SizedBox(width: 10),
                   getArticleImage(),
                 ],
               ),
