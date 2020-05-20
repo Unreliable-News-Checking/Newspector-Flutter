@@ -80,7 +80,7 @@ class _NewsGroupPageState extends State<NewsGroupPage>
             physics: BouncingScrollPhysics()
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
-              sliverAppBar("Following"),
+              sliverAppBar("Full Coverage"),
               refreshControl(getFeed),
               itemList(),
               loadMoreContainer(loadMoreVisible),
