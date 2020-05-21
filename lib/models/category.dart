@@ -1,102 +1,99 @@
-extension CategoryNaming on Category {
-  String toReadableString() {
-    switch (this) {
-      case Category.Finance:
-        return "Finance";
-      case Category.JobsEducation:
-        return "Jobs & Education";
-      case Category.Travel:
-        return "Travel";
-      case Category.PetsAnimals:
-        return "Pets & Animals";
-      case Category.FoodDrink:
-        return "Food & Drink";
-      case Category.Science:
-        return "Science";
-      case Category.ArtEntertainment:
-        return "Art & Entertainment";
-      case Category.PeopleSociety:
-        return "People & Society";
-      case Category.ComputersElectronics:
-        return "Computers & Electronics";
-      case Category.BusinessIndustrial:
-        return "Business & Industrial";
-      case Category.Health:
-        return "Health";
-      case Category.LawGovernment:
-        return "Law & Government";
-      case Category.Sports:
-        return "Sports";
-      default:
-        return "Other";
-    }
+abstract class Enumeration implements Comparable {
+  String name;
+  int id;
+
+  Enumeration(int id, String name) {
+    this.id = id;
+    this.name = name;
   }
 
-  String toImagePath() {
-    var path = "assets/backgrounds/";
-    var fileName = '';
-    switch (this) {
-      case Category.Finance:
-        fileName = "bussines";
-        break;
-      case Category.JobsEducation:
-        fileName = "jobs";
-        break;
-      case Category.Travel:
-        fileName = "travel";
-        break;
-      case Category.PetsAnimals:
-        fileName = "pets";
-        break;
-      case Category.FoodDrink:
-        fileName = "food";
-        break;
-      case Category.Science:
-        fileName = "science";
-        break;
-      case Category.ArtEntertainment:
-        fileName = "art";
-        break;
-      case Category.PeopleSociety:
-        fileName = "people";
-        break;
-      case Category.ComputersElectronics:
-        fileName = "computer";
-        break;
-      case Category.BusinessIndustrial:
-        fileName = "bussines";
-        break;
-      case Category.Health:
-        fileName = "health";
-        break;
-      case Category.LawGovernment:
-        fileName = "law";
-        break;
-      case Category.Sports:
-        fileName = "sports";
-        break;
-      default:
-        fileName = "other";
-        break;
-    }
+  String toString() => name;
 
-    return '$path$fileName.png';
+  bool equals(Object obj) {
+    var otherValue = obj as Enumeration;
+
+    if (otherValue == null) return false;
+
+    var typeMatches = this.runtimeType == obj.runtimeType;
+    var valueMatches = this.id == otherValue.id;
+
+    return typeMatches && valueMatches;
+  }
+
+  @override
+  int compareTo(Object other) {
+    var _other = other as Enumeration;
+    return this.id.compareTo(_other.id);
   }
 }
 
-enum Category {
-  Finance,
-  JobsEducation,
-  Travel,
-  PetsAnimals,
-  FoodDrink,
-  Science,
-  ArtEntertainment,
-  PeopleSociety,
-  ComputersElectronics,
-  BusinessIndustrial,
-  Health,
-  LawGovernment,
-  Sports,
-  Other,
+class NewsCategory extends Enumeration {
+  static final NewsCategory finance = NewsCategory(1, "Finance", "bussines");
+  static final NewsCategory jobsEducation =
+      NewsCategory(2, "Jobs & Education", 'jobs');
+  static final NewsCategory travel = NewsCategory(3, "Travel", 'travel');
+  static final NewsCategory petsAnimals =
+      NewsCategory(4, "Pets & Animals", 'pets');
+  static final NewsCategory foodDrink = NewsCategory(5, "Food & Drink", 'food');
+  static final NewsCategory science = NewsCategory(6, "Science", 'science');
+  static final NewsCategory artEntertainment =
+      NewsCategory(7, "Art & Entertainment", 'art');
+  static final NewsCategory peopleSociety =
+      NewsCategory(8, "People & Society", 'people');
+  static final NewsCategory computersElectronics =
+      NewsCategory(9, "Computers & Electronics", 'computer');
+  static final NewsCategory businessIndustrial =
+      NewsCategory(10, "Business & Industrial", 'bussines');
+  static final NewsCategory health = NewsCategory(11, "Health", 'health');
+  static final NewsCategory lawGovernment =
+      NewsCategory(12, "Law & Government", 'law');
+  static final NewsCategory sports = NewsCategory(13, "Sports", 'sports');
+  static final NewsCategory other = NewsCategory(14, "Other", 'other');
+
+  String backGroundFileName;
+
+  NewsCategory(int id, String name, this.backGroundFileName) : super(id, name);
+
+  String backgroundImagePath() {
+    var path = "assets/backgrounds/";
+    return '$path$backGroundFileName.png';
+  }
+
+  String iconImagePath() {
+    var path = "assets/category_icons/";
+    return '$path$backGroundFileName.png';
+  }
+
+  static NewsCategory nameToEnum(String category) {
+    switch (category) {
+      case 'Finance':
+        return NewsCategory.finance;
+      case 'Jobs & Education':
+        return NewsCategory.jobsEducation;
+      case 'Travel':
+        return NewsCategory.travel;
+      case 'Pets & Animals':
+        return NewsCategory.petsAnimals;
+      case 'Food & Drink':
+        return NewsCategory.foodDrink;
+      case 'Science':
+        return NewsCategory.science;
+      case 'Art & Entertainment':
+        return NewsCategory.artEntertainment;
+      case 'People & Society':
+        return NewsCategory.peopleSociety;
+      case 'Computers & Electronics':
+        return NewsCategory.computersElectronics;
+      case 'Business & Industrial':
+        return NewsCategory.businessIndustrial;
+      case 'Health':
+        return NewsCategory.health;
+      case 'Law & Government':
+        return NewsCategory.lawGovernment;
+      case 'Sports':
+        return NewsCategory.sports;
+      default:
+        return NewsCategory.other;
+    }
+  }
 }

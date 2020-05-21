@@ -53,7 +53,7 @@ void signOutGoogle() async {
   await Future.wait([googleSignOut, firebaseSignOut]);
 
   NewsArticleService.clearStore();
-  NewsFeedService.clearFeed();
+  NewsFeedService.clearFeeds();
   NewsGroupService.clearStore();
   NewsSourceService.clearFeed();
   NewsSourceService.clearStore();

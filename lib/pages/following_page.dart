@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/models/user.dart';
-import 'package:newspector_flutter/services/user_service.dart';
+import 'package:newspector_flutter/models/feed.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/widgets/news_group_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
@@ -21,11 +21,11 @@ class FollowingPage extends StatefulWidget {
 }
 
 class _FollowingPageState extends State<FollowingPage>
-    with FeedContainer<FollowingPage, User> {
-  User _user;
+    with FeedContainer<FollowingPage, Feed<String>> {
+  Feed<String> _followingFeed;
+  ScrollController _scrollController;
   int pageSize = app_const.followingPagePageSize;
   int newsGroupPageSize = app_const.newsGroupPageSize;
-  ScrollController _scrollController;
   var loadMoreVisible = true;
   var isLoading = false;
 
@@ -38,11 +38,10 @@ class _FollowingPageState extends State<FollowingPage>
   @override
   Widget build(BuildContext context) {
     // if there is an existing feed show that
-    if (UserService.hasUserWithFeed()) {
-      _user = UserService.getUser();
-      loadMoreVisible = _user.followingFeed.getItemCount() < pageSize
-          ? false
-          : loadMoreVisible;
+    if (NewsFeedService.hasFeed(FeedType.Following)) {
+      _followingFeed = NewsFeedService.getFeed(FeedType.Following);
+      loadMoreVisible =
+          _followingFeed.getItemCount() < pageSize ? false : loadMoreVisible;
 
       return homeScaffold();
     }
@@ -95,7 +94,7 @@ class _FollowingPageState extends State<FollowingPage>
   }
 
   Widget itemList() {
-    if (_user.followingFeed.getItemCount() == 0)
+    if (NewsFeedService.getFeed(FeedType.Following).getItemCount() == 0)
       return emptyList("You are not following any news groups yet.");
 
     return SliverList(
@@ -103,39 +102,41 @@ class _FollowingPageState extends State<FollowingPage>
         (context, index) {
           return Container(
             child: NewsGroupContainer(
-              newsGroupId: _user.followingFeed.getItem(index),
+              newsGroupId: _followingFeed.getItem(index),
             ),
           );
         },
-        childCount: _user.followingFeed.getItemCount(),
+        childCount: _followingFeed.getItemCount(),
       ),
     );
   }
 
   ///
   @override
-  Future<User> getFeed() async {
-    _user = await UserService.updateAndGetUserWithFeed(
+  Future<Feed<String>> getFeed() async {
+    _followingFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
+      feedType: FeedType.Following,
     );
-    loadMoreVisible = _user.followingFeed.getItemCount() >= pageSize;
+    loadMoreVisible = _followingFeed.getItemCount() >= pageSize;
+
     if (mounted) setState(() {});
-    return _user;
+    return _followingFeed;
   }
 
   /// this fetches additional items
   /// called when user reached the bottom of the page
   Future<void> fetchAdditionalItems() async {
-    var lastDocumentId = _user.followingFeed.getLastItem();
+    var lastDocumentId = _followingFeed.getLastItem();
 
-    _user = await UserService.updateAndGetUserWithFeed(
+    _followingFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
       newsGroupPageSize: newsGroupPageSize,
+      feedType: FeedType.Following,
     );
 
-    loadMoreVisible = lastDocumentId != _user.followingFeed.getLastItem();
-    if (mounted) setState(() {});
+    loadMoreVisible = lastDocumentId != _followingFeed.getLastItem();
   }
 }

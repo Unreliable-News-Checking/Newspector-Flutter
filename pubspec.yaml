@@ -58,6 +58,7 @@ flutter:
   assets:
     - assets/
     - assets/backgrounds/
+    - assets/category_icons/
 
   fonts:
     - family: Noticia

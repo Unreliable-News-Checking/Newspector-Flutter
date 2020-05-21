@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:newspector_flutter/models/category.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
+import 'package:newspector_flutter/services/user_service.dart';
 import 'firestore_service.dart';
 
 /// Fetches the news group given the document from the database.
@@ -9,30 +12,87 @@ Future<DocumentSnapshot> getNewsGroup(String newsGroupId) async {
 }
 
 /// Fetches the specified number of news groups from the database.
-Future<QuerySnapshot> getNewsGroups(int pageLimit) async {
-  QuerySnapshot querySnapshot = await db
-      .collection('news_groups')
-      .orderBy("updated_at", descending: true)
-      .limit(pageLimit)
-      .getDocuments();
+Future<List<DocumentSnapshot>> getNewsGroups(
+  int pageLimit,
+  FeedType newsFeedType,
+  NewsCategory newsCategory, {
+  String lastDocumentId,
+}) async {
+  List<DocumentSnapshot> tempGroupDocuments;
 
-  return querySnapshot;
-}
+  if (newsFeedType == FeedType.Following) {
+    var userId = (await UserService.getOrFetchUser()).id;
 
-/// Fetches the specified number of news groups after a given document from the database.
-Future<QuerySnapshot> getNewsGroupsAfterDocument(
-    String lastDocumentId, int pageLimit) async {
-  var lastDocument =
-      await db.collection('news_groups').document(lastDocumentId).get();
+    Query query = db
+        .collection('user_follows_news_group')
+        .where('user_id', isEqualTo: userId)
+        .orderBy("date", descending: true);
 
-  QuerySnapshot querySnapshot = await db
-      .collection('news_groups')
-      .orderBy("updated_at", descending: true)
-      .startAfterDocument(lastDocument)
-      .limit(pageLimit)
-      .getDocuments();
+    if (lastDocumentId != null) {
+      var lastDocuments = await db
+          .collection('user_follows_news_group')
+          .where('news_group_id', isEqualTo: lastDocumentId)
+          .getDocuments();
+      var lastDocument = lastDocuments.documents[0];
 
-  return querySnapshot;
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    query = query.limit(pageLimit);
+    var querySnapshot = await query.getDocuments();
+
+    // From the user follows news group documents,
+    // get the news group ids and start fetching the news groups in parallel
+    List<Future<DocumentSnapshot>> newsGroupDocumentFutures = List();
+    for (var userFollowsNewsGroupDoc in querySnapshot.documents) {
+      var newsGroupId = userFollowsNewsGroupDoc.data['news_group_id'];
+      var newsGroupDocumentFuture = getNewsGroup(newsGroupId);
+      newsGroupDocumentFutures.add(newsGroupDocumentFuture);
+    }
+
+    tempGroupDocuments = await Future.wait(newsGroupDocumentFutures);
+  } else if (newsFeedType == FeedType.Home) {
+    Query query =
+        db.collection('news_groups').orderBy("updated_at", descending: true);
+
+    if (lastDocumentId != null) {
+      var lastDocument =
+          await db.collection('news_groups').document(lastDocumentId).get();
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    query = query.limit(pageLimit);
+    var querySnapshot = await query.getDocuments();
+
+    tempGroupDocuments = querySnapshot.documents;
+  } else if (newsFeedType == FeedType.Category) {
+    Query query = db.collection('news_groups');
+
+    if (newsCategory == NewsCategory.other) {
+      query = query.where('category', whereIn: ['-', newsCategory.name]);
+    } else {
+      query = query.where('category', isEqualTo: newsCategory.name);
+    }
+    query = query.orderBy("updated_at", descending: true);
+
+    if (lastDocumentId != null) {
+      var lastDocument =
+          await db.collection('news_groups').document(lastDocumentId).get();
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    query = query.limit(pageLimit);
+    var querySnapshot = await query.getDocuments();
+
+    tempGroupDocuments = querySnapshot.documents;
+  }
+  List<DocumentSnapshot> newsGroupDocuments = List();
+  for (var document in tempGroupDocuments) {
+    if (!document.exists) continue;
+    newsGroupDocuments.add(document);
+  }
+
+  return newsGroupDocuments;
 }
 
 /// Fetches the specified number of news articles from a given news group

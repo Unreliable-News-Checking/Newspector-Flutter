@@ -74,7 +74,7 @@ class NewsSource extends Model {
   int newsGroupFollowerCount;
   int tweetCount;
 
-  GenericMap<Category> categoryMap;
+  GenericMap<NewsCategory> categoryMap;
   GenericMap<Tag> tagMap;
 
   bool rated;
@@ -108,23 +108,23 @@ class NewsSource extends Model {
   }
 
   void populateCategoryMap(Map categoryData) {
-    categoryMap = GenericMap<Category>();
+    categoryMap = GenericMap<NewsCategory>();
     var map = categoryMap.temp;
-    map[Category.Finance] = categoryData['Finance'];
-    map[Category.JobsEducation] = categoryData['Jobs & Education'];
-    map[Category.Travel] = categoryData['Travel'];
-    map[Category.PetsAnimals] = categoryData['Pets & Animals'];
-    map[Category.FoodDrink] = categoryData['Food & Drink'];
-    map[Category.Science] = categoryData['Science'];
-    map[Category.ArtEntertainment] = categoryData['Art & Entertainment'];
-    map[Category.PeopleSociety] = categoryData['People & Society'];
-    map[Category.ComputersElectronics] =
+    map[NewsCategory.finance] = categoryData['Finance'];
+    map[NewsCategory.jobsEducation] = categoryData['Jobs & Education'];
+    map[NewsCategory.travel] = categoryData['Travel'];
+    map[NewsCategory.petsAnimals] = categoryData['Pets & Animals'];
+    map[NewsCategory.foodDrink] = categoryData['Food & Drink'];
+    map[NewsCategory.science] = categoryData['Science'];
+    map[NewsCategory.artEntertainment] = categoryData['Art & Entertainment'];
+    map[NewsCategory.peopleSociety] = categoryData['People & Society'];
+    map[NewsCategory.computersElectronics] =
         categoryData['Computers & Electronics'];
-    map[Category.BusinessIndustrial] = categoryData['Business & Industrial'];
-    map[Category.Health] = categoryData['Health'];
-    map[Category.LawGovernment] = categoryData['Law & Government'];
-    map[Category.Sports] = categoryData['Sports'];
-    map[Category.Other] = categoryData['Others'];
+    map[NewsCategory.businessIndustrial] = categoryData['Business & Industrial'];
+    map[NewsCategory.health] = categoryData['Health'];
+    map[NewsCategory.lawGovernment] = categoryData['Law & Government'];
+    map[NewsCategory.sports] = categoryData['Sports'];
+    map[NewsCategory.other] = categoryData['Others'];
 
     categoryMap.orderMap();
   }
