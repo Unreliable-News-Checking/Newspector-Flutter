@@ -80,8 +80,6 @@ Future<List<DocumentSnapshot>> getNewsGroups(
     query = query.limit(pageLimit);
     var querySnapshot = await query.getDocuments();
 
-    print(querySnapshot.documents.length);
-
     tempGroupDocuments = querySnapshot.documents;
   }
   List<DocumentSnapshot> newsGroupDocuments = List();

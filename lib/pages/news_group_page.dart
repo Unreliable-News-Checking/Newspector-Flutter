@@ -34,7 +34,6 @@ class _NewsGroupPageState extends State<NewsGroupPage>
 
   @override
   Widget build(BuildContext context) {
-    print(widget.newsGroupId);
     if (NewsGroupService.hasNewsGroup(widget.newsGroupId)) {
       _newsGroup = NewsGroupService.getNewsGroup(widget.newsGroupId);
       loadMoreVisible = _newsGroup.newsArticleFeed.getItemCount() < pageSize
