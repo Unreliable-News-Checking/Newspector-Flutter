@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/widgets/photo_container.dart';
+import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 class NewsSourcePhotoContainer extends StatefulWidget {
   final double size;
@@ -62,5 +63,12 @@ class _NewsSourcePhotoContainerState extends State<NewsSourcePhotoContainer>
   @override
   void storeCachedImage(Uint8List photoInBytes) {
     widget.newsSource.photoInBytes = photoInBytes;
+  }
+
+  @override
+  Widget getDefaultPhotoImage() {
+    return Container(
+      color: app_const.activeColor, //Color(0xFF3484F0),
+    );
   }
 }

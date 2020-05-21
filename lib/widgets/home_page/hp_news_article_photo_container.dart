@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/photo_container.dart';
+import 'package:newspector_flutter/models/category.dart';
 
 class HpNewsArticlePhotoContainer extends StatefulWidget {
   final NewsArticle newsArticle;
@@ -67,6 +69,21 @@ class _HpNewsArticlePhotoContainerState
       height: widget.height,
       width: widget.width,
       borderRadius: widget.borderRadius,
+    );
+  }
+
+  @override
+  Widget getDefaultPhotoImage() {
+    var _newsGroupId = widget.newsArticle.newsGroupId;
+    var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
+
+    var imagePath = _newsGroup.category.toImagePath();
+
+    return Container(
+      child: FittedBox(
+        child: Image.asset(imagePath),
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

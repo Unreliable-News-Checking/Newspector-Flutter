@@ -157,8 +157,10 @@ mixin PhotoContainer {
       child: Container(
         height: height,
         width: width,
-        color: app_const.activeColor,//Color(0xFF3484F0),
+        child: getDefaultPhotoImage(),
       ),
     );
   }
+
+  Widget getDefaultPhotoImage();
 }
