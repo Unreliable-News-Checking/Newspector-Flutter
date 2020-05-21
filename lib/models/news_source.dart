@@ -4,85 +4,27 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:newspector_flutter/models/category.dart';
 
 import 'model.dart';
 
-enum Tags {
-  FirstReporter,
-  CloseSecond,
-  LateComer,
-  SlowPoke,
-  FollowUp
-}
+enum Tag { FirstReporter, CloseSecond, LateComer, SlowPoke, FollowUp }
 
-extension TagNaming on Tags {
+extension TagNaming on Tag {
   String toReadableString() {
     switch (this) {
-      case Tags.FirstReporter:
+      case Tag.FirstReporter:
         return "First Reporter";
-      case Tags.CloseSecond:
+      case Tag.CloseSecond:
         return "Close Second";
-      case Tags.LateComer:
+      case Tag.LateComer:
         return "Late Comer";
-      case Tags.SlowPoke:
+      case Tag.SlowPoke:
         return "Slow Poke";
       default:
         return "FollowUp";
     }
   }
-}
-
-
-extension CategoryNaming on Categories {
-  String toReadableString() {
-    switch (this) {
-      case Categories.Finance:
-        return "Finance";
-      case Categories.JobsEducation:
-        return "Jobs & Education";
-      case Categories.Travel:
-        return "Travel";
-      case Categories.PetsAnimals:
-        return "Pets & Animals";
-      case Categories.FoodDrink:
-        return "Food & Drink";
-      case Categories.Science:
-        return "Science";
-      case Categories.ArtEntertainment:
-        return "Art & Entertainment";
-      case Categories.PeopleSociety:
-        return "People & Society";
-      case Categories.ComputersElectronics:
-        return "Computers & Electronics";
-      case Categories.BusinessIndustrial:
-        return "Business & Industrial";
-      case Categories.Health:
-        return "Health";
-      case Categories.LawGovernment:
-        return "Law & Government";
-      case Categories.Sports:
-        return "Sports";
-      default:
-        return "Other";
-    }
-  }
-}
-
-enum Categories {
-  Finance,
-  JobsEducation,
-  Travel,
-  PetsAnimals,
-  FoodDrink,
-  Science,
-  ArtEntertainment,
-  PeopleSociety,
-  ComputersElectronics,
-  BusinessIndustrial,
-  Health,
-  LawGovernment,
-  Sports,
-  Other,
 }
 
 class GenericMap<T> {
@@ -132,8 +74,8 @@ class NewsSource extends Model {
   int newsGroupFollowerCount;
   int tweetCount;
 
-  GenericMap<Categories> categoryMap;
-  GenericMap<Tags> tagMap;
+  GenericMap<Category> categoryMap;
+  GenericMap<Tag> tagMap;
 
   bool rated;
 
@@ -142,7 +84,6 @@ class NewsSource extends Model {
   String websiteLink;
   String twitterLink;
   Uint8List photoInBytes;
- 
 
   NewsSource.fromDocument(DocumentSnapshot documentSnapshot) {
     var data = documentSnapshot.data;
@@ -167,36 +108,36 @@ class NewsSource extends Model {
   }
 
   void populateCategoryMap(Map categoryData) {
-    categoryMap = GenericMap<Categories>();
+    categoryMap = GenericMap<Category>();
     var map = categoryMap.temp;
-    map[Categories.Finance] = categoryData['Finance'];
-    map[Categories.JobsEducation] = categoryData['Jobs & Education'];
-    map[Categories.Travel] = categoryData['Travel'];
-    map[Categories.PetsAnimals] = categoryData['Pets & Animals'];
-    map[Categories.FoodDrink] = categoryData['Food & Drink'];
-    map[Categories.Science] = categoryData['Science'];
-    map[Categories.ArtEntertainment] = categoryData['Art & Entertainment'];
-    map[Categories.PeopleSociety] = categoryData['People & Society'];
-    map[Categories.ComputersElectronics] =
+    map[Category.Finance] = categoryData['Finance'];
+    map[Category.JobsEducation] = categoryData['Jobs & Education'];
+    map[Category.Travel] = categoryData['Travel'];
+    map[Category.PetsAnimals] = categoryData['Pets & Animals'];
+    map[Category.FoodDrink] = categoryData['Food & Drink'];
+    map[Category.Science] = categoryData['Science'];
+    map[Category.ArtEntertainment] = categoryData['Art & Entertainment'];
+    map[Category.PeopleSociety] = categoryData['People & Society'];
+    map[Category.ComputersElectronics] =
         categoryData['Computers & Electronics'];
-    map[Categories.BusinessIndustrial] = categoryData['Business & Industrial'];
-    map[Categories.Health] = categoryData['Health'];
-    map[Categories.LawGovernment] = categoryData['Law & Government'];
-    map[Categories.Sports] = categoryData['Sports'];
-    map[Categories.Other] = categoryData['Others'];
+    map[Category.BusinessIndustrial] = categoryData['Business & Industrial'];
+    map[Category.Health] = categoryData['Health'];
+    map[Category.LawGovernment] = categoryData['Law & Government'];
+    map[Category.Sports] = categoryData['Sports'];
+    map[Category.Other] = categoryData['Others'];
 
     categoryMap.orderMap();
   }
 
   void populateTagMap(Map data) {
-    tagMap = GenericMap<Tags>();
+    tagMap = GenericMap<Tag>();
     var map = tagMap.temp;
-    map[Tags.FirstReporter] = data['first_reporter'] ?? 0;
-    map[Tags.CloseSecond] = data['close_second'] ?? 0;
-    map[Tags.LateComer] =  data['late_comer'] ?? 0;
-    map[Tags.SlowPoke] = data['slow_poke'] ?? 0;
-    map[Tags.FollowUp] = data['follow_up'] ?? 0;
-    
+    map[Tag.FirstReporter] = data['first_reporter'] ?? 0;
+    map[Tag.CloseSecond] = data['close_second'] ?? 0;
+    map[Tag.LateComer] = data['late_comer'] ?? 0;
+    map[Tag.SlowPoke] = data['slow_poke'] ?? 0;
+    map[Tag.FollowUp] = data['follow_up'] ?? 0;
+
     tagMap.orderMap();
   }
 
@@ -206,7 +147,7 @@ class NewsSource extends Model {
     dislikes = data['dislikes'] ?? 0;
     reports = data['reports'] ?? 0;
 
-    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0) * 100;
+    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0).toDouble() * 100;
     this.rated = rated;
   }
 }

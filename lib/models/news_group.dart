@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:newspector_flutter/models/category.dart';
 
 import 'feed.dart';
 import 'model.dart';
 
 class NewsGroup extends Model {
   String id;
-  String category;
+  Category category;
   DateTime creationDate;
   DateTime updateDate;
   Feed newsArticleFeed;
@@ -22,7 +23,8 @@ class NewsGroup extends Model {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
 
-    category = data['category'];
+    assignCategory(data['category']);
+
     leaderId = data['group_leader'];
     firstReporterId = data['first_reporter'];
     closeSecondId = data['close_second'];
@@ -50,5 +52,52 @@ class NewsGroup extends Model {
 
   String getNewsArticleId(int index) {
     return newsArticleFeed.getItem(index);
+  }
+
+  void assignCategory(String category) {
+    switch (category) {
+      case 'Finance':
+        this.category = Category.Finance;
+        break;
+      case 'Jobs & Education':
+        this.category = Category.JobsEducation;
+        break;
+      case 'Travel':
+        this.category = Category.Travel;
+        break;
+      case 'Pets & Animals':
+        this.category = Category.PetsAnimals;
+        break;
+      case 'Food & Drink':
+        this.category = Category.FoodDrink;
+        break;
+      case 'Science':
+        this.category = Category.Science;
+        break;
+      case 'Art & Entertainment':
+        this.category = Category.ArtEntertainment;
+        break;
+      case 'People & Society':
+        this.category = Category.PeopleSociety;
+        break;
+      case 'Computers & Electronics':
+        this.category = Category.ComputersElectronics;
+        break;
+      case 'Business & Industrial':
+        this.category = Category.BusinessIndustrial;
+        break;
+      case 'Health':
+        this.category = Category.Health;
+        break;
+      case 'Law & Government':
+        this.category = Category.LawGovernment;
+        break;
+      case 'Sports':
+        this.category = Category.Sports;
+        break;
+      default:
+        this.category = Category.Other;
+        break;
+    }
   }
 }

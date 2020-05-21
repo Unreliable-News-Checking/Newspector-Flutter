@@ -9,6 +9,7 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:newspector_flutter/models/category.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -107,6 +108,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return CupertinoSliverRefreshControl(onRefresh: () async {
       _newsSource =
           await NewsSourceService.updateAndGetNewsSource(widget.newsSourceId);
+      if (mounted) setState(() {});
     });
   }
 
@@ -190,7 +192,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
               headerValue(
                 utils.countToMeaningfulString(_newsSource.newsCount),
               ),
-              headerValue(_newsSource.rating.toInt().toString()),
+              headerValue('${_newsSource.rating.toInt()}%'),
             ],
           ),
         )
@@ -267,23 +269,23 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             children: <Widget>[
               bigCountLabel(
                 "First Reporter",
-                _newsSource.tagMap.map[Tags.FirstReporter].toString(),
+                _newsSource.tagMap.map[Tag.FirstReporter].toString(),
               ),
               bigCountLabel(
                 "Close Second",
-                _newsSource.tagMap.map[Tags.CloseSecond].toString(),
+                _newsSource.tagMap.map[Tag.CloseSecond].toString(),
               ),
               bigCountLabel(
                 "Late Comer",
-                _newsSource.tagMap.map[Tags.LateComer].toString(),
+                _newsSource.tagMap.map[Tag.LateComer].toString(),
               ),
               bigCountLabel(
                 "Slow Poke",
-                _newsSource.tagMap.map[Tags.SlowPoke].toString(),
+                _newsSource.tagMap.map[Tag.SlowPoke].toString(),
               ),
               bigCountLabel(
                 "Follow Ups",
-                _newsSource.tagMap.map[Tags.FollowUp].toString(),
+                _newsSource.tagMap.map[Tag.FollowUp].toString(),
               ),
               bigCountLabel(
                 "Group Member",

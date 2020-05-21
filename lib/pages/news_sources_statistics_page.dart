@@ -102,9 +102,9 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return pie(Tags.values[index]);
+          return pie(Tag.values[index]);
         },
-        childCount: Tags.values.length,
+        childCount: Tag.values.length,
       ),
     );
   }
@@ -113,11 +113,11 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: -1,
     );
-
+    if (mounted) setState(() {});
     return _newsSourceFeed;
   }
 
-  Widget pie(Tags tag) {
+  Widget pie(Tag tag) {
     List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
     var colors = [
       Colors.blue,

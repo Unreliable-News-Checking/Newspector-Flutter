@@ -10,6 +10,7 @@ import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/dots_indicator.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
+import 'package:newspector_flutter/models/category.dart';
 
 class NewsGroupContainer extends StatefulWidget {
   final String newsGroupId;
@@ -207,11 +208,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   Widget categoryLabel() {
-    String categoryText = _newsGroup.category;
-
-    if (_newsGroup.category == "-") {
-      categoryText = "Other";
-    }
+    String categoryText = _newsGroup.category.toReadableString();
 
     return Positioned(
       top: 0,
