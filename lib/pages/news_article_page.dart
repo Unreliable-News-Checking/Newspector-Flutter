@@ -242,22 +242,8 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     );
   }
 
-  // Widget separatorDot() {
-  //   return Container(
-  //     width: 3,
-  //     height: 3,
-  //     margin: EdgeInsets.symmetric(horizontal: 3),
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(360),
-  //           color: app_consts.defaultTextColor,
-  //     ),
-  //   );
-  // }
-
   Widget sentimentResult() {
-    return Chip(label: Text(_newsArticle.readableSentiment())
-        //  + _newsArticle.sentiment.toString()),
-        );
+    return Chip(label: Text(_newsArticle.readableSentiment()));
   }
 
   Widget category() {
