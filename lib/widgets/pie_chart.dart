@@ -29,7 +29,7 @@ class _PieChartContainerState extends State<PieChartContainer>
   void initState() {
     super.initState();
     animationController = AnimationController(
-        vsync: this, duration: Duration(seconds: 500), upperBound: pi * 2);
+        vsync: this, duration: Duration(seconds: 1), upperBound: pi * 0.3);
     animation = CurvedAnimation(
       parent: animationController,
       curve: Curves.elasticIn,
@@ -107,7 +107,7 @@ class _PieChartContainerState extends State<PieChartContainer>
     return Stack(children: [
       holeLabel(total.toInt().toString()),
       RotationTransition(
-          turns: Tween(begin: 0.0, end: 1.0).animate(animationController),
+          turns: Tween(begin: 0.0, end: 0.1).animate(animationController),
           child: Stack(
             children: [
               Center(child: circularLabels(data, total)),
