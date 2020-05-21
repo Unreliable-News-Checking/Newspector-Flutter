@@ -23,7 +23,7 @@ class NewsGroup extends Model {
     var data = documentSnapshot.data;
     id = documentSnapshot.documentID;
 
-    assignCategory(data['category']);
+    category = NewsCategory.nameToEnum(data['category']);
 
     leaderId = data['group_leader'];
     firstReporterId = data['first_reporter'];
@@ -52,52 +52,5 @@ class NewsGroup extends Model {
 
   String getNewsArticleId(int index) {
     return newsArticleFeed.getItem(index);
-  }
-
-  void assignCategory(String category) {
-    switch (category) {
-      case 'Finance':
-        this.category = NewsCategory.Finance;
-        break;
-      case 'Jobs & Education':
-        this.category = NewsCategory.JobsEducation;
-        break;
-      case 'Travel':
-        this.category = NewsCategory.Travel;
-        break;
-      case 'Pets & Animals':
-        this.category = NewsCategory.PetsAnimals;
-        break;
-      case 'Food & Drink':
-        this.category = NewsCategory.FoodDrink;
-        break;
-      case 'Science':
-        this.category = NewsCategory.Science;
-        break;
-      case 'Art & Entertainment':
-        this.category = NewsCategory.ArtEntertainment;
-        break;
-      case 'People & Society':
-        this.category = NewsCategory.PeopleSociety;
-        break;
-      case 'Computers & Electronics':
-        this.category = NewsCategory.ComputersElectronics;
-        break;
-      case 'Business & Industrial':
-        this.category = NewsCategory.BusinessIndustrial;
-        break;
-      case 'Health':
-        this.category = NewsCategory.Health;
-        break;
-      case 'Law & Government':
-        this.category = NewsCategory.LawGovernment;
-        break;
-      case 'Sports':
-        this.category = NewsCategory.Sports;
-        break;
-      default:
-        this.category = NewsCategory.Other;
-        break;
-    }
   }
 }

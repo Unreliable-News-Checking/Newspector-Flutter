@@ -110,21 +110,21 @@ class NewsSource extends Model {
   void populateCategoryMap(Map categoryData) {
     categoryMap = GenericMap<NewsCategory>();
     var map = categoryMap.temp;
-    map[NewsCategory.Finance] = categoryData['Finance'];
-    map[NewsCategory.JobsEducation] = categoryData['Jobs & Education'];
-    map[NewsCategory.Travel] = categoryData['Travel'];
-    map[NewsCategory.PetsAnimals] = categoryData['Pets & Animals'];
-    map[NewsCategory.FoodDrink] = categoryData['Food & Drink'];
-    map[NewsCategory.Science] = categoryData['Science'];
-    map[NewsCategory.ArtEntertainment] = categoryData['Art & Entertainment'];
-    map[NewsCategory.PeopleSociety] = categoryData['People & Society'];
-    map[NewsCategory.ComputersElectronics] =
+    map[NewsCategory.finance] = categoryData['Finance'];
+    map[NewsCategory.jobsEducation] = categoryData['Jobs & Education'];
+    map[NewsCategory.travel] = categoryData['Travel'];
+    map[NewsCategory.petsAnimals] = categoryData['Pets & Animals'];
+    map[NewsCategory.foodDrink] = categoryData['Food & Drink'];
+    map[NewsCategory.science] = categoryData['Science'];
+    map[NewsCategory.artEntertainment] = categoryData['Art & Entertainment'];
+    map[NewsCategory.peopleSociety] = categoryData['People & Society'];
+    map[NewsCategory.computersElectronics] =
         categoryData['Computers & Electronics'];
-    map[NewsCategory.BusinessIndustrial] = categoryData['Business & Industrial'];
-    map[NewsCategory.Health] = categoryData['Health'];
-    map[NewsCategory.LawGovernment] = categoryData['Law & Government'];
-    map[NewsCategory.Sports] = categoryData['Sports'];
-    map[NewsCategory.Other] = categoryData['Others'];
+    map[NewsCategory.businessIndustrial] = categoryData['Business & Industrial'];
+    map[NewsCategory.health] = categoryData['Health'];
+    map[NewsCategory.lawGovernment] = categoryData['Law & Government'];
+    map[NewsCategory.sports] = categoryData['Sports'];
+    map[NewsCategory.other] = categoryData['Others'];
 
     categoryMap.orderMap();
   }

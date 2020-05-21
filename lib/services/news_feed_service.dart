@@ -30,7 +30,7 @@ class NewsFeedService {
     } else if (feedType == FeedType.Following) {
       _feed = _followingFeed;
     } else if (feedType == FeedType.Category) {
-      var wantedCategory = newsCategory ?? NewsCategory.ArtEntertainment;
+      var wantedCategory = newsCategory ?? NewsCategory.artEntertainment;
       _feed = _categoryFeeds[wantedCategory];
     }
 
@@ -47,7 +47,7 @@ class NewsFeedService {
     } else if (feedType == FeedType.Following) {
       _followingFeed = Feed<String>();
     } else if (feedType == FeedType.Category) {
-      var wantedCategory = newsCategory ?? NewsCategory.ArtEntertainment;
+      var wantedCategory = newsCategory ?? NewsCategory.artEntertainment;
       _categoryFeeds[wantedCategory] = Feed<String>();
     }
   }

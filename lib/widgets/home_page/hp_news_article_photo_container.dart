@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/photo_container.dart';
-import 'package:newspector_flutter/models/category.dart';
 
 class HpNewsArticlePhotoContainer extends StatefulWidget {
   final NewsArticle newsArticle;
@@ -77,7 +76,7 @@ class _HpNewsArticlePhotoContainerState
     var _newsGroupId = widget.newsArticle.newsGroupId;
     var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
 
-    var imagePath = _newsGroup.category.toImagePath();
+    var imagePath = _newsGroup.category.backgroundImagePath();
 
     return Container(
       child: FittedBox(

@@ -9,7 +9,6 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:newspector_flutter/models/category.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -351,7 +350,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       CircularSegmentEntry item = CircularSegmentEntry(
         count.toDouble(),
         colors[i],
-        rankKey: category.toReadableString(),
+        rankKey: category.name,
       );
       items.add(item);
       noData = false;

@@ -4,6 +4,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:newspector_flutter/pages/categories_page.dart';
 import 'package:newspector_flutter/pages/news_sources_tabbed_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
@@ -26,10 +27,12 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   final List<GlobalKey<NavigatorState>> tabNavigationKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>()
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
   ];
 
   final List<ScrollController> scrollControllers = [
+    ScrollController(),
     ScrollController(),
     ScrollController(),
     ScrollController(),
@@ -103,12 +106,18 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         ),
         BottomNavigationBarItem(
           icon: currentIndex == 1
+              ? Icon(EvaIcons.grid)
+              : Icon(EvaIcons.gridOutline),
+          title: null,
+        ),
+        BottomNavigationBarItem(
+          icon: currentIndex == 2
               ? Icon(EvaIcons.bookOpen)
               : Icon(EvaIcons.bookOpenOutline),
           title: null,
         ),
         BottomNavigationBarItem(
-          icon: currentIndex == 2
+          icon: currentIndex == 3
               ? Icon(EvaIcons.search)
               : Icon(EvaIcons.searchOutline),
           title: null,
@@ -118,16 +127,16 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
   }
 
   Widget tabBuilder(BuildContext context, int index) {
-    assert(index >= 0 && index <= 2);
+    assert(index >= 0 && index <= 3);
     switch (index) {
       case 0:
         return WillPopScope(
           onWillPop: () => Future<bool>.value(false),
           child: CupertinoTabView(
-            navigatorKey: tabNavigationKeys[0],
+            navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
               return HomePage(
-                scrollController: scrollControllers[0],
+                scrollController: scrollControllers[index],
               );
             },
             defaultTitle: 'Home',
@@ -138,13 +147,13 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         return WillPopScope(
           onWillPop: () => Future<bool>.value(false),
           child: CupertinoTabView(
-            navigatorKey: tabNavigationKeys[1],
+            navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
-              return FollowingPage(
-                scrollController: scrollControllers[1],
+              return CategoriesPage(
+                scrollController: scrollControllers[index],
               );
             },
-            defaultTitle: 'Following',
+            defaultTitle: 'Categories',
           ),
         );
         break;
@@ -152,7 +161,21 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
         return WillPopScope(
           onWillPop: () => Future<bool>.value(false),
           child: CupertinoTabView(
-            navigatorKey: tabNavigationKeys[2],
+            navigatorKey: tabNavigationKeys[index],
+            builder: (BuildContext context) {
+              return FollowingPage(
+                scrollController: scrollControllers[index],
+              );
+            },
+            defaultTitle: 'Following',
+          ),
+        );
+        break;
+      case 3:
+        return WillPopScope(
+          onWillPop: () => Future<bool>.value(false),
+          child: CupertinoTabView(
+            navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
               return NewsSourcesTabbedView(
                 getScrollStream: () => scrollStreamController.stream,
