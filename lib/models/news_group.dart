@@ -6,7 +6,7 @@ import 'model.dart';
 
 class NewsGroup extends Model {
   String id;
-  Category category;
+  NewsCategory category;
   DateTime creationDate;
   DateTime updateDate;
   Feed newsArticleFeed;
@@ -57,46 +57,46 @@ class NewsGroup extends Model {
   void assignCategory(String category) {
     switch (category) {
       case 'Finance':
-        this.category = Category.Finance;
+        this.category = NewsCategory.Finance;
         break;
       case 'Jobs & Education':
-        this.category = Category.JobsEducation;
+        this.category = NewsCategory.JobsEducation;
         break;
       case 'Travel':
-        this.category = Category.Travel;
+        this.category = NewsCategory.Travel;
         break;
       case 'Pets & Animals':
-        this.category = Category.PetsAnimals;
+        this.category = NewsCategory.PetsAnimals;
         break;
       case 'Food & Drink':
-        this.category = Category.FoodDrink;
+        this.category = NewsCategory.FoodDrink;
         break;
       case 'Science':
-        this.category = Category.Science;
+        this.category = NewsCategory.Science;
         break;
       case 'Art & Entertainment':
-        this.category = Category.ArtEntertainment;
+        this.category = NewsCategory.ArtEntertainment;
         break;
       case 'People & Society':
-        this.category = Category.PeopleSociety;
+        this.category = NewsCategory.PeopleSociety;
         break;
       case 'Computers & Electronics':
-        this.category = Category.ComputersElectronics;
+        this.category = NewsCategory.ComputersElectronics;
         break;
       case 'Business & Industrial':
-        this.category = Category.BusinessIndustrial;
+        this.category = NewsCategory.BusinessIndustrial;
         break;
       case 'Health':
-        this.category = Category.Health;
+        this.category = NewsCategory.Health;
         break;
       case 'Law & Government':
-        this.category = Category.LawGovernment;
+        this.category = NewsCategory.LawGovernment;
         break;
       case 'Sports':
-        this.category = Category.Sports;
+        this.category = NewsCategory.Sports;
         break;
       default:
-        this.category = Category.Other;
+        this.category = NewsCategory.Other;
         break;
     }
   }

@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/user.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'firestore/firestore_service.dart' as firestore;
-import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
 
 class UserService {
@@ -22,7 +20,7 @@ class UserService {
 
   /// Return `true` if there is a user and the user has a feed.
   static bool hasUserWithFeed() {
-    return _hasUser() && _user.hasFeed();
+    return _hasUser() && NewsFeedService.hasFeed(FeedType.Following);
   }
 
   /// If there is an existing user returns it or fetched it from the database.
@@ -91,52 +89,12 @@ class UserService {
       await updateAndGetUser();
     }
 
-    // Get the correct user follows news group documents
-    QuerySnapshot userFollowsGroupQuery;
-    if (refreshWanted) {
-      userFollowsGroupQuery =
-          await firestore.getUserFollowsNewsGroups(_user.id, pageSize);
-    } else {
-      userFollowsGroupQuery =
-          await firestore.getUserFollowsNewsGroupAfterDocument(
-              _user.id, lastDocumentId, pageSize);
-    }
-
-    // From the user follows news group documents,
-    // get the news group ids and start fetching the news groups in parallel
-    List<Future<DocumentSnapshot>> newsGroupDocumentFutures = List();
-    for (var userFollowsNewsGroupDoc in userFollowsGroupQuery.documents) {
-      var newsGroupId = userFollowsNewsGroupDoc.data['news_group_id'];
-      var newsGroupDocumentFuture = firestore.getNewsGroup(newsGroupId);
-      newsGroupDocumentFutures.add(newsGroupDocumentFuture);
-    }
-    List<DocumentSnapshot> tempGroupDocuments =
-        await Future.wait(newsGroupDocumentFutures);
-
-    List<DocumentSnapshot> newsGroupDocuments = List();
-    for (var document in tempGroupDocuments) {
-      if (!document.exists) continue;
-      newsGroupDocuments.add(document);
-    }
-
-    List<String> newsGroupIds =
-        await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
-      newsGroupDocuments,
-      newsGroupPageSize,
+    await NewsFeedService.updateAndGetNewsFeed(
+      pageSize: pageSize,
+      newsGroupPageSize: newsGroupPageSize,
+      feedType: FeedType.Following,
+      lastDocumentId: lastDocumentId,
     );
-
-    // if there is no feed create one
-    if (!hasUserWithFeed()) {
-      _user.followingFeed = Feed<String>();
-    }
-
-    // if refresh is wanted clear the feed
-    if (refreshWanted) {
-      _user.followingFeed.clearItems();
-    }
-
-    // add the items to feed
-    _user.followingFeed.addAdditionalItems(newsGroupIds);
 
     return _user;
   }

@@ -1,31 +1,31 @@
-extension CategoryNaming on Category {
+extension CategoryNaming on NewsCategory {
   String toReadableString() {
     switch (this) {
-      case Category.Finance:
+      case NewsCategory.Finance:
         return "Finance";
-      case Category.JobsEducation:
+      case NewsCategory.JobsEducation:
         return "Jobs & Education";
-      case Category.Travel:
+      case NewsCategory.Travel:
         return "Travel";
-      case Category.PetsAnimals:
+      case NewsCategory.PetsAnimals:
         return "Pets & Animals";
-      case Category.FoodDrink:
+      case NewsCategory.FoodDrink:
         return "Food & Drink";
-      case Category.Science:
+      case NewsCategory.Science:
         return "Science";
-      case Category.ArtEntertainment:
+      case NewsCategory.ArtEntertainment:
         return "Art & Entertainment";
-      case Category.PeopleSociety:
+      case NewsCategory.PeopleSociety:
         return "People & Society";
-      case Category.ComputersElectronics:
+      case NewsCategory.ComputersElectronics:
         return "Computers & Electronics";
-      case Category.BusinessIndustrial:
+      case NewsCategory.BusinessIndustrial:
         return "Business & Industrial";
-      case Category.Health:
+      case NewsCategory.Health:
         return "Health";
-      case Category.LawGovernment:
+      case NewsCategory.LawGovernment:
         return "Law & Government";
-      case Category.Sports:
+      case NewsCategory.Sports:
         return "Sports";
       default:
         return "Other";
@@ -36,43 +36,43 @@ extension CategoryNaming on Category {
     var path = "assets/backgrounds/";
     var fileName = '';
     switch (this) {
-      case Category.Finance:
+      case NewsCategory.Finance:
         fileName = "bussines";
         break;
-      case Category.JobsEducation:
+      case NewsCategory.JobsEducation:
         fileName = "jobs";
         break;
-      case Category.Travel:
+      case NewsCategory.Travel:
         fileName = "travel";
         break;
-      case Category.PetsAnimals:
+      case NewsCategory.PetsAnimals:
         fileName = "pets";
         break;
-      case Category.FoodDrink:
+      case NewsCategory.FoodDrink:
         fileName = "food";
         break;
-      case Category.Science:
+      case NewsCategory.Science:
         fileName = "science";
         break;
-      case Category.ArtEntertainment:
+      case NewsCategory.ArtEntertainment:
         fileName = "art";
         break;
-      case Category.PeopleSociety:
+      case NewsCategory.PeopleSociety:
         fileName = "people";
         break;
-      case Category.ComputersElectronics:
+      case NewsCategory.ComputersElectronics:
         fileName = "computer";
         break;
-      case Category.BusinessIndustrial:
+      case NewsCategory.BusinessIndustrial:
         fileName = "bussines";
         break;
-      case Category.Health:
+      case NewsCategory.Health:
         fileName = "health";
         break;
-      case Category.LawGovernment:
+      case NewsCategory.LawGovernment:
         fileName = "law";
         break;
-      case Category.Sports:
+      case NewsCategory.Sports:
         fileName = "sports";
         break;
       default:
@@ -84,7 +84,7 @@ extension CategoryNaming on Category {
   }
 }
 
-enum Category {
+enum NewsCategory {
   Finance,
   JobsEducation,
   Travel,

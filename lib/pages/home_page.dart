@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    if (NewsFeedService.hasFeed()) {
-      _newsFeed = NewsFeedService.getFeed();
+    if (NewsFeedService.hasFeed(FeedType.Home)) {
+      _newsFeed = NewsFeedService.getFeed(FeedType.Home);
       loadMoreVisible =
           _newsFeed.getItemCount() < pageSize ? false : loadMoreVisible;
 
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage>
 
   Widget itemList() {
     if (_newsFeed.getItemCount() == 0)
-      return emptyList("You are not following any news groups yet.");
+      return emptyList("There are no news groups yet.");
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -132,6 +132,7 @@ class _HomePageState extends State<HomePage>
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
+      feedType: FeedType.Home,
     );
 
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
@@ -147,6 +148,7 @@ class _HomePageState extends State<HomePage>
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
       newsGroupPageSize: newsGroupPageSize,
+      feedType: FeedType.Home,
     );
 
     loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();
