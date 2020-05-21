@@ -66,10 +66,14 @@ Future<List<DocumentSnapshot>> getNewsGroups(
 
     tempGroupDocuments = querySnapshot.documents;
   } else if (newsFeedType == FeedType.Category) {
-    Query query = db
-        .collection('news_groups')
-        .where('category', isEqualTo: newsCategory.name)
-        .orderBy("updated_at", descending: true);
+    Query query = db.collection('news_groups');
+
+    if (newsCategory == NewsCategory.other) {
+      query = query.where('category', whereIn: ['-', newsCategory.name]);
+    } else {
+      query = query.where('category', isEqualTo: newsCategory.name);
+    }
+    query = query.orderBy("updated_at", descending: true);
 
     if (lastDocumentId != null) {
       var lastDocument =
