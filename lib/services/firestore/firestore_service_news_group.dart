@@ -65,8 +65,25 @@ Future<List<DocumentSnapshot>> getNewsGroups(
     var querySnapshot = await query.getDocuments();
 
     tempGroupDocuments = querySnapshot.documents;
-  }
+  } else if (newsFeedType == FeedType.Category) {
+    Query query = db
+        .collection('news_groups')
+        .where('category', isEqualTo: newsCategory.name)
+        .orderBy("updated_at", descending: true);
 
+    if (lastDocumentId != null) {
+      var lastDocument =
+          await db.collection('news_groups').document(lastDocumentId).get();
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    query = query.limit(pageLimit);
+    var querySnapshot = await query.getDocuments();
+
+    print(querySnapshot.documents.length);
+
+    tempGroupDocuments = querySnapshot.documents;
+  }
   List<DocumentSnapshot> newsGroupDocuments = List();
   for (var document in tempGroupDocuments) {
     if (!document.exists) continue;

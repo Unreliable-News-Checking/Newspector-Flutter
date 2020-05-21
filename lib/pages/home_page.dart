@@ -2,29 +2,35 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:newspector_flutter/models/category.dart';
 import 'package:newspector_flutter/models/feed.dart';
-import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/widgets/news_group_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
-import 'package:newspector_flutter/services/sign_in_service.dart'
-    as sign_in_service;
 
-class HomePage extends StatefulWidget {
+class NewsFeedPage extends StatefulWidget {
   final ScrollController scrollController;
+  final FeedType feedType;
+  final NewsCategory newsCategory;
+  final String title;
+  final List<Widget> actions;
 
-  HomePage({
+  NewsFeedPage({
     Key key,
     @required this.scrollController,
+    @required this.feedType,
+    @required this.title,
+    this.newsCategory,
+    this.actions,
   }) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _NewsFeedPageState createState() => _NewsFeedPageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with FeedContainer<HomePage, Feed<String>> {
+class _NewsFeedPageState extends State<NewsFeedPage>
+    with FeedContainer<NewsFeedPage, Feed<String>> {
   Feed<String> _newsFeed;
   ScrollController _scrollController;
   var pageSize = app_const.homePagePageSize;
@@ -40,8 +46,10 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    if (NewsFeedService.hasFeed(FeedType.Home)) {
-      _newsFeed = NewsFeedService.getFeed(FeedType.Home);
+    if (NewsFeedService.hasFeed(widget.feedType,
+        newsCategory: widget.newsCategory)) {
+      _newsFeed = NewsFeedService.getFeed(widget.feedType,
+          newsCategory: widget.newsCategory);
       loadMoreVisible =
           _newsFeed.getItemCount() < pageSize ? false : loadMoreVisible;
 
@@ -56,7 +64,7 @@ class _HomePageState extends State<HomePage>
             return homeScaffold();
             break;
           default:
-            return loadingScaffold("Newspector");
+            return loadingScaffold(widget.title);
         }
       },
     );
@@ -83,19 +91,8 @@ class _HomePageState extends State<HomePage>
                 .applyTo(AlwaysScrollableScrollPhysics()),
             slivers: <Widget>[
               sliverAppBar(
-                "Newspector",
-                actions: <Widget>[
-                  CloseButton(
-                    onPressed: () {
-                      sign_in_service.signOutGoogle();
-                      Navigator.of(context, rootNavigator: true)
-                          .pushReplacement(
-                              MaterialPageRoute(builder: (context) {
-                        return SignPage();
-                      }));
-                    },
-                  ),
-                ],
+                widget.title,
+                actions: widget.actions,
               ),
               refreshControl(getFeed),
               itemList(),
@@ -132,7 +129,8 @@ class _HomePageState extends State<HomePage>
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
-      feedType: FeedType.Home,
+      feedType: widget.feedType,
+      newsCategory: widget.newsCategory,
     );
 
     loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
@@ -148,7 +146,8 @@ class _HomePageState extends State<HomePage>
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
       newsGroupPageSize: newsGroupPageSize,
-      feedType: FeedType.Home,
+      feedType: widget.feedType,
+      newsCategory: widget.newsCategory,
     );
 
     loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();

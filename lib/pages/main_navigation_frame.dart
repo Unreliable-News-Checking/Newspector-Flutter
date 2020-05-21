@@ -9,6 +9,10 @@ import 'package:newspector_flutter/pages/news_sources_tabbed_page.dart';
 import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/services/news_feed_service.dart';
+import 'package:newspector_flutter/pages/sign_page.dart';
+import 'package:newspector_flutter/services/sign_in_service.dart'
+    as sign_in_service;
 
 import 'following_page.dart';
 import 'home_page.dart';
@@ -135,8 +139,22 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
-              return HomePage(
+              return NewsFeedPage(
                 scrollController: scrollControllers[index],
+                feedType: FeedType.Home,
+                title: "Breakpoint",
+                actions: <Widget>[
+                  CloseButton(
+                    onPressed: () {
+                      sign_in_service.signOutGoogle();
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                        return SignPage();
+                      }));
+                    },
+                  ),
+                ],
               );
             },
             defaultTitle: 'Home',
@@ -150,7 +168,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
             navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
               return CategoriesPage(
-                scrollController: scrollControllers[index],
+                getScrollStream: () => scrollStreamController.stream,
               );
             },
             defaultTitle: 'Categories',
