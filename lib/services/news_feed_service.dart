@@ -80,10 +80,6 @@ class NewsFeedService {
 
   /// Clears all the feeds in this class.
   static void clearFeeds() {
-    _homeFeed.clearItems();
-    _followingFeed.clearItems();
-    _categoryFeeds.clear();
-
     _homeFeed = null;
     _followingFeed = null;
     _categoryFeeds = Map();

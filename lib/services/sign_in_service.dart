@@ -2,12 +2,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:newspector_flutter/models/user.dart';
-import 'package:newspector_flutter/services/news_feed_service.dart';
-import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
+import 'package:newspector_flutter/utilities.dart';
 import 'firestore/firestore_service.dart' as firestore;
-import 'news_article_service.dart';
 
 final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -52,12 +49,7 @@ void signOutGoogle() async {
   var firebaseSignOut = _firebaseAuth.signOut();
   await Future.wait([googleSignOut, firebaseSignOut]);
 
-  NewsArticleService.clearStore();
-  NewsFeedService.clearFeeds();
-  NewsGroupService.clearStore();
-  NewsSourceService.clearFeed();
-  NewsSourceService.clearStore();
-  UserService.clearUser();
+  clearStoresAndServices();
 }
 
 /// Returns `true` if there is signed in firebase user.

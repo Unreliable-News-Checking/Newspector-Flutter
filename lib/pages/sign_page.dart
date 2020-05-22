@@ -4,6 +4,7 @@ import 'package:newspector_flutter/pages/main_navigation_frame.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/services/sign_in_service.dart'
     as sign_in_service;
+import 'package:newspector_flutter/utilities.dart';
 
 class SignPage extends StatefulWidget {
   @override
@@ -15,11 +16,6 @@ class _SignPageState extends State<SignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
-      // appBar: AppBar(
-      //   backgroundColor: app_const.backgroundColor,
-      //   elevation: 0,
-      //   title: Text("Sign In"),
-      // ),
       body: Container(
         child: Center(
           child: Column(
@@ -58,6 +54,7 @@ class _SignPageState extends State<SignPage> {
 
   Future<void> signIn() async {
     await sign_in_service.signInWithGoogle();
+    clearStoresAndServices();
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();
@@ -66,6 +63,7 @@ class _SignPageState extends State<SignPage> {
 
   Future<void> debugSignIn() async {
     await sign_in_service.debugSignIn();
+    clearStoresAndServices();
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();

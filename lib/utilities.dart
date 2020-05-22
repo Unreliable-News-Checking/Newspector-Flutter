@@ -1,4 +1,9 @@
 import 'dart:math';
+import 'package:newspector_flutter/services/news_article_service.dart';
+import 'package:newspector_flutter/services/news_feed_service.dart';
+import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
+import 'package:newspector_flutter/services/user_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String timestampToMeaningfulTime(DateTime date) {
@@ -84,4 +89,13 @@ Future<bool> goToUrl(String url) async {
 
   await launch(url);
   return true;
+}
+
+void clearStoresAndServices() {
+  NewsArticleService.clearStore();
+  NewsFeedService.clearFeeds();
+  NewsGroupService.clearStore();
+  NewsSourceService.clearFeed();
+  NewsSourceService.clearStore();
+  UserService.clearUser();
 }
