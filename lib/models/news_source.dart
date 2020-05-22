@@ -57,7 +57,6 @@ class NewsSource extends Model {
   String id;
   String name;
   String twitterUsername;
-  String website;
   String photoUrl;
 
   int followerCount;
@@ -90,10 +89,14 @@ class NewsSource extends Model {
     id = documentSnapshot.documentID;
     twitterUsername = data['username'];
     name = data['name'];
-    website = data['website'];
     photoUrl = data['profile_photo'];
     birthday = data['birthday'];
-    websiteLink = website;
+
+    websiteLink = data['website'];
+    if (!websiteLink.contains("http")) {
+      websiteLink = "https://" + websiteLink;
+    }
+
     twitterLink = 'https://twitter/$twitterUsername';
 
     followerCount = data['followers_count'] ?? 0;
@@ -120,7 +123,8 @@ class NewsSource extends Model {
     map[NewsCategory.peopleSociety] = categoryData['People & Society'];
     map[NewsCategory.computersElectronics] =
         categoryData['Computers & Electronics'];
-    map[NewsCategory.businessIndustrial] = categoryData['Business & Industrial'];
+    map[NewsCategory.businessIndustrial] =
+        categoryData['Business & Industrial'];
     map[NewsCategory.health] = categoryData['Health'];
     map[NewsCategory.lawGovernment] = categoryData['Law & Government'];
     map[NewsCategory.sports] = categoryData['Sports'];

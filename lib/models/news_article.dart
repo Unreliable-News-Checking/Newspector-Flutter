@@ -43,6 +43,9 @@ class NewsArticle extends Model {
 
     if (documentSnapshot.data['urls'].length > 0) {
       websiteLink = documentSnapshot.data['urls'][0];
+      if (!websiteLink.contains("http")) {
+        websiteLink = "https://" + websiteLink;
+      }
     }
   }
 
