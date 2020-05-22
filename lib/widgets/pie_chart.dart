@@ -39,6 +39,12 @@ class _PieChartContainerState extends State<PieChartContainer>
   }
 
   @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<CircularSegmentEntry> dataToDisplay = List<CircularSegmentEntry>();
     var entries = widget.data[0].entries;
