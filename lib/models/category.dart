@@ -28,7 +28,7 @@ abstract class Enumeration implements Comparable {
 }
 
 class NewsCategory extends Enumeration {
-  static final NewsCategory finance = NewsCategory(1, "Finance", "bussines");
+  static final NewsCategory finance = NewsCategory(1, "Finance", "finance");
   static final NewsCategory jobsEducation =
       NewsCategory(2, "Jobs & Education", 'jobs');
   static final NewsCategory travel = NewsCategory(3, "Travel", 'travel');
