@@ -104,7 +104,7 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
         (context, index) {
           return pie(Tag.values[index]);
         },
-        childCount: Tag.values.length,
+        childCount: Tag.values.length
       ),
     );
   }
@@ -166,6 +166,6 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     if (noData) return Container();
 
     return PieChartContainer(
-        title: tag.toReadableString(), data: data, count: 5);
+        title: tag.toReadableString(), data: data, count: 4);
   }
 }

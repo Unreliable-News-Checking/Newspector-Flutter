@@ -21,20 +21,26 @@ class PieChartContainer extends StatefulWidget {
 }
 
 class _PieChartContainerState extends State<PieChartContainer>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   AnimationController animationController;
   Animation<double> animation;
+  bool keepAlive = true;
+
 
   @override
   void initState() {
     super.initState();
     animationController = AnimationController(
-        vsync: this, duration: Duration(seconds: 1), upperBound: pi * 0.3);
+        vsync: this, duration: Duration(seconds: 4), upperBound: pi * 1);
     animation = CurvedAnimation(
       parent: animationController,
-      curve: Curves.elasticIn,
-    );
-
+      curve: Curves.bounceIn,
+    )..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          print("Animation Stopped");
+        }
+      });
+    
     animationController.forward();
   }
 
@@ -46,6 +52,9 @@ class _PieChartContainerState extends State<PieChartContainer>
 
   @override
   Widget build(BuildContext context) {
+    print("Called Build");
+    super.build(context);
+    
     List<CircularSegmentEntry> dataToDisplay = List<CircularSegmentEntry>();
     var entries = widget.data[0].entries;
     var count = widget.count;
@@ -235,4 +244,7 @@ class _PieChartContainerState extends State<PieChartContainer>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => keepAlive;
 }
