@@ -1,16 +1,16 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
-
 import 'hp_news_article_photo_container.dart';
 
 class HomePageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
-  final Function onTap;
+  // final Function onTap;
   final bool shorten;
   final double height;
   final double borderRadius;
@@ -20,7 +20,7 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   HomePageNewsArticleContainer({
     Key key,
     @required this.newsArticleId,
-    @required this.onTap,
+    // @required this.onTap,
     @required this.shorten,
     @required this.height,
     @required this.borderRadius,
@@ -45,12 +45,18 @@ class _HomePageNewsArticleContainerState
       margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
       child: GestureDetector(
         onTap: () {
-          widget.onTap();
+          // widget.onTap();
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return NewsArticlePage(
+              heroKey: this.hashCode.toString(),
+              newsArticleId: widget.newsArticleId,
+            );
+          }));
         },
         child: Stack(
           children: <Widget>[
             Hero(
-              tag: "hp_nap_${widget.newsArticleId}",
+              tag: "${widget.newsArticleId}_${this.hashCode}",
               child: Container(
                 child: HpNewsArticlePhotoContainer(
                   newsArticle: _newsArticle,

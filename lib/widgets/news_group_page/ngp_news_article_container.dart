@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -9,14 +10,14 @@ import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_conta
 
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
-  final Function onTap;
+  // final Function onTap;
   final double topMargin;
   final bool dontShowDivider;
 
   NewsGroupPageNewsArticleContainer({
     Key key,
     @required this.newsArticleId,
-    @required this.onTap,
+    // @required this.onTap,
     @required this.topMargin,
     @required this.dontShowDivider,
   }) : super(key: key);
@@ -38,7 +39,13 @@ class _NewsGroupPageNewsArticleContainerState
 
     return GestureDetector(
       onTap: () {
-        widget.onTap();
+        // widget.onTap();
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return NewsArticlePage(
+            newsArticleId: widget.newsArticleId,
+            heroKey: this.hashCode.toString(),
+          );
+        }));
       },
       child: Container(
         // padding: EdgeInsets.all(10),

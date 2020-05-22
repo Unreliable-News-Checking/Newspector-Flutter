@@ -8,8 +8,6 @@ import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/news_group_page/ngp_news_article_container.dart';
 
-import 'news_article_page.dart';
-
 class NewsGroupPage extends StatefulWidget {
   final String newsGroupId;
 
@@ -175,14 +173,14 @@ class TimelineItem extends StatelessWidget {
                   dontShowDivider: dontShowBottomDivider,
                   newsArticleId: newsArticleId,
                   topMargin: 10,
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return NewsArticlePage(
-                        newsArticleId: newsArticleId,
-                      );
-                    }));
-                  },
+                  // onTap: () {
+                  //   Navigator.of(context)
+                  //       .push(MaterialPageRoute(builder: (context) {
+                  //     return NewsArticlePage(
+                  //       newsArticleId: newsArticleId,
+                  //     );
+                  //   }));
+                  // },
                 ),
               ),
             ),

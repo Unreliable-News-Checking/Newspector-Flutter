@@ -4,7 +4,6 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
-import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/widgets/dots_indicator.dart';
@@ -80,13 +79,13 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           newsArticleId: _newsGroup.getNewsArticleId(index),
           shorten: true,
           alone: alone,
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return NewsArticlePage(
-                newsArticleId: _newsGroup.getNewsArticleId(index),
-              );
-            }));
-          },
+          // onTap: () {
+          //   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          //     return NewsArticlePage(
+          //       newsArticleId: _newsGroup.getNewsArticleId(index),
+          //     );
+          //   }));
+          // },
         ),
       ),
     );

@@ -14,8 +14,13 @@ import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
 class NewsArticlePage extends StatefulWidget {
   final String newsArticleId;
+  final String heroKey;
 
-  NewsArticlePage({Key key, @required this.newsArticleId}) : super(key: key);
+  NewsArticlePage({
+    Key key,
+    @required this.newsArticleId,
+    @required this.heroKey,
+  }) : super(key: key);
 
   @override
   _NewsArticlePageState createState() => _NewsArticlePageState();
@@ -141,7 +146,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
 
   Widget newsArticlePhoto() {
     return Hero(
-      tag: "hp_nap_${widget.newsArticleId}",
+      tag: "${widget.newsArticleId}_${widget.heroKey}",
       child: Container(
         child: HpNewsArticlePhotoContainer(
           newsArticle: _newsArticle,
