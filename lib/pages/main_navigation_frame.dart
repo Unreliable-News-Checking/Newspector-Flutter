@@ -14,7 +14,6 @@ import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/sign_in_service.dart'
     as sign_in_service;
 
-import 'following_page.dart';
 import 'home_page.dart';
 import 'news_group_page.dart';
 
@@ -181,8 +180,10 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
           child: CupertinoTabView(
             navigatorKey: tabNavigationKeys[index],
             builder: (BuildContext context) {
-              return FollowingPage(
+              return NewsFeedPage(
                 scrollController: scrollControllers[index],
+                feedType: FeedType.Following,
+                title: "Following",
               );
             },
             defaultTitle: 'Following',

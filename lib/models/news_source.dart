@@ -147,7 +147,7 @@ class NewsSource extends Model {
     dislikes = data['dislikes'] ?? 0;
     reports = data['reports'] ?? 0;
 
-    rating = max((likes - dislikes) / max(likes + dislikes, 1), 0).toDouble() * 100;
+    rating = max(likes / max(likes + dislikes, 1), 0).toDouble() * 100;
     this.rated = rated;
   }
 }
