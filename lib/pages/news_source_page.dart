@@ -366,7 +366,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     if (noData) return Container();
 
     return PieChartContainer(
-        title: "Categories", data: data, count: 4);
+        title: "Categories", data: data, count: 3);
   }
 }
 
