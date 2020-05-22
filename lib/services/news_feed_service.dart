@@ -58,7 +58,6 @@ class NewsFeedService {
     NewsCategory newsCategory,
   }) {
     Feed<String> _feed = getFeed(feedType, newsCategory: newsCategory);
-
     return _feed != null;
   }
 

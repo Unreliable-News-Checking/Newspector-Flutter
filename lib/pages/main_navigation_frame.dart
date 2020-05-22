@@ -144,13 +144,13 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
                 title: "Breakpoint",
                 actions: <Widget>[
                   CloseButton(
-                    onPressed: () {
-                      sign_in_service.signOutGoogle();
-                      Navigator.of(context, rootNavigator: true)
+                    onPressed: () async {
+                      await Navigator.of(context, rootNavigator: true)
                           .pushReplacement(
                               MaterialPageRoute(builder: (context) {
                         return SignPage();
                       }));
+                      sign_in_service.signOutGoogle();
                     },
                   ),
                 ],
