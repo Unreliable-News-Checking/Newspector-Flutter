@@ -78,11 +78,6 @@ class _HpNewsArticlePhotoContainerState
 
     var imagePath = _newsGroup.category.backgroundImagePath();
 
-    return Container(
-      child: FittedBox(
-        child: Image.asset(imagePath),
-        fit: BoxFit.cover,
-      ),
-    );
+    return Image.asset(imagePath);
   }
 }

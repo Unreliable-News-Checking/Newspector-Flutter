@@ -16,22 +16,24 @@ mixin PhotoContainer {
     bool shadow = false,
   }) {
     if (getPhotoUrl() == null) {
-      return getDefaultPhoto(
+      return getPhoto(
         height,
         width,
         borderRadius,
+        PhotoType.Default,
+        shadow: shadow,
       );
     }
 
     if (getPhotoInBytes() != null) {
       return getPhoto(
-        getPhotoInBytes(),
-        false,
-        animationController,
-        shadow,
         height,
         width,
         borderRadius,
+        PhotoType.Actual,
+        photoInBytes: getPhotoInBytes(),
+        animationController: animationController,
+        shadow: shadow,
       );
     }
 
@@ -44,20 +46,22 @@ mixin PhotoContainer {
             var photoInBytes = snapshot.data;
             storeCachedImage(photoInBytes);
             return getPhoto(
-              photoInBytes,
-              true,
-              animationController,
-              shadow,
               height,
               width,
               borderRadius,
+              PhotoType.Actual,
+              photoInBytes: photoInBytes,
+              doFade: true,
+              animationController: animationController,
+              shadow: shadow,
             );
             break;
           default:
-            return getLoadingPhoto(
+            return getPhoto(
               height,
               width,
               borderRadius,
+              PhotoType.Loading,
             );
         }
       },
@@ -74,15 +78,24 @@ mixin PhotoContainer {
   }
 
   Widget getPhoto(
-    Uint8List _photoInBytes,
-    bool doFade,
-    AnimationController animationController,
-    bool shadow,
     double height,
     double width,
     double borderRadius,
-  ) {
-    Widget image = Image.memory(_photoInBytes);
+    PhotoType photoType, {
+    bool doFade = false,
+    bool shadow = false,
+    Uint8List photoInBytes,
+    AnimationController animationController,
+  }) {
+    Widget image;
+    if (photoType == PhotoType.Actual) {
+      image = Image.memory(photoInBytes);
+    } else if (photoType == PhotoType.Loading) {
+      image = Container(color: app_const.inactiveColor);
+    } else if (photoType == PhotoType.Default) {
+      image = getDefaultPhotoImage();
+    }
+
     Widget imageContainer = image;
     Widget shadowContainer = Container();
 
@@ -132,35 +145,41 @@ mixin PhotoContainer {
     );
   }
 
-  Widget getLoadingPhoto(
-    double height,
-    double width,
-    double borderRadius,
-  ) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: Container(
-        height: height,
-        width: width,
-        color: app_const.inactiveColor,
-      ),
-    );
-  }
+  // Widget getLoadingPhoto(
+  //   double height,
+  //   double width,
+  //   double borderRadius,
+  // ) {
+  //   return ClipRRect(
+  //     borderRadius: BorderRadius.circular(borderRadius),
+  //     child: Container(
+  //       height: height,
+  //       width: width,
+  //       color: app_const.inactiveColor,
+  //     ),
+  //   );
+  // }
 
-  Widget getDefaultPhoto(
-    double height,
-    double width,
-    double borderRadius,
-  ) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: Container(
-        height: height,
-        width: width,
-        child: getDefaultPhotoImage(),
-      ),
-    );
-  }
+  // Widget getDefaultPhoto(
+  //   double height,
+  //   double width,
+  //   double borderRadius,
+  // ) {
+  //   return ClipRRect(
+  //     borderRadius: BorderRadius.circular(borderRadius),
+  //     child: Container(
+  //       height: height,
+  //       width: width,
+  //       child: getDefaultPhotoImage(),
+  //     ),
+  //   );
+  // }
 
   Widget getDefaultPhotoImage();
+}
+
+enum PhotoType {
+  Loading,
+  Default,
+  Actual,
 }
