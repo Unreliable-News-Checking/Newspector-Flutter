@@ -356,6 +356,8 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       noData = false;
     }
 
+    items.sort((a, b) => b.value.compareTo(a.value));
+
     List<CircularStackEntry> data = <CircularStackEntry>[
       new CircularStackEntry(
         items,
@@ -364,7 +366,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     if (noData) return Container();
 
     return PieChartContainer(
-        title: "Categories", data: data, count: items.length);
+        title: "Categories", data: data, count: 3);
   }
 }
 
