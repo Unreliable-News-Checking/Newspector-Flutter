@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/models/category.dart';
-import 'package:newspector_flutter/pages/home_page.dart';
+import 'news_feed_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 

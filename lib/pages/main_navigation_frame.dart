@@ -14,7 +14,7 @@ import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/sign_in_service.dart'
     as sign_in_service;
 
-import 'home_page.dart';
+import 'news_feed_page.dart';
 import 'news_group_page.dart';
 
 class MainNavigationFrame extends StatefulWidget {
