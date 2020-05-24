@@ -134,7 +134,8 @@ class _NewsGroupPageNewsArticleContainerState
             Text(
               newsSource.name,
               style: TextStyle(
-                fontSize: 13,
+                color: Colors.grey,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
             ),
