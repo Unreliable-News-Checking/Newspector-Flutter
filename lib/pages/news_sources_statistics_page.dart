@@ -102,9 +102,9 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return pie(Tag.values[index]);
+          return pie(NewsTag.values[index]);
         },
-        childCount: Tag.values.length
+        childCount: NewsTag.values.length
       ),
     );
   }
@@ -117,7 +117,7 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     return _newsSourceFeed;
   }
 
-  Widget pie(Tag tag) {
+  Widget pie(NewsTag tag) {
     List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
     var colors = [
       Colors.blue,

@@ -8,22 +8,47 @@ import 'package:newspector_flutter/models/category.dart';
 
 import 'model.dart';
 
-enum Tag { FirstReporter, CloseSecond, LateComer, SlowPoke, FollowUp }
+enum NewsTag { FirstReporter, CloseSecond, LateComer, SlowPoke, FollowUp }
 
-extension TagNaming on Tag {
+extension TagNaming on NewsTag {
   String toReadableString() {
     switch (this) {
-      case Tag.FirstReporter:
+      case NewsTag.FirstReporter:
         return "First Reporter";
-      case Tag.CloseSecond:
+      case NewsTag.CloseSecond:
         return "Close Second";
-      case Tag.LateComer:
+      case NewsTag.LateComer:
         return "Late Comer";
-      case Tag.SlowPoke:
+      case NewsTag.SlowPoke:
         return "Slow Poke";
       default:
         return "FollowUp";
     }
+  }
+
+  String toIconPath() {
+    var path = "assets/tag_icons/";
+    var fileName = '';
+
+    switch (this) {
+      case NewsTag.FirstReporter:
+        fileName = "first_reporter";
+        break;
+      case NewsTag.CloseSecond:
+        fileName = "close_second";
+        break;
+      case NewsTag.LateComer:
+        fileName = "late_comer";
+        break;
+      case NewsTag.SlowPoke:
+        fileName = "slowpoke";
+        break;
+      default:
+        fileName = "follow_up";
+        break;
+    }
+
+    return path + fileName + '.png';
   }
 }
 
@@ -74,7 +99,7 @@ class NewsSource extends Model {
   int tweetCount;
 
   GenericMap<NewsCategory> categoryMap;
-  GenericMap<Tag> tagMap;
+  GenericMap<NewsTag> tagMap;
 
   bool rated;
 
@@ -134,13 +159,13 @@ class NewsSource extends Model {
   }
 
   void populateTagMap(Map data) {
-    tagMap = GenericMap<Tag>();
+    tagMap = GenericMap<NewsTag>();
     var map = tagMap.temp;
-    map[Tag.FirstReporter] = data['first_reporter'] ?? 0;
-    map[Tag.CloseSecond] = data['close_second'] ?? 0;
-    map[Tag.LateComer] = data['late_comer'] ?? 0;
-    map[Tag.SlowPoke] = data['slow_poke'] ?? 0;
-    map[Tag.FollowUp] = data['follow_up'] ?? 0;
+    map[NewsTag.FirstReporter] = data['first_reporter'] ?? 0;
+    map[NewsTag.CloseSecond] = data['close_second'] ?? 0;
+    map[NewsTag.LateComer] = data['late_comer'] ?? 0;
+    map[NewsTag.SlowPoke] = data['slow_poke'] ?? 0;
+    map[NewsTag.FollowUp] = data['follow_up'] ?? 0;
 
     tagMap.orderMap();
   }

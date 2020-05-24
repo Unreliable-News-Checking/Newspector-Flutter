@@ -268,23 +268,23 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             children: <Widget>[
               bigCountLabel(
                 "First Reporter",
-                _newsSource.tagMap.map[Tag.FirstReporter].toString(),
+                _newsSource.tagMap.map[NewsTag.FirstReporter].toString(),
               ),
               bigCountLabel(
                 "Close Second",
-                _newsSource.tagMap.map[Tag.CloseSecond].toString(),
+                _newsSource.tagMap.map[NewsTag.CloseSecond].toString(),
               ),
               bigCountLabel(
                 "Late Comer",
-                _newsSource.tagMap.map[Tag.LateComer].toString(),
+                _newsSource.tagMap.map[NewsTag.LateComer].toString(),
               ),
               bigCountLabel(
                 "Slow Poke",
-                _newsSource.tagMap.map[Tag.SlowPoke].toString(),
+                _newsSource.tagMap.map[NewsTag.SlowPoke].toString(),
               ),
               bigCountLabel(
                 "Follow Ups",
-                _newsSource.tagMap.map[Tag.FollowUp].toString(),
+                _newsSource.tagMap.map[NewsTag.FollowUp].toString(),
               ),
               bigCountLabel(
                 "Group Member",

@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
@@ -73,7 +74,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(horizontal: 20),
         child: CupertinoScrollbar(
           child: CustomScrollView(
             physics: BouncingScrollPhysics()
@@ -280,6 +281,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
+              shadows: app_const.shadowsForWhiteWidgets(),
             ),
           ),
         ],
@@ -289,13 +291,21 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
 
   Widget sentimentResult() {
     var sentiment = _newsArticle.readableSentiment();
-    return statsRow(
-      Icon(
-        Icons.thumb_up,
-        color: app_const.defaultTextColor,
-      ),
-      sentiment,
-    );
+    var sentimentIconPath = 'assets/sentiment_icons/';
+
+    var sentimentFileName = const <String, String>{
+      "Strongly Positive": 'positive',
+      "Positive": 'positive',
+      "Slightly Positive": 'positive',
+      "Neutral": 'neutral',
+      "Slightly Negative": 'negative',
+      "Negative": 'negative',
+      "Strongly Negative": 'negative',
+    }[sentiment];
+
+    sentimentIconPath = sentimentIconPath + sentimentFileName + '.png';
+
+    return statsRow(Image.asset(sentimentIconPath), sentiment);
   }
 
   Widget category() {
@@ -310,24 +320,24 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     var _newsGroupId = _newsArticle.newsGroupId;
     var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
     var newsFromSourceNo = _newsGroup.sourceCounts[_newsArticle.newsSourceId];
-    var tagText = "";
+    NewsTag tag;
     if (_newsGroup.firstReporterId == _newsArticle.id) {
-      tagText = "First Reporter";
+      tag = NewsTag.FirstReporter;
+    } else if (_newsGroup.closeSecondId == _newsArticle.id &&
+        _newsGroup.closeSecondId != _newsGroup.firstReporterId) {
+      tag = NewsTag.CloseSecond;
+    } else if (_newsGroup.lateComerId == _newsArticle.id &&
+        _newsGroup.lateComerId != _newsGroup.firstReporterId &&
+        _newsGroup.lateComerId != _newsGroup.closeSecondId) {
+      tag = NewsTag.LateComer;
     } else if (newsFromSourceNo != null && newsFromSourceNo > 1) {
-      tagText = "Follow Up";
-    } else if (_newsGroup.closeSecondId == _newsArticle.id) {
-      tagText = "Close Second";
-    } else if (_newsGroup.lateComerId == _newsArticle.id) {
-      tagText = "Late Comer";
+      tag = NewsTag.FollowUp;
     } else {
-      tagText = "Slow Poke";
+      tag = NewsTag.SlowPoke;
     }
     return statsRow(
-      Icon(
-        EvaIcons.mic,
-        color: app_const.defaultTextColor,
-      ),
-      tagText,
+      Image.asset(tag.toIconPath()),
+      tag.toReadableString(),
     );
   }
 }
