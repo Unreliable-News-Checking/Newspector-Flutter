@@ -207,6 +207,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget categoryLabel() {
     String categoryText = _newsGroup.category.name;
+    // String categoryIconPath = _newsGroup.category.iconImagePath();
 
     return Positioned(
       top: 0,
@@ -221,8 +222,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             categoryText,
             style: TextStyle(
               fontSize: 12,
+              color: app_consts.defaultTextColor,
             ),
           ),
+          backgroundColor: app_consts.activeColor,
         ),
       ),
     );
