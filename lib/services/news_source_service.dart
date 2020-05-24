@@ -53,6 +53,17 @@ class NewsSourceService {
     return _newsSourceStore.updateOrAddItem(newsSource);
   }
 
+  /// Returns the existing or a new News Source.
+  ///
+  /// Checks if the news source exists,
+  /// if it exist, returns the existing news source
+  /// if not gets the news source form the database and returns it.
+  static Future<NewsSource> getOrFetchNewsSource(String newsSourceId) async {
+    if (hasNewsSource(newsSourceId)) return getNewsSource(newsSourceId);
+
+    return await updateAndGetNewsSource(newsSourceId);
+  }
+
   /// Fetches the news source with the given [newsSourceId] from the database.
   ///
   /// If the newly created news article already exists in the store, saves the photo

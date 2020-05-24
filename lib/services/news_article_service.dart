@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'package:http/http.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -50,19 +51,22 @@ class NewsArticleService {
   /// By this the old photo can be used for display while the possibly new photo is fetched.
   static Future<NewsArticle> updateAndGetNewsArticle(
       String newsArticleId) async {
-    var newsSourceDocument = await firestore.getNewsArticle(newsArticleId);
+    var newsArticleDocument = await firestore.getNewsArticle(newsArticleId);
 
-    Uint8List photoInBytes;
-    if (NewsArticleService.hasNewsArticle(newsArticleId)) {
-      photoInBytes =
-          NewsArticleService.getNewsArticle(newsArticleId).photoInBytes;
-    }
+    createAndAddNewsArticle(newsArticleDocument);
+    return getNewsArticle(newsArticleId);
 
-    var newsSource = NewsArticle.fromDocument(newsSourceDocument);
-    NewsArticleService._updateOrAddNewsArticle(newsSource);
-    newsSource.photoInBytes = photoInBytes;
+    // Uint8List photoInBytes;
+    // if (NewsArticleService.hasNewsArticle(newsArticleId)) {
+    //   photoInBytes =
+    //       NewsArticleService.getNewsArticle(newsArticleId).photoInBytes;
+    // }
 
-    return newsSource;
+    // var newsArticle = NewsArticle.fromDocument(newsArticleDocument);
+    // NewsArticleService._updateOrAddNewsArticle(newsArticle);
+    // newsArticle.photoInBytes = photoInBytes;
+
+    // return newsArticle;
   }
 
   /// Creates a news article from a document and adds the news article to the store.
@@ -70,7 +74,9 @@ class NewsArticleService {
   /// If the newly created news article already exists in the store, saves the photo
   /// and assigns the photo to the news version while the new photo is fetched online.
   /// By this the old photo can be used for display while the possibly new photo is fetched.
-  static String createAndAddNewsArticle(DocumentSnapshot newsArticleDoc) {
+  static Future<String> createAndAddNewsArticle(
+    DocumentSnapshot newsArticleDoc,
+  ) async {
     Uint8List oldPhoto;
     if (NewsArticleService.hasNewsArticle(newsArticleDoc.documentID)) {
       var oldNewsArticle =
@@ -83,6 +89,10 @@ class NewsArticleService {
 
     NewsArticleService._updateOrAddNewsArticle(newsArticle);
     getNewsArticleImage(newsArticle);
+
+    var newsSourceId = newsArticle.newsSourceId;
+    await NewsSourceService.getOrFetchNewsSource(newsSourceId);
+
     return newsArticle.id;
   }
 

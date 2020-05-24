@@ -6,10 +6,11 @@ import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/utilities.dart' as utils;
-import 'package:newspector_flutter/application_constants.dart' as app_consts;
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 
 class NewsArticlePage extends StatefulWidget {
@@ -86,7 +87,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       newsArticlePhoto(),
-                      source(),
+                      SizedBox(height: 20),
                       headline(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,9 +99,11 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                           tweetButton(),
                         ],
                       ),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        spacing: 10,
+                      source(),
+                      SizedBox(height: 7),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           tag(),
                           category(),
@@ -137,7 +140,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   }
 
   Widget refreshControl() {
-    return CupertinoSliverRefreshControl(onRefresh: () async {
+    return defaultRefreshControl(onRefresh: () async {
       _newsArticle = await NewsArticleService.updateAndGetNewsArticle(
           widget.newsArticleId);
       if (mounted) setState(() {});
@@ -162,21 +165,23 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   Widget headline() {
     String headline = _newsArticle.headline;
     return Container(
+      // margin: EdgeInsets.symmetric(vertical: 15),
       child: Text(
         headline,
         textAlign: TextAlign.start,
         style: TextStyle(
-          fontSize: 22,
+          fontSize: 23,
           fontWeight: FontWeight.bold,
-          shadows: app_consts.shadowsForWhiteWidgets(),
+          shadows: app_const.shadowsForWhiteWidgets(),
         ),
       ),
     );
   }
 
   Widget source() {
+    var newsSource = NewsSourceService.getNewsSource(_newsArticle.newsSourceId);
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
+      // margin: EdgeInsets.symmetric(vertical: 15),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -185,25 +190,34 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
             );
           }));
         },
-        child: Container(
-          child: Row(
-            children: <Widget>[
-              Text(
-                _newsArticle.newsSourceId,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  shadows: app_consts.shadowsForWhiteWidgets(),
+        child: Row(
+          children: [
+            NewsSourcePhotoContainer(
+              size: 60,
+              borderRadius: 10,
+              newsSource: newsSource,
+            ),
+            SizedBox(width: 15),
+            Row(
+              children: <Widget>[
+                Text(
+                  newsSource.name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    shadows: app_const.shadowsForWhiteWidgets(),
+                  ),
                 ),
-              ),
-              _newsArticle.isRetweet
-                  ? Icon(
-                      Icons.repeat,
-                      color: app_consts.defaultTextColor,
-                    )
-                  : Container(),
-            ],
-          ),
+                SizedBox(width: 4),
+                _newsArticle.isRetweet
+                    ? Icon(
+                        Icons.repeat,
+                        color: app_const.defaultTextColor,
+                      )
+                    : Container(),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -215,9 +229,9 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return Text(
       dateString,
       style: TextStyle(
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: FontWeight.normal,
-        shadows: app_consts.shadowsForWhiteWidgets(),
+        shadows: app_const.shadowsForWhiteWidgets(),
       ),
     );
   }
@@ -226,7 +240,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return IconButton(
       icon: Icon(
         EvaIcons.twitter,
-        color: app_consts.defaultTextColor,
+        color: app_const.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToTweet(widget.newsArticleId);
@@ -239,7 +253,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return IconButton(
       icon: Icon(
         Icons.web,
-        color: app_consts.defaultTextColor,
+        color: app_const.defaultTextColor,
       ),
       onPressed: () async {
         await NewsArticleService.goToWebsite(widget.newsArticleId);
@@ -247,15 +261,49 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     );
   }
 
+  Widget statsRow(Widget icon, String label) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            child: FittedBox(
+              child: icon,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 15),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget sentimentResult() {
-    return Chip(label: Text(_newsArticle.readableSentiment()));
+    var sentiment = _newsArticle.readableSentiment();
+    return statsRow(
+      Icon(
+        Icons.thumb_up,
+        color: app_const.defaultTextColor,
+      ),
+      sentiment,
+    );
   }
 
   Widget category() {
     var _newsGroupId = _newsArticle.newsGroupId;
     var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
     String categoryText = _newsGroup.category.name;
-    return Chip(label: Text(categoryText));
+    var categoryIconPath = _newsGroup.category.iconImagePath();
+    return statsRow(Image.asset(categoryIconPath), categoryText);
   }
 
   Widget tag() {
@@ -274,7 +322,12 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     } else {
       tagText = "Slow Poke";
     }
-
-    return Chip(label: Text(tagText));
+    return statsRow(
+      Icon(
+        EvaIcons.mic,
+        color: app_const.defaultTextColor,
+      ),
+      tagText,
+    );
   }
 }

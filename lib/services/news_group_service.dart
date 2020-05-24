@@ -110,7 +110,7 @@ class NewsGroupService {
     List<String> newsArticleIds = List<String>();
     for (var newsArticleDocument in newsArticleQuery.documents) {
       var newsArticleId =
-          NewsArticleService.createAndAddNewsArticle(newsArticleDocument);
+          await NewsArticleService.createAndAddNewsArticle(newsArticleDocument);
       newsArticleIds.add(newsArticleId);
     }
 
@@ -215,7 +215,7 @@ class NewsGroupService {
       // Create news articles from documents.
       for (var newsArticleDoc in newsArticleQuery.documents) {
         var newsArticleId =
-            NewsArticleService.createAndAddNewsArticle(newsArticleDoc);
+            await NewsArticleService.createAndAddNewsArticle(newsArticleDoc);
         newsArticleIds.add(newsArticleId);
       }
 

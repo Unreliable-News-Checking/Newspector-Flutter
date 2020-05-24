@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
+import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
@@ -114,6 +115,7 @@ class _NewsGroupPageNewsArticleContainerState
   }
 
   Widget source() {
+    var newsSource = NewsSourceService.getNewsSource(_newsArticle.newsSourceId);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
@@ -127,13 +129,13 @@ class _NewsGroupPageNewsArticleContainerState
         child: Row(
           children: <Widget>[
             Text(
-              _newsArticle.newsSourceId,
+              newsSource.name,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 2),
+            SizedBox(width: 4),
             _newsArticle.isRetweet
                 ? Icon(
                     Icons.repeat,
