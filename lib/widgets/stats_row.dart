@@ -4,8 +4,9 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 class StatsRow extends StatelessWidget {
   final Widget icon;
   final String label;
+  final String header;
 
-  const StatsRow({Key key, @required this.icon, @required this.label})
+  const StatsRow({Key key, @required this.icon, @required this.label, @required this.header})
       : super(key: key);
 
   @override
@@ -14,6 +15,18 @@ class StatsRow extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
+          Text(
+            header,
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              shadows: app_const.shadowsForWhiteWidgets(),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(5)
+          ),
           Container(
             width: 60,
             height: 60,

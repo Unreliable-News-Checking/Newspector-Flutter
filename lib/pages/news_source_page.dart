@@ -270,7 +270,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(20),
             childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 3),
+                (MediaQuery.of(context).size.height / 2.5),
             children: <Widget>[
               statsRow(tag: NewsTag.FirstReporter),
               statsRow(tag: NewsTag.CloseSecond),
@@ -312,11 +312,14 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     int index = _newsSourceList
         .indexWhere((source) => source.id.startsWith(_newsSource.id));
 
+    String header = tag != null ? tag.toReadableString() : groupMember;
     return StatsRow(
+      header: header,
       icon: Image.asset(iconPath),
-      label: count +
+      label:
+          count +
           " times " +
-          " | " +
+          " |  " +
           utils.numberToOrdinal(index + 1) +
           " place",
     );
