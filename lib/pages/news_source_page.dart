@@ -98,8 +98,9 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   Widget refreshControl() {
     return CupertinoSliverRefreshControl(onRefresh: () async {
+      await NewsSourceService.updateAndGetNewsSourceFeed(pageSize: -1);
       _newsSource =
-          await NewsSourceService.updateAndGetNewsSource(widget.newsSourceId);
+          await NewsSourceService.getOrFetchNewsSource(widget.newsSourceId);
       if (mounted) setState(() {});
     });
   }
