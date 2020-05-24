@@ -12,7 +12,7 @@ class StatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+      child: Column(
         children: [
           Container(
             width: 60,
@@ -22,11 +22,13 @@ class StatsRow extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(width: 15),
+          Container(
+            padding: EdgeInsets.all(10)
+          ),
           Text(
             label,
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               shadows: app_const.shadowsForWhiteWidgets(),
             ),

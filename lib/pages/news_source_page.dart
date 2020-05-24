@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
+import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
@@ -23,11 +24,14 @@ class NewsSourcePage extends StatefulWidget {
 
 class _NewsSourcePageState extends State<NewsSourcePage> {
   NewsSource _newsSource;
+  Feed<String> _newsSourceFeed;
+  List<NewsSource> _newsSourceList;
 
   @override
   Widget build(BuildContext context) {
     if (NewsSourceService.hasFeed()) {
       _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
+      _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
       return homeScaffold();
     }
 
@@ -105,7 +109,8 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   }
 
   Future<NewsSource> getUpdatedNewsSource() async {
-    await NewsSourceService.updateAndGetNewsSourceFeed(pageSize: -1);
+    _newsSourceFeed =
+        await NewsSourceService.updateAndGetNewsSourceFeed(pageSize: -1);
     _newsSource =
         await NewsSourceService.getOrFetchNewsSource(widget.newsSourceId);
     return _newsSource;
@@ -260,42 +265,60 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
           GridView.count(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 1,
+            crossAxisCount: 2,
             mainAxisSpacing: 0,
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(20),
             childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 10),
+                (MediaQuery.of(context).size.height / 3),
             children: <Widget>[
-              StatsRow(
-                icon: Image.asset(NewsTag.FirstReporter.toIconPath()),
-                label: _newsSource.tagMap.map[NewsTag.FirstReporter].toString(),
-              ),
-              StatsRow(
-                icon: Image.asset(NewsTag.CloseSecond.toIconPath()),
-                label: _newsSource.tagMap.map[NewsTag.CloseSecond].toString(),
-              ),
-              StatsRow(
-                icon: Image.asset(NewsTag.LateComer.toIconPath()),
-                label: _newsSource.tagMap.map[NewsTag.LateComer].toString(),
-              ),
-              StatsRow(
-                icon: Image.asset(NewsTag.SlowPoke.toIconPath()),
-                label: _newsSource.tagMap.map[NewsTag.SlowPoke].toString(),
-              ),
-              StatsRow(
-                icon: Image.asset(NewsTag.FollowUp.toIconPath()),
-                label: _newsSource.tagMap.map[NewsTag.FollowUp].toString(),
-              ),
-              // bigCountLabel(
-              //   "Group Member",
-              //   _newsSource.membershipCount.toString(),
-              // ),
+              statsRow(tag: NewsTag.FirstReporter),
+              statsRow(tag: NewsTag.CloseSecond),
+              statsRow(tag: NewsTag.LateComer),
+              statsRow(tag: NewsTag.SlowPoke),
+              statsRow(tag: NewsTag.FollowUp),
+              statsRow(groupMember: "Group Member")
             ],
           ),
           categoryPie(),
         ],
       ),
+    );
+  }
+
+  Widget statsRow({NewsTag tag, String groupMember}) {
+    String iconPath = "";
+    String count = "";
+
+    if (_newsSourceList == null) {
+      _newsSourceList = List<NewsSource>();
+      for (var newsSource in _newsSourceFeed.getItems()) {
+        _newsSourceList.add(NewsSourceService.getNewsSource(newsSource));
+      }
+    }
+
+    if (tag != null) {
+      _newsSourceList
+          .sort((a, b) => b.tagMap.map[tag].compareTo(a.tagMap.map[tag]));
+      iconPath = tag.toIconPath();
+      count = _newsSource.tagMap.map[tag].toString();
+    } else if (groupMember != null) {
+      _newsSourceList
+          .sort((a, b) => b.membershipCount.compareTo(a.membershipCount));
+      iconPath = "assets/other_icons/group_member.png";
+      count = _newsSource.membershipCount.toString();
+    }
+
+    int index = _newsSourceList
+        .indexWhere((source) => source.id.startsWith(_newsSource.id));
+
+    return StatsRow(
+      icon: Image.asset(iconPath),
+      label: count +
+          " times " +
+          " | " +
+          utils.numberToOrdinal(index + 1) +
+          " place",
     );
   }
 
