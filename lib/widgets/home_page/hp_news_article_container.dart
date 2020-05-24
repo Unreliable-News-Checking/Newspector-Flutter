@@ -109,7 +109,7 @@ class _HomePageNewsArticleContainerState
         overflow: overflow,
         maxLines: maxLines,
         style: TextStyle(
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           shadows: app_consts.shadowsForWhiteWidgets(),
         ),
