@@ -1,4 +1,3 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
@@ -9,6 +8,8 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:newspector_flutter/widgets/twitter_button.dart';
+import 'package:newspector_flutter/widgets/website_button.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -87,17 +88,9 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return defaultSliverAppBar(
       titleText: _newsSource.name,
       actions: <Widget>[
-        IconButton(
-          icon: Icon(EvaIcons.twitter),
-          onPressed: () async {
-            await NewsSourceService.goToSourceTwitter(widget.newsSourceId);
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.web),
-          onPressed: () async {
-            await NewsSourceService.goToSourceWebsite(widget.newsSourceId);
-          },
+        TwitterButton(tweetLink: _newsSource.twitterLink),
+        WebsiteButton(
+          websiteLink: _newsSource.websiteLink,
         ),
       ],
     );
@@ -365,8 +358,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     ];
     if (noData) return Container();
 
-    return PieChartContainer(
-        title: "Categories", data: data, count: 3);
+    return PieChartContainer(title: "Categories", data: data, count: 3);
   }
 }
 

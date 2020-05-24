@@ -4,7 +4,6 @@ import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'package:http/http.dart';
-import 'package:newspector_flutter/utilities.dart' as utils;
 import 'firestore/firestore_service.dart' as firestore;
 
 class NewsArticleService {
@@ -30,19 +29,12 @@ class NewsArticleService {
     newsArticleStore.clear();
   }
 
-  /// Opens the tweet url given the news article id.
-  static Future<bool> goToTweet(String newsArticleId) async {
-    var newsArticle = getNewsArticle(newsArticleId);
-    var url = newsArticle.tweetLink;
-    return await utils.goToUrl(url);
-  }
-
-  /// Opens the news website url given the news article id.
-  static Future<bool> goToWebsite(String newsArticleId) async {
-    var newsArticle = getNewsArticle(newsArticleId);
-    var url = newsArticle.websiteLink;
-    return await utils.goToUrl(url);
-  }
+  // /// Opens the news website url given the news article id.
+  // static Future<bool> goToWebsite(String newsArticleId) async {
+  //   var newsArticle = getNewsArticle(newsArticleId);
+  //   var url = newsArticle.websiteLink;
+  //   return await utils.goToUrl(url);
+  // }
 
   /// Fetches the news source with the given [newsArticleId] from the database.
   ///

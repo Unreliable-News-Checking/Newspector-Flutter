@@ -1,10 +1,10 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/pages/news_source_page.dart';
+import 'package:newspector_flutter/pages/web_view_page.dart';
 import 'package:newspector_flutter/services/news_article_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
@@ -13,6 +13,7 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
+import 'package:newspector_flutter/widgets/twitter_button.dart';
 
 class NewsArticlePage extends StatefulWidget {
   final String newsArticleId;
@@ -74,7 +75,6 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     return Scaffold(
       backgroundColor: app_const.backgroundColor,
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
         child: CupertinoScrollbar(
           child: CustomScrollView(
             physics: BouncingScrollPhysics()
@@ -84,6 +84,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
               refreshControl(),
               SliverToBoxAdapter(
                 child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -97,7 +98,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                           date(),
                           Expanded(child: Container()),
                           websiteButton(),
-                          tweetButton(),
+                          TwitterButton(tweetLink: _newsArticle.tweetLink),
                         ],
                       ),
                       source(),
@@ -237,27 +238,21 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     );
   }
 
-  Widget tweetButton() {
-    return IconButton(
-      icon: Icon(
-        EvaIcons.twitter,
-        color: app_const.defaultTextColor,
-      ),
-      onPressed: () async {
-        await NewsArticleService.goToTweet(widget.newsArticleId);
-      },
-    );
-  }
-
   Widget websiteButton() {
     if (_newsArticle.websiteLink == null) return Container();
+
     return IconButton(
       icon: Icon(
         Icons.web,
         color: app_const.defaultTextColor,
       ),
       onPressed: () async {
-        await NewsArticleService.goToWebsite(widget.newsArticleId);
+        Navigator.of(context, rootNavigator: true)
+            .push(MaterialPageRoute(builder: (context) {
+          return WebViewPage(
+            initialUrl: _newsArticle.websiteLink,
+          );
+        }));
       },
     );
   }

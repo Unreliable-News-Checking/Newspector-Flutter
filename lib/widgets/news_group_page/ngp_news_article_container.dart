@@ -1,4 +1,3 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_article.dart';
 import 'package:newspector_flutter/pages/news_article_page.dart';
@@ -8,6 +7,8 @@ import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_photo_container.dart';
+import 'package:newspector_flutter/widgets/twitter_button.dart';
+import 'package:newspector_flutter/widgets/website_button.dart';
 
 class NewsGroupPageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
@@ -73,7 +74,9 @@ class _NewsGroupPageNewsArticleContainerState
                   date2(),
                   Expanded(child: Container()),
                   websiteButton(),
-                  tweetButton(),
+                  TwitterButton(
+                    tweetLink: _newsArticle.tweetLink,
+                  ),
                 ],
               ),
               widget.dontShowDivider
@@ -176,28 +179,11 @@ class _NewsGroupPageNewsArticleContainerState
     );
   }
 
-  Widget tweetButton() {
-    return IconButton(
-      icon: Icon(
-        EvaIcons.twitter,
-        color: app_const.defaultTextColor,
-      ),
-      onPressed: () async {
-        await NewsArticleService.goToTweet(widget.newsArticleId);
-      },
-    );
-  }
-
   Widget websiteButton() {
     if (_newsArticle.websiteLink == null) return Container();
-    return IconButton(
-      icon: Icon(
-        Icons.web,
-        color: app_const.defaultTextColor,
-      ),
-      onPressed: () async {
-        await NewsArticleService.goToWebsite(widget.newsArticleId);
-      },
+
+    return WebsiteButton(
+      websiteLink: _newsArticle.websiteLink,
     );
   }
 }

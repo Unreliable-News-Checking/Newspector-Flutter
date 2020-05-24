@@ -10,7 +10,6 @@ import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'firestore/firestore_service.dart' as firestore;
 import 'realtime/realtime_service.dart' as realtime;
-import 'package:newspector_flutter/utilities.dart' as utils;
 
 class NewsSourceService {
   static Store<NewsSource> _newsSourceStore = Store<NewsSource>();
@@ -224,18 +223,11 @@ class NewsSourceService {
   }
 
   /// Opens the news website url given the news article id.
-  static goToSourceWebsite(String newsSourceId) async {
-    var newsArticle = getNewsSource(newsSourceId);
-    var url = newsArticle.websiteLink;
-    return await utils.goToUrl(url);
-  }
-
-  /// Opens the tweet url given the news article id.
-  static goToSourceTwitter(String newsSourceId) async {
-    var newsArticle = getNewsSource(newsSourceId);
-    var url = newsArticle.twitterLink;
-    return await utils.goToUrl(url);
-  }
+  // static goToSourceWebsite(String newsSourceId) async {
+  //   var newsArticle = getNewsSource(newsSourceId);
+  //   var url = newsArticle.websiteLink;
+  //   return await utils.goToUrl(url);
+  // }
 
   static rateNewsSource(String newsSourceId, Rating rating) {
     var userId = UserService.getUser().id;
