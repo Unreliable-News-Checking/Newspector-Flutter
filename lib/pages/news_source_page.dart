@@ -10,6 +10,7 @@ import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:newspector_flutter/widgets/twitter_button.dart';
 import 'package:newspector_flutter/widgets/website_button.dart';
+import 'package:newspector_flutter/widgets/stats_row.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -266,25 +267,25 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             childAspectRatio: MediaQuery.of(context).size.width /
                 (MediaQuery.of(context).size.height / 10),
             children: <Widget>[
-              statsRow(
-                Image.asset(NewsTag.FirstReporter.toIconPath()),
-                _newsSource.tagMap.map[NewsTag.FirstReporter].toString(),
+              StatsRow(
+                icon: Image.asset(NewsTag.FirstReporter.toIconPath()),
+                label: _newsSource.tagMap.map[NewsTag.FirstReporter].toString(),
               ),
-              statsRow(
-                Image.asset(NewsTag.CloseSecond.toIconPath()),
-                _newsSource.tagMap.map[NewsTag.CloseSecond].toString(),
+              StatsRow(
+                icon: Image.asset(NewsTag.CloseSecond.toIconPath()),
+                label: _newsSource.tagMap.map[NewsTag.CloseSecond].toString(),
               ),
-              statsRow(
-                Image.asset(NewsTag.LateComer.toIconPath()),
-                _newsSource.tagMap.map[NewsTag.LateComer].toString(),
+              StatsRow(
+                icon: Image.asset(NewsTag.LateComer.toIconPath()),
+                label: _newsSource.tagMap.map[NewsTag.LateComer].toString(),
               ),
-              statsRow(
-                Image.asset(NewsTag.SlowPoke.toIconPath()),
-                _newsSource.tagMap.map[NewsTag.SlowPoke].toString(),
+              StatsRow(
+                icon: Image.asset(NewsTag.SlowPoke.toIconPath()),
+                label: _newsSource.tagMap.map[NewsTag.SlowPoke].toString(),
               ),
-              statsRow(
-                Image.asset(NewsTag.FollowUp.toIconPath()),
-                _newsSource.tagMap.map[NewsTag.FollowUp].toString(),
+              StatsRow(
+                icon: Image.asset(NewsTag.FollowUp.toIconPath()),
+                label: _newsSource.tagMap.map[NewsTag.FollowUp].toString(),
               ),
               // bigCountLabel(
               //   "Group Member",
@@ -366,33 +367,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     if (noData) return Container();
 
     return PieChartContainer(title: "Categories", data: data, count: 3);
-  }
-
-  Widget statsRow(Widget icon, String label) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            child: FittedBox(
-              child: icon,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(width: 15),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              shadows: app_const.shadowsForWhiteWidgets(),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
