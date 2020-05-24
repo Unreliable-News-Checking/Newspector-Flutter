@@ -25,7 +25,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (NewsSourceService.hasNewsSource(widget.newsSourceId)) {
+    if (NewsSourceService.hasFeed()) {
       _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
       return homeScaffold();
     }
@@ -33,7 +33,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     // if there is no existing feed,
     // get the latest feed and display it
     return FutureBuilder(
-      future: NewsSourceService.updateAndGetNewsSource(widget.newsSourceId),
+      future: getUpdatedNewsSource(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -98,11 +98,16 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
   Widget refreshControl() {
     return CupertinoSliverRefreshControl(onRefresh: () async {
-      await NewsSourceService.updateAndGetNewsSourceFeed(pageSize: -1);
-      _newsSource =
-          await NewsSourceService.getOrFetchNewsSource(widget.newsSourceId);
+      getUpdatedNewsSource();
       if (mounted) setState(() {});
     });
+  }
+
+  Future<NewsSource> getUpdatedNewsSource() async {
+    await NewsSourceService.updateAndGetNewsSourceFeed(pageSize: -1);
+    _newsSource =
+        await NewsSourceService.getOrFetchNewsSource(widget.newsSourceId);
+    return _newsSource;
   }
 
   Widget sourceHeader() {
@@ -259,7 +264,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(20),
             childAspectRatio: MediaQuery.of(context).size.width /
-              (MediaQuery.of(context).size.height / 10),
+                (MediaQuery.of(context).size.height / 10),
             children: <Widget>[
               statsRow(
                 Image.asset(NewsTag.FirstReporter.toIconPath()),
