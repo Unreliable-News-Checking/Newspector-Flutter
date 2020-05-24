@@ -254,36 +254,37 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
           GridView.count(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
+            crossAxisCount: 1,
             mainAxisSpacing: 0,
             crossAxisSpacing: 0,
-            padding: EdgeInsets.all(0),
-            childAspectRatio: 1.2,
+            padding: EdgeInsets.all(20),
+            childAspectRatio: MediaQuery.of(context).size.width /
+              (MediaQuery.of(context).size.height / 10),
             children: <Widget>[
-              bigCountLabel(
-                "First Reporter",
+              statsRow(
+                Image.asset(NewsTag.FirstReporter.toIconPath()),
                 _newsSource.tagMap.map[NewsTag.FirstReporter].toString(),
               ),
-              bigCountLabel(
-                "Close Second",
+              statsRow(
+                Image.asset(NewsTag.CloseSecond.toIconPath()),
                 _newsSource.tagMap.map[NewsTag.CloseSecond].toString(),
               ),
-              bigCountLabel(
-                "Late Comer",
+              statsRow(
+                Image.asset(NewsTag.LateComer.toIconPath()),
                 _newsSource.tagMap.map[NewsTag.LateComer].toString(),
               ),
-              bigCountLabel(
-                "Slow Poke",
+              statsRow(
+                Image.asset(NewsTag.SlowPoke.toIconPath()),
                 _newsSource.tagMap.map[NewsTag.SlowPoke].toString(),
               ),
-              bigCountLabel(
-                "Follow Ups",
+              statsRow(
+                Image.asset(NewsTag.FollowUp.toIconPath()),
                 _newsSource.tagMap.map[NewsTag.FollowUp].toString(),
               ),
-              bigCountLabel(
-                "Group Member",
-                _newsSource.membershipCount.toString(),
-              ),
+              // bigCountLabel(
+              //   "Group Member",
+              //   _newsSource.membershipCount.toString(),
+              // ),
             ],
           ),
           categoryPie(),
@@ -360,6 +361,33 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     if (noData) return Container();
 
     return PieChartContainer(title: "Categories", data: data, count: 3);
+  }
+
+  Widget statsRow(Widget icon, String label) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            child: FittedBox(
+              child: icon,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 15),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              shadows: app_const.shadowsForWhiteWidgets(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
