@@ -26,7 +26,6 @@ class _PieChartContainerState extends State<PieChartContainer>
   Animation<double> animation;
   bool keepAlive = true;
 
-
   @override
   void initState() {
     super.initState();
@@ -40,7 +39,7 @@ class _PieChartContainerState extends State<PieChartContainer>
           print("Animation Stopped");
         }
       });
-    
+
     animationController.forward();
   }
 
@@ -54,7 +53,7 @@ class _PieChartContainerState extends State<PieChartContainer>
   Widget build(BuildContext context) {
     print("Called Build");
     super.build(context);
-    
+
     List<CircularSegmentEntry> dataToDisplay = List<CircularSegmentEntry>();
     var entries = widget.data[0].entries;
     var count = widget.count;
@@ -68,13 +67,15 @@ class _PieChartContainerState extends State<PieChartContainer>
       }
       dataToDisplay = entries.sublist(0, count + 1);
 
-      CircularSegmentEntry otherSegment = CircularSegmentEntry(
-        otherTotal.toDouble(),
-        Colors.grey,
-        rankKey: "Other",
-      );
+      if (otherTotal != 0) {
+        CircularSegmentEntry otherSegment = CircularSegmentEntry(
+          otherTotal.toDouble(),
+          Colors.grey,
+          rankKey: "Other",
+        );
 
-      dataToDisplay.add(otherSegment);
+        dataToDisplay.add(otherSegment);
+      }
     } else {
       dataToDisplay = entries;
     }
