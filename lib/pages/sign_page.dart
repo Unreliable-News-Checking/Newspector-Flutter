@@ -22,9 +22,11 @@ class _SignPageState extends State<SignPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: Icon(
-                  Icons.web,
-                  size: 150,
+                width: 150,
+                height: 150,
+                // color: Colors.white,
+                child: Image.asset(
+                  "assets/newspector_logo.png",
                   color: app_const.defaultTextColor,
                 ),
               ),
@@ -35,16 +37,16 @@ class _SignPageState extends State<SignPage> {
               ),
               Container(
                 child: Text(
-                  "Breakpoint",
+                  "Newspector",
                   style: GoogleFonts.raleway(fontSize: 45),
                 ),
               ),
               SizedBox(height: 30),
               GoogleSignInButton(onPressed: signIn),
-              RaisedButton(
-                onPressed: debugSignIn,
-                child: Text("Debug Sign In"),
-              ),
+              // RaisedButton(
+              //   onPressed: debugSignIn,
+              //   child: Text("Debug Sign In"),
+              // ),
             ],
           ),
         ),

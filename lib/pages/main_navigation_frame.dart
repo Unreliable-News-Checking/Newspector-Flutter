@@ -141,7 +141,7 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
               return NewsFeedPage(
                 scrollController: scrollControllers[index],
                 feedType: FeedType.Home,
-                title: "Breakpoint",
+                title: "Newspector",
                 actions: <Widget>[
                   CloseButton(
                     onPressed: () async {
