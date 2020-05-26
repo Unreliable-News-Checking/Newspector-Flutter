@@ -110,6 +110,7 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
                           tag(),
                           category(),
                           sentimentResult(),
+                          feedbackButton(),
                         ],
                       ),
                     ],
@@ -335,4 +336,199 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
       tag.toReadableString(),
     );
   }
+
+  Widget feedbackButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        OutlineButton(
+          borderSide: BorderSide(color: app_const.defaultTextColor),
+          onPressed: showRateSheet,
+          child: Text(
+            "Give Feedback",
+            style: TextStyle(
+              color: app_const.defaultTextColor,
+              shadows: app_const.shadowsForWhiteWidgets(),
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void showRateSheet() {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      builder: (context) {
+        return NewsArticleFeedbackSheet(newsArticleId: widget.newsArticleId);
+      },
+    );
+  }
+}
+
+class NewsArticleFeedbackSheet extends StatefulWidget {
+  final String newsArticleId;
+
+  const NewsArticleFeedbackSheet({Key key, @required this.newsArticleId})
+      : super(key: key);
+
+  @override
+  _NewsArticleFeedbackSheetState createState() =>
+      _NewsArticleFeedbackSheetState();
+}
+
+class _NewsArticleFeedbackSheetState extends State<NewsArticleFeedbackSheet> {
+  bool done = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 600,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        color: app_const.backgroundColor,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: 4,
+            width: 40,
+            margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
+            decoration: BoxDecoration(
+              color: app_const.inactiveColor,
+              borderRadius: BorderRadius.circular(360),
+            ),
+          ),
+          done ? doneContent() : initialContent(),
+        ],
+      ),
+    );
+  }
+
+  Widget doneContent() {
+    return Column(
+      children: [
+        Icon(
+          CupertinoIcons.check_mark_circled,
+          color: Colors.green.shade400,
+          size: 45,
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Thanks for letting us know",
+          style: TextStyle(
+            color: app_const.defaultTextColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+          child: Text(
+            "Your feedback is important in helping us keep Newspector safe and reliable.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: app_const.defaultTextColor.withOpacity(0.5),
+              // fontSize: 18,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget initialContent() {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(15),
+          child: Text(
+            "Give Feedback",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: app_const.defaultTextColor,
+              shadows: app_const.shadowsForWhiteWidgets(),
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: app_const.inactiveColor.withAlpha(120),
+        ),
+        feedbackOption(FeedbackOption.MisleadingInformation),
+        feedbackOption(FeedbackOption.DoesNotBelongHere),
+        feedbackOption(FeedbackOption.BelongsToOtherGroup),
+        feedbackOption(FeedbackOption.NotANewsStory),
+      ],
+    );
+  }
+
+  Widget feedbackOption(FeedbackOption feedbackOption) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(20),
+          child: GestureDetector(
+            onTap: () => giveFeedback(feedbackOption),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    feedbackOptionToString(feedbackOption),
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: app_const.inactiveColor.withAlpha(120),
+        ),
+      ],
+    );
+  }
+
+  String feedbackOptionToString(FeedbackOption feedbackOption) {
+    var text = const <FeedbackOption, String>{
+      FeedbackOption.MisleadingInformation:
+          'Has misleading, false or unrealiable information.',
+      FeedbackOption.BelongsToOtherGroup:
+          'This news story should be inside another news group.',
+      FeedbackOption.DoesNotBelongHere:
+          'This news story should not be inside this news group.',
+      FeedbackOption.NotANewsStory:
+          'This news story is not a breaking news story.',
+    }[feedbackOption];
+
+    return text;
+  }
+
+  void giveFeedback(FeedbackOption feedbackOption) {
+    var newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
+    NewsArticleService.giveFeedbackToNewsArticle(newsArticle, feedbackOption);
+    setState(() {
+      done = true;
+    });
+  }
+}
+
+enum FeedbackOption {
+  MisleadingInformation,
+  DoesNotBelongHere,
+  BelongsToOtherGroup,
+  NotANewsStory,
 }

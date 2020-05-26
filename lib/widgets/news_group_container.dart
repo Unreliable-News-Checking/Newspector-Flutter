@@ -215,17 +215,20 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: horizontalMargin + 10,
-          vertical: 2,
+          vertical: 10,
         ),
-        child: Chip(
-          label: Text(
-            categoryText,
-            style: TextStyle(
-              fontSize: 12,
-              color: app_consts.defaultTextColor,
-            ),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: app_consts.backgroundColor,
+          borderRadius: BorderRadius.circular(360),
+        ),
+        child: Text(
+          categoryText,
+          style: TextStyle(
+            fontSize: 12,
+            color: app_consts.defaultTextColor,
+            shadows: app_consts.shadowsForWhiteWidgets(),
           ),
-          backgroundColor: app_consts.activeColor,
         ),
       ),
     );

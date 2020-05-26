@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:newspector_flutter/models/news_article.dart';
+import 'package:newspector_flutter/pages/news_article_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
+import 'package:newspector_flutter/services/user_service.dart';
 import 'package:newspector_flutter/stores/store.dart';
 import 'package:http/http.dart';
 import 'firestore/firestore_service.dart' as firestore;
@@ -104,5 +106,17 @@ class NewsArticleService {
     } catch (e) {}
 
     return;
+  }
+
+  static void giveFeedbackToNewsArticle(
+    NewsArticle newsArticle,
+    FeedbackOption feedbackOption,
+  ) {
+    firestore.reportNews(
+      newsArticle.newsSourceId,
+      UserService.getUser().id,
+      newsArticle.id,
+      feedbackOption,
+    );
   }
 }
