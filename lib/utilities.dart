@@ -4,7 +4,7 @@ import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/services/user_service.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 String timestampToMeaningfulTime(DateTime date) {
   Duration diff = DateTime.now().difference(date);
@@ -82,14 +82,14 @@ String roundDown(double d, int decimals) {
   return d.toString();
 }
 
-Future<bool> goToUrl(String url) async {
-  var canLaunchUrl = await canLaunch(url);
+// Future<bool> goToUrl(String url) async {
+//   var canLaunchUrl = await canLaunch(url);
 
-  if (!canLaunchUrl) return false;
+//   if (!canLaunchUrl) return false;
 
-  await launch(url);
-  return true;
-}
+//   await launch(url);
+//   return true;
+// }
 
 void clearStoresAndServices() {
   NewsArticleService.clearStore();
