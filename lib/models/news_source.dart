@@ -122,7 +122,7 @@ class NewsSource extends Model {
       websiteLink = "https://" + websiteLink;
     }
 
-    twitterLink = 'https://twitter/$twitterUsername';
+    twitterLink = 'https://twitter.com/$twitterUsername';
 
     followerCount = data['followers_count'] ?? 0;
     tweetCount = data['tweets_count'] ?? 0;

@@ -18,7 +18,7 @@ class StatsRow extends StatelessWidget {
           Text(
             header,
             style: TextStyle(
-              color: Colors.grey,
+              color: app_const.activeColor,
               fontSize: 20,
               fontWeight: FontWeight.bold,
               shadows: app_const.shadowsForWhiteWidgets(),
