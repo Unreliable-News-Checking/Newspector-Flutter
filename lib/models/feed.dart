@@ -21,6 +21,10 @@ class Feed<E> {
     return _items.last;
   }
 
+  List<E> getItems() {
+    return _items;
+  }
+
   void addAdditionalItems(List<E> additionalItems) {
     _items.addAll(additionalItems);
   }

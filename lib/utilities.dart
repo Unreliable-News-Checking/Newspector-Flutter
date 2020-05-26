@@ -50,6 +50,20 @@ const months = <String>[
   'Dec'
 ];
 
+String numberToOrdinal(int number) {
+  int lastDigit = number % 10;
+
+  if (lastDigit == 1) {
+    return number.toString() + "st";
+  } else if (lastDigit == 2) {
+    return number.toString() + "nd";
+  } else if (lastDigit == 3) {
+    return number.toString() + "rd";
+  }
+
+  return number.toString() + "th";
+}
+
 String timestampToDateString(DateTime date) {
   var dayString = date.day.toString();
   var monthString = months[date.month - 1];
