@@ -144,7 +144,7 @@ class NewsSource extends Model {
     map[NewsCategory.petsAnimals] = categoryData['Pets & Animals'];
     map[NewsCategory.foodDrink] = categoryData['Food & Drink'];
     map[NewsCategory.science] = categoryData['Science'];
-    map[NewsCategory.artEntertainment] = categoryData['Art & Entertainment'];
+    map[NewsCategory.artEntertainment] = categoryData['Arts & Entertainment'];
     map[NewsCategory.peopleSociety] = categoryData['People & Society'];
     map[NewsCategory.computersElectronics] =
         categoryData['Computers & Electronics'];
@@ -153,7 +153,7 @@ class NewsSource extends Model {
     map[NewsCategory.health] = categoryData['Health'];
     map[NewsCategory.lawGovernment] = categoryData['Law & Government'];
     map[NewsCategory.sports] = categoryData['Sports'];
-    map[NewsCategory.other] = categoryData['Others'];
+    map[NewsCategory.general] = categoryData['General'];
 
     categoryMap.orderMap();
   }

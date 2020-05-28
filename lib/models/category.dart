@@ -37,7 +37,7 @@ class NewsCategory extends Enumeration {
   static final NewsCategory foodDrink = NewsCategory(5, "Food & Drink", 'food');
   static final NewsCategory science = NewsCategory(6, "Science", 'science');
   static final NewsCategory artEntertainment =
-      NewsCategory(7, "Art & Entertainment", 'art');
+      NewsCategory(7, "Arts & Entertainment", 'art');
   static final NewsCategory peopleSociety =
       NewsCategory(8, "People & Society", 'people');
   static final NewsCategory computersElectronics =
@@ -48,7 +48,7 @@ class NewsCategory extends Enumeration {
   static final NewsCategory lawGovernment =
       NewsCategory(12, "Law & Government", 'law');
   static final NewsCategory sports = NewsCategory(13, "Sports", 'sports');
-  static final NewsCategory other = NewsCategory(14, "Other", 'other');
+  static final NewsCategory general = NewsCategory(14, "General", 'general');
 
   String backGroundFileName;
 
@@ -78,7 +78,7 @@ class NewsCategory extends Enumeration {
         return NewsCategory.foodDrink;
       case 'Science':
         return NewsCategory.science;
-      case 'Art & Entertainment':
+      case 'Arts & Entertainment':
         return NewsCategory.artEntertainment;
       case 'People & Society':
         return NewsCategory.peopleSociety;
@@ -93,7 +93,7 @@ class NewsCategory extends Enumeration {
       case 'Sports':
         return NewsCategory.sports;
       default:
-        return NewsCategory.other;
+        return NewsCategory.general;
     }
   }
 }
