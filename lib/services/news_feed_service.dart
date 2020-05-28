@@ -100,6 +100,7 @@ class NewsFeedService {
     @required FeedType feedType,
     NewsCategory newsCategory,
   }) async {
+    bool showLoadMore = true;
     bool refreshWanted = false;
 
     // If there is no timestamp a refresh is wanted.
@@ -122,6 +123,8 @@ class NewsFeedService {
         lastDocumentId: lastDocumentId,
       );
     }
+
+    if (newsGroupDocuments.length < pageSize) showLoadMore = false;
 
     List<String> newsGroupIds =
         await NewsGroupService.fetchAndAddNewsArticlesInNewsGroups(
@@ -146,6 +149,9 @@ class NewsFeedService {
 
     // add the items to feed
     _feed.addAdditionalItems(newsGroupIds);
+
+    // update load more status
+    _feed.showLoadMore = showLoadMore;
 
     return _feed;
   }

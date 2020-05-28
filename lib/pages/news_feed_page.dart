@@ -35,7 +35,6 @@ class _NewsFeedPageState extends State<NewsFeedPage>
   ScrollController _scrollController;
   var pageSize = app_const.homePagePageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
-  var loadMoreVisible = true;
   var isLoading = false;
 
   @override
@@ -50,8 +49,6 @@ class _NewsFeedPageState extends State<NewsFeedPage>
         newsCategory: widget.newsCategory)) {
       _newsFeed = NewsFeedService.getFeed(widget.feedType,
           newsCategory: widget.newsCategory);
-      loadMoreVisible =
-          _newsFeed.getItemCount() < pageSize ? false : loadMoreVisible;
 
       return homeScaffold();
     }
@@ -77,7 +74,7 @@ class _NewsFeedPageState extends State<NewsFeedPage>
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollInfo) {
           return onScrollNotification(
-            loadMoreVisible,
+            _newsFeed.showLoadMore,
             isLoading,
             scrollInfo,
             fetchAdditionalItems,
@@ -96,7 +93,7 @@ class _NewsFeedPageState extends State<NewsFeedPage>
               ),
               refreshControl(getFeed),
               itemList(),
-              loadMoreContainer(loadMoreVisible),
+              loadMoreContainer(_newsFeed.showLoadMore),
             ],
           ),
         ),
@@ -133,7 +130,6 @@ class _NewsFeedPageState extends State<NewsFeedPage>
       newsCategory: widget.newsCategory,
     );
 
-    loadMoreVisible = _newsFeed.getItemCount() >= pageSize;
     if (mounted) setState(() {});
     return _newsFeed;
   }
@@ -149,7 +145,5 @@ class _NewsFeedPageState extends State<NewsFeedPage>
       feedType: widget.feedType,
       newsCategory: widget.newsCategory,
     );
-
-    loadMoreVisible = lastDocumentId != _newsFeed.getLastItem();
   }
 }

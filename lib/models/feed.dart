@@ -1,8 +1,10 @@
 class Feed<E> {
   List<E> _items;
+  bool showLoadMore;
 
   Feed() {
     _items = List<E>();
+    showLoadMore = true;
   }
 
   Feed.fromItems(List<E> items) {
