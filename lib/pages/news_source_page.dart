@@ -26,9 +26,11 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   NewsSource _newsSource;
   Feed<String> _newsSourceFeed;
   List<NewsSource> _newsSourceList;
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     if (NewsSourceService.hasFeed()) {
       _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
       _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
@@ -262,23 +264,30 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          GridView.count(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 0,
-            padding: EdgeInsets.all(20),
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 2.5),
-            children: <Widget>[
-              statsRow(tag: NewsTag.FirstReporter),
-              statsRow(tag: NewsTag.CloseSecond),
-              statsRow(tag: NewsTag.LateComer),
-              statsRow(tag: NewsTag.SlowPoke),
-              statsRow(tag: NewsTag.FollowUp),
-              statsRow(groupMember: "Group Member")
-            ],
+          Container(
+            height: MediaQuery.of(context).size.height / 6,
+            width: MediaQuery.of(context).size.width,
+            child: GridView.count(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              primary: false,
+              reverse: false,
+              shrinkWrap: true,
+              crossAxisCount: 1,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              padding: EdgeInsets.all(0),
+              childAspectRatio: MediaQuery.of(context).size.width /
+                  (MediaQuery.of(context).size.height / 2),
+              children: <Widget>[
+                statsRow(tag: NewsTag.FirstReporter),
+                statsRow(tag: NewsTag.CloseSecond),
+                statsRow(tag: NewsTag.LateComer),
+                statsRow(tag: NewsTag.SlowPoke),
+                statsRow(tag: NewsTag.FollowUp),
+                statsRow(groupMember: "Group Member")
+              ],
+            ),
           ),
           categoryPie(),
         ],
@@ -316,8 +325,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     return StatsRow(
       header: header,
       icon: Image.asset(iconPath),
-      label:
-          count +
+      label: count +
           " times " +
           " |  " +
           utils.numberToOrdinal(index + 1) +
@@ -393,6 +401,11 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     if (noData) return Container();
 
     return PieChartContainer(title: "Categories", data: data, count: 3);
+  }
+
+  _scrollToBottom() {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 1000), curve: Curves.ease);
   }
 }
 

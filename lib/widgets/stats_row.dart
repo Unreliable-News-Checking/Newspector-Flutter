@@ -20,7 +20,7 @@ class StatsRow extends StatelessWidget {
             style: TextStyle(
               color: app_const.activeColor,
               fontSize: 20,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.normal,
               shadows: app_const.shadowsForWhiteWidgets(),
             ),
           ),
@@ -42,7 +42,7 @@ class StatsRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.normal,
               shadows: app_const.shadowsForWhiteWidgets(),
             ),
           ),

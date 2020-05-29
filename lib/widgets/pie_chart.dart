@@ -106,7 +106,7 @@ class _PieChartContainerState extends State<PieChartContainer>
             : Text(
                 title,
                 style: GoogleFonts.rubik(
-                    fontWeight: FontWeight.bold, fontSize: 24),
+                    fontWeight: FontWeight.normal, fontSize: 24),
               ));
   }
 
