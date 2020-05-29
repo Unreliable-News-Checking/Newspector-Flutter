@@ -50,18 +50,18 @@ class NewsCategory extends Enumeration {
   static final NewsCategory sports = NewsCategory(13, "Sports", 'sports');
   static final NewsCategory general = NewsCategory(14, "General", 'general');
 
-  String backGroundFileName;
+  String backgroundFileName;
 
-  NewsCategory(int id, String name, this.backGroundFileName) : super(id, name);
+  NewsCategory(int id, String name, this.backgroundFileName) : super(id, name);
 
   String backgroundImagePath() {
     var path = "assets/backgrounds/";
-    return '$path$backGroundFileName.png';
+    return '$path$backgroundFileName.png';
   }
 
   String iconImagePath() {
     var path = "assets/category_icons/";
-    return '$path$backGroundFileName.png';
+    return '$path$backgroundFileName.png';
   }
 
   static NewsCategory nameToEnum(String category) {

@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/news_source_ranking_sheet.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
@@ -48,7 +49,7 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _newsSourceFeed = snapshot.data;
+            // _newsSourceFeed = snapshot.data;
             return homeScaffold();
             break;
           default:
@@ -92,19 +93,45 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
   }
 
   Widget refreshControl() {
-    return defaultRefreshControl(onRefresh: getFeed);
+    return defaultRefreshControl(onRefresh: () async {
+      await getFeed();
+      if (mounted) setState(() {});
+    });
   }
 
   Widget itemList() {
-    if (_newsSourceFeed.getItemCount() == 0)
-      return Text("Currently there are no news sources.");
+    var pieCharts = <Widget>[];
+
+    for (var i = 0; i < NewsTag.values.length; i++) {
+      var pie = pieChart(NewsTag.values[i]);
+
+      if (pie == null) continue;
+
+      pieCharts.add(pie);
+    }
+
+    if (pieCharts.length == 0) {
+      return emptyList("Currently there are no statistics to show.");
+    }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return pie(NewsTag.values[index]);
+          return pieCharts[index];
         },
-        childCount: NewsTag.values.length
+        childCount: pieCharts.length,
+      ),
+    );
+  }
+
+  // shown when the page is loading the new feed
+  Widget emptyList(String message) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.only(top: 50),
+        child: Center(
+          child: Text(message),
+        ),
       ),
     );
   }
@@ -113,11 +140,10 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: -1,
     );
-    if (mounted) setState(() {});
     return _newsSourceFeed;
   }
 
-  Widget pie(NewsTag tag) {
+  Widget pieChart(NewsTag tag) {
     List<CircularSegmentEntry> items = List<CircularSegmentEntry>();
     var colors = [
       Colors.blue,
@@ -140,7 +166,6 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
       Colors.greenAccent
     ];
 
-    bool noData = true;
     for (var i = 0; i < _newsSourceFeed.getItemCount(); i++) {
       var newsSourceId = _newsSourceFeed.getItem(i);
       var newsSource = NewsSourceService.getNewsSource(newsSourceId);
@@ -153,19 +178,41 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
         rankKey: newsSource.name,
       );
       items.add(item);
-      noData = false;
     }
+
+    if (items.length == 0) return null;
 
     items.sort((a, b) => b.value.compareTo(a.value));
 
     List<CircularStackEntry> data = <CircularStackEntry>[
-      new CircularStackEntry(
-        items,
-      ),
+      CircularStackEntry(items)
     ];
-    if (noData) return Container();
 
-    return PieChartContainer(
-        title: tag.toReadableString(), data: data, count: 4);
+    return GestureDetector(
+      onTap: () => showRankingSheet(tag),
+      child: PieChartContainer(
+        title: tag.toReadableString(),
+        data: data,
+        count: 4,
+      ),
+    );
+  }
+
+  void showRankingSheet(NewsTag newsTag) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      builder: (context) {
+        return NewsSourcesRankingSheet(
+          newsSources: _newsSourceFeed,
+          newsTag: newsTag,
+        );
+      },
+    );
   }
 }

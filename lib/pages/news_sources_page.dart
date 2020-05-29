@@ -46,7 +46,7 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _newsSourceFeed = snapshot.data;
+            // _newsSourceFeed = snapshot.data;
             return homeScaffold();
             break;
           default:
@@ -90,12 +90,16 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
   }
 
   Widget refreshControl() {
-    return defaultRefreshControl(onRefresh: getFeed);
+    return defaultRefreshControl(onRefresh: () async {
+      await getFeed();
+      if (mounted) setState(() {});
+    });
   }
 
   Widget itemList() {
-    if (_newsSourceFeed.getItemCount() == 0)
-      return Text("Currently there are no news sources.");
+    if (_newsSourceFeed.getItemCount() == 0) {
+      return emptyList("Currently there are no news sources.");
+    }
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -122,11 +126,23 @@ class _NewsSourcesPageState extends State<NewsSourcesPage> {
     );
   }
 
+  // shown when the page is loading the new feed
+  Widget emptyList(String message) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.only(top: 50),
+        child: Center(
+          child: Text(message),
+        ),
+      ),
+    );
+  }
+
   Future<Feed<String>> getFeed() async {
     _newsSourceFeed = await NewsSourceService.updateAndGetNewsSourceFeed(
       pageSize: -1,
     );
-    if (mounted) setState(() {});
+    // if (mounted) setState(() {});
     return _newsSourceFeed;
   }
 }
