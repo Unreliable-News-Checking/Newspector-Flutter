@@ -24,7 +24,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
-  static const double containerSize = 230;
+  static const double containerSize = 240;
   static const double borderRadius = 10.0;
   static const double horizontalMargin = 20.0;
   NewsGroup _newsGroup;
@@ -47,8 +47,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
+          // borderRadius: BorderRadius.circular(borderRadius),
+          ),
       child: Stack(
         children: <Widget>[
           Container(
@@ -56,12 +56,12 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
             child: PageView(
               children: listViewItems,
               controller: _controller,
+              pageSnapping: true,
             ),
           ),
           dotsIndicator(itemCount),
           fullCoverageButton(itemCount),
           followButton(),
-          firstReporterTag(),
           categoryLabel(),
         ],
       ),
@@ -81,14 +81,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           alone: alone,
         ),
       ),
-    );
-  }
-
-  Widget firstReporterTag() {
-    return Positioned(
-      top: 0,
-      left: 0,
-      child: Container(),
     );
   }
 
@@ -200,7 +192,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget categoryLabel() {
     String categoryText = _newsGroup.category.name;
-    // String categoryIconPath = _newsGroup.category.iconImagePath();
 
     return Positioned(
       top: 0,
@@ -228,8 +219,10 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   }
 
   void goToNewsGroupPage() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return NewsGroupPage(newsGroupId: _newsGroup.id);
-    }));
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) {
+        return NewsGroupPage(newsGroupId: _newsGroup.id);
+      },
+    ));
   }
 }

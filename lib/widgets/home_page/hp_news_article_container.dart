@@ -12,7 +12,6 @@ import 'hp_news_article_photo_container.dart';
 
 class HomePageNewsArticleContainer extends StatefulWidget {
   final String newsArticleId;
-  // final Function onTap;
   final bool shorten;
   final double height;
   final double borderRadius;
@@ -22,7 +21,6 @@ class HomePageNewsArticleContainer extends StatefulWidget {
   HomePageNewsArticleContainer({
     Key key,
     @required this.newsArticleId,
-    // @required this.onTap,
     @required this.shorten,
     @required this.height,
     @required this.borderRadius,
@@ -47,13 +45,14 @@ class _HomePageNewsArticleContainerState
       margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
       child: GestureDetector(
         onTap: () {
-          // widget.onTap();
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return NewsArticlePage(
-              heroKey: this.hashCode.toString(),
-              newsArticleId: widget.newsArticleId,
-            );
-          }));
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) {
+              return NewsArticlePage(
+                heroKey: this.hashCode.toString(),
+                newsArticleId: widget.newsArticleId,
+              );
+            },
+          ));
         },
         child: Stack(
           children: <Widget>[
@@ -80,14 +79,13 @@ class _HomePageNewsArticleContainerState
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       source(),
-                      separatorDot(),
-                      date(),
                       Expanded(child: Container()),
                       websiteButton(),
                       TwitterButton(tweetLink: _newsArticle.tweetLink),
                     ],
                   ),
                   headline(),
+                  date(),
                   widget.alone ? SizedBox(height: 12) : SizedBox(height: 32),
                 ],
               ),
@@ -109,8 +107,8 @@ class _HomePageNewsArticleContainerState
         overflow: overflow,
         maxLines: maxLines,
         style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 19,
+          fontWeight: FontWeight.normal,
           shadows: app_consts.shadowsForWhiteWidgets(),
         ),
       ),

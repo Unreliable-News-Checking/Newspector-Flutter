@@ -108,17 +108,9 @@ mixin PhotoContainer {
     }
 
     if (shadow) {
-      shadowContainer = Container(
-        height: height - 50,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius),
-          gradient: LinearGradient(
-            colors: [Color.fromRGBO(0, 0, 0, 0.8), Colors.transparent],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
+      shadowContainer = Image.asset(
+        'assets/shadow.png',
+        repeat: ImageRepeat.repeatX,
       );
     }
 
@@ -127,53 +119,26 @@ mixin PhotoContainer {
       width: width,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
+        clipBehavior: Clip.hardEdge,
         child: Stack(
-          alignment: Alignment.bottomCenter,
           children: <Widget>[
-            Container(
-              height: height,
-              width: width,
+            SizedBox.expand(
               child: FittedBox(
                 child: imageContainer,
                 fit: BoxFit.cover,
               ),
             ),
-            shadowContainer,
+            SizedBox.expand(
+              child: FittedBox(
+                child: shadowContainer,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  // Widget getLoadingPhoto(
-  //   double height,
-  //   double width,
-  //   double borderRadius,
-  // ) {
-  //   return ClipRRect(
-  //     borderRadius: BorderRadius.circular(borderRadius),
-  //     child: Container(
-  //       height: height,
-  //       width: width,
-  //       color: app_const.inactiveColor,
-  //     ),
-  //   );
-  // }
-
-  // Widget getDefaultPhoto(
-  //   double height,
-  //   double width,
-  //   double borderRadius,
-  // ) {
-  //   return ClipRRect(
-  //     borderRadius: BorderRadius.circular(borderRadius),
-  //     child: Container(
-  //       height: height,
-  //       width: width,
-  //       child: getDefaultPhotoImage(),
-  //     ),
-  //   );
-  // }
 
   Widget getDefaultPhotoImage();
 }

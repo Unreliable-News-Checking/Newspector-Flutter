@@ -115,7 +115,7 @@ class NewsSourceService {
   }) async {
     bool refreshWanted = false;
 
-    var _user = UserService.getUser();
+    var _user = await UserService.getOrFetchUser();
 
     // if there is no timestamp a refresh is wanted
     // if there is no feed a refresh is required
