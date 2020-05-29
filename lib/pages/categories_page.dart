@@ -35,7 +35,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     NewsCategory.health,
     NewsCategory.lawGovernment,
     NewsCategory.sports,
-    NewsCategory.other,
+    NewsCategory.general,
   ];
 
   @override

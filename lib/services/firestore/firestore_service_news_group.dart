@@ -68,7 +68,7 @@ Future<List<DocumentSnapshot>> getNewsGroups(
   } else if (newsFeedType == FeedType.Category) {
     Query query = db.collection('news_groups');
 
-    if (newsCategory == NewsCategory.other) {
+    if (newsCategory == NewsCategory.general) {
       query = query.where('category', whereIn: ['-', newsCategory.name]);
     } else {
       query = query.where('category', isEqualTo: newsCategory.name);
