@@ -110,13 +110,23 @@ class _CategoriesPageState extends State<CategoriesPage> {
                 height: 120,
                 width: 120,
                 child: FittedBox(
-                  child: Image.asset(categories[index].iconImagePath()),
+                  child: Image.asset(
+                    categories[index].iconImagePath(),
+                    color: app_const.defaultTextColor,
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             SizedBox(height: 10),
-            Text('${categories[index].name}'),
+            Text(
+              '${categories[index].name}',
+              style: TextStyle(
+                color: app_const.defaultTextColor,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),

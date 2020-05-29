@@ -99,14 +99,6 @@ mixin PhotoContainer {
     Widget imageContainer = image;
     Widget shadowContainer = Container();
 
-    if (doFade) {
-      imageContainer = FadeTransition(
-        child: image,
-        opacity: animationController,
-      );
-      animationController.forward();
-    }
-
     if (shadow) {
       shadowContainer = Image.asset(
         'assets/shadow.png',
@@ -114,7 +106,7 @@ mixin PhotoContainer {
       );
     }
 
-    return Container(
+    Widget finalImageContainer = Container(
       height: height,
       width: width,
       child: ClipRRect(
@@ -138,6 +130,16 @@ mixin PhotoContainer {
         ),
       ),
     );
+
+    if (doFade) {
+      finalImageContainer = FadeTransition(
+        child: finalImageContainer,
+        opacity: animationController,
+      );
+      animationController.forward();
+    }
+
+    return finalImageContainer;
   }
 
   Widget getDefaultPhotoImage();
