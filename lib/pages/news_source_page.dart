@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
+import 'package:newspector_flutter/widgets/news_source_ranking_sheet.dart';
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/application_constants.dart' as app_const;
@@ -11,7 +12,6 @@ import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:newspector_flutter/widgets/twitter_button.dart';
 import 'package:newspector_flutter/widgets/website_button.dart';
-import 'package:newspector_flutter/widgets/stats_row.dart';
 
 class NewsSourcePage extends StatefulWidget {
   final String newsSourceId;
@@ -272,12 +272,12 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             childAspectRatio: MediaQuery.of(context).size.width /
                 (MediaQuery.of(context).size.height / 2.5),
             children: <Widget>[
-              statsRow(tag: NewsTag.FirstReporter),
-              statsRow(tag: NewsTag.CloseSecond),
-              statsRow(tag: NewsTag.LateComer),
-              statsRow(tag: NewsTag.SlowPoke),
-              statsRow(tag: NewsTag.FollowUp),
-              statsRow(tag: NewsTag.GroupMember),
+              statContainer(tag: NewsTag.FirstReporter),
+              statContainer(tag: NewsTag.CloseSecond),
+              statContainer(tag: NewsTag.LateComer),
+              statContainer(tag: NewsTag.SlowPoke),
+              statContainer(tag: NewsTag.FollowUp),
+              statContainer(tag: NewsTag.GroupMember),
             ],
           ),
           categoryPie(),
@@ -286,7 +286,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
-  Widget statsRow({@required NewsTag tag}) {
+  Widget statContainer({@required NewsTag tag}) {
     String iconPath = "";
     String count = "";
 
@@ -308,37 +308,78 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         .indexWhere((source) => source.id.startsWith(_newsSource.id));
 
     String header = tag.toReadableString();
-    return StatsRow(
-      header: header,
-      icon: Image.asset(iconPath),
-      label: count +
-          " times " +
-          " |  " +
-          utils.numberToOrdinal(index + 1) +
-          " place",
+    return GestureDetector(
+      onTap: () => showRankingSheet(tag),
+      child: Column(
+        children: [
+          Text(
+            header,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  Container(
+                    width: 70,
+                    height: 70,
+                    child: FittedBox(
+                      child: Image.asset(
+                        iconPath,
+                        color: app_const.defaultTextColor,
+                        filterQuality: FilterQuality.high,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        utils.numberToOrdinal(index + 1),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(count, style: TextStyle(fontSize: 20)),
+                          SizedBox(width: 5),
+                          Text('times'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget bigCountLabel(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 100,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+  void showRankingSheet(NewsTag newsTag) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      builder: (context) {
+        return NewsSourcesRankingSheet(
+          newsSources: _newsSourceFeed,
+          newsTag: newsTag,
+        );
+      },
     );
   }
 
@@ -441,7 +482,7 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
 
     return Container(
       height: 200,
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(12),
@@ -450,8 +491,17 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
         color: app_const.backgroundColor,
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+          Container(
+            height: 4,
+            width: 40,
+            margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
+            decoration: BoxDecoration(
+              color: app_const.inactiveColor,
+              borderRadius: BorderRadius.circular(360),
+            ),
+          ),
           Text(
             "Do you enjoy this News Source?",
             style: TextStyle(

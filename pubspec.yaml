@@ -63,17 +63,17 @@ flutter:
     - assets/tag_icons/
     - assets/sentiment_icons/
 
-  fonts:
-    - family: Noticia
-      fonts:
-        - asset: assets/fonts/NoticiaText-Regular.ttf
-        - asset: assets/fonts/NoticiaText-Italic.ttf
-          style: italic
-        - asset: assets/fonts/NoticiaText-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/NoticiaText-BoldItalic.ttf
-          style: italic
-          weight: 700
+  # fonts:
+  #   - family: Noticia
+  #     fonts:
+  #       - asset: assets/fonts/NoticiaText-Regular.ttf
+  #       - asset: assets/fonts/NoticiaText-Italic.ttf
+  #         style: italic
+  #       - asset: assets/fonts/NoticiaText-Bold.ttf
+  #         weight: 700
+  #       - asset: assets/fonts/NoticiaText-BoldItalic.ttf
+  #         style: italic
+  #         weight: 700
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

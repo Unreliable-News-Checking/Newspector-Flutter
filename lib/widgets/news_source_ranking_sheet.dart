@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
+import 'package:newspector_flutter/pages/news_source_page.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/utilities.dart' as utils;
 import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 
 class NewsSourcesRankingSheet extends StatefulWidget {
@@ -85,20 +87,37 @@ class _NewsSourcesRankingSheetState extends State<NewsSourcesRankingSheet> {
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
-                              return Container(
-                                padding: EdgeInsets.all(20),
-                                child: Row(
-                                  children: [
-                                    Text((index + 1).toString()),
-                                    SizedBox(width: 10),
-                                    NewsSourcePhotoContainer(
-                                      size: 45,
-                                      newsSource: rankedNewsSources[index],
-                                      borderRadius: 360,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(rankedNewsSources[index].name),
-                                  ],
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return NewsSourcePage(
+                                      newsSourceId: rankedNewsSources[index].id,
+                                    );
+                                  }));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(15),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        child: Text(
+                                            utils.numberToOrdinal(index + 1)),
+                                        width: 30,
+                                      ),
+                                      SizedBox(width: 10),
+                                      NewsSourcePhotoContainer(
+                                        size: 50,
+                                        newsSource: rankedNewsSources[index],
+                                        borderRadius: 360,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        rankedNewsSources[index].name,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

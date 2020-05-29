@@ -309,7 +309,13 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
     String categoryText = _newsGroup.category.name;
     var categoryIconPath = _newsGroup.category.iconImagePath();
-    return statsRow(Image.asset(categoryIconPath), categoryText);
+    return statsRow(
+      Image.asset(
+        categoryIconPath,
+        color: Colors.white,
+      ),
+      categoryText,
+    );
   }
 
   Widget tag() {
@@ -331,8 +337,12 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     } else {
       tag = NewsTag.SlowPoke;
     }
+
     return statsRow(
-      Image.asset(tag.toIconPath()),
+      Image.asset(
+        tag.toIconPath(),
+        color: Colors.white,
+      ),
       tag.toReadableString(),
     );
   }
