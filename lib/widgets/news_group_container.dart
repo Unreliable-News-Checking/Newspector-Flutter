@@ -79,13 +79,6 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
           newsArticleId: _newsGroup.getNewsArticleId(index),
           shorten: true,
           alone: alone,
-          // onTap: () {
-          //   Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          //     return NewsArticlePage(
-          //       newsArticleId: _newsGroup.getNewsArticleId(index),
-          //     );
-          //   }));
-          // },
         ),
       ),
     );

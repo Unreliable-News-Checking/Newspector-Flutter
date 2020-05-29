@@ -4,6 +4,7 @@ import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/models/news_source.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/news_sources_page/news_source_photo_container.dart';
 
 class NewsSourcesRankingSheet extends StatefulWidget {
   final Feed<String> newsSources;
@@ -89,6 +90,12 @@ class _NewsSourcesRankingSheetState extends State<NewsSourcesRankingSheet> {
                                 child: Row(
                                   children: [
                                     Text((index + 1).toString()),
+                                    SizedBox(width: 10),
+                                    NewsSourcePhotoContainer(
+                                      size: 45,
+                                      newsSource: rankedNewsSources[index],
+                                      borderRadius: 360,
+                                    ),
                                     SizedBox(width: 10),
                                     Text(rankedNewsSources[index].name),
                                   ],
