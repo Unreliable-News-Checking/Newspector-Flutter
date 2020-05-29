@@ -140,6 +140,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget seeMoreCard() {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: goToNewsGroupPage,
       child: Container(
         decoration: BoxDecoration(

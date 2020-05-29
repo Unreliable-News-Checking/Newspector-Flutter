@@ -40,8 +40,8 @@ class _NewsGroupPageNewsArticleContainerState
     _newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
-        // widget.onTap();
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsArticlePage(
             newsArticleId: widget.newsArticleId,
@@ -50,7 +50,6 @@ class _NewsGroupPageNewsArticleContainerState
         }));
       },
       child: Container(
-        // padding: EdgeInsets.all(10),
         margin: EdgeInsets.fromLTRB(0, topMargin, 15, 5),
         child: Center(
           child: Column(
@@ -120,6 +119,7 @@ class _NewsGroupPageNewsArticleContainerState
   Widget source() {
     var newsSource = NewsSourceService.getNewsSource(_newsArticle.newsSourceId);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsSourcePage(

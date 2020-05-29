@@ -44,6 +44,7 @@ class _HomePageNewsArticleContainerState
     return Container(
       margin: EdgeInsets.symmetric(horizontal: widget.horizontalMargin),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
@@ -118,6 +119,7 @@ class _HomePageNewsArticleContainerState
   Widget source() {
     var newsSource = NewsSourceService.getNewsSource(_newsArticle.newsSourceId);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsSourcePage(

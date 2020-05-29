@@ -88,6 +88,7 @@ class _NewsSourcesRankingSheetState extends State<NewsSourcesRankingSheet> {
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
                               return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
                                 onTap: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {

@@ -189,6 +189,7 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
     ];
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => showRankingSheet(tag),
       child: PieChartContainer(
         title: tag.toReadableString(),

@@ -89,6 +89,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
   Widget categoryItem(int index) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return NewsFeedPage(

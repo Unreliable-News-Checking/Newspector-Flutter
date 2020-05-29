@@ -184,8 +184,8 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
   Widget source() {
     var newsSource = NewsSourceService.getNewsSource(_newsArticle.newsSourceId);
     return Container(
-      // margin: EdgeInsets.symmetric(vertical: 15),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return NewsSourcePage(
@@ -489,6 +489,7 @@ class _NewsArticleFeedbackSheetState extends State<NewsArticleFeedbackSheet> {
         Container(
           padding: EdgeInsets.all(20),
           child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => giveFeedback(feedbackOption),
             child: Row(
               children: [

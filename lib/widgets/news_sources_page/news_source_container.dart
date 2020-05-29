@@ -20,6 +20,7 @@ class NewsSourceContainer extends StatelessWidget {
     NewsSource newsSource = NewsSourceService.getNewsSource(newsSourceId);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(

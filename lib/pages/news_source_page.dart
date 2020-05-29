@@ -310,57 +310,60 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     String header = tag.toReadableString();
     return GestureDetector(
       onTap: () => showRankingSheet(tag),
-      child: Column(
-        children: [
-          Text(
-            header,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                children: [
-                  Container(
-                    width: 70,
-                    height: 70,
-                    child: FittedBox(
-                      child: Image.asset(
-                        iconPath,
-                        color: app_const.defaultTextColor,
-                        filterQuality: FilterQuality.high,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        utils.numberToOrdinal(index + 1),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(count, style: TextStyle(fontSize: 20)),
-                          SizedBox(width: 5),
-                          Text('times'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        child: Column(
+          children: [
+            Text(
+              header,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 70,
+                      height: 70,
+                      child: FittedBox(
+                        child: Image.asset(
+                          iconPath,
+                          color: app_const.defaultTextColor,
+                          filterQuality: FilterQuality.high,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          utils.numberToOrdinal(index + 1),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(count, style: TextStyle(fontSize: 20)),
+                            SizedBox(width: 5),
+                            Text('times'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
