@@ -102,8 +102,9 @@ class _NewsFeedPageState extends State<NewsFeedPage>
   }
 
   Widget itemList() {
-    if (_newsFeed.getItemCount() == 0)
+    if (_newsFeed.getItemCount() == 0) {
       return emptyList("There are no news groups yet.");
+    }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
