@@ -26,11 +26,9 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   NewsSource _newsSource;
   Feed<String> _newsSourceFeed;
   List<NewsSource> _newsSourceList;
-  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     if (NewsSourceService.hasFeed()) {
       _newsSource = NewsSourceService.getNewsSource(widget.newsSourceId);
       _newsSourceFeed = NewsSourceService.getNewsSourceFeed();
@@ -389,11 +387,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       data: data,
       count: 3,
     );
-  }
-
-  _scrollToBottom() {
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 1000), curve: Curves.ease);
   }
 }
 

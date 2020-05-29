@@ -111,9 +111,6 @@ class _PieChartContainerState extends State<PieChartContainer>
   }
 
   Widget pieChart(List<CircularStackEntry> data) {
-    final GlobalKey<AnimatedCircularChartState> _chartKey =
-        new GlobalKey<AnimatedCircularChartState>();
-
     double total = 0;
 
     for (var entry in data[0].entries) {
@@ -129,7 +126,6 @@ class _PieChartContainerState extends State<PieChartContainer>
               Center(child: circularLabels(data, total)),
               Center(
                   child: AnimatedCircularChart(
-                key: _chartKey,
                 size: const Size(300.0, 300.0),
                 initialChartData: data,
                 chartType: CircularChartType.Radial,
