@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:newspector_flutter/services/news_source_service.dart';
 import 'package:newspector_flutter/models/feed.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/widgets/news_source_ranking_sheet.dart';
 import 'package:newspector_flutter/widgets/sliver_app_bar.dart';
 import 'package:newspector_flutter/widgets/pie_chart.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
@@ -187,10 +188,31 @@ class _NewsSourcesStatisticsPageState extends State<NewsSourcesStatisticsPage> {
       CircularStackEntry(items)
     ];
 
-    return PieChartContainer(
-      title: tag.toReadableString(),
-      data: data,
-      count: 4,
+    return GestureDetector(
+      onTap: () => showRankingSheet(tag),
+      child: PieChartContainer(
+        title: tag.toReadableString(),
+        data: data,
+        count: 4,
+      ),
+    );
+  }
+
+  void showRankingSheet(NewsTag newsTag) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      builder: (context) {
+        return NewsSourcesRankingSheet(
+          newsSources: _newsSourceFeed,
+          newsTag: newsTag,
+        );
+      },
     );
   }
 }

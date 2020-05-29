@@ -277,7 +277,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
               statsRow(tag: NewsTag.LateComer),
               statsRow(tag: NewsTag.SlowPoke),
               statsRow(tag: NewsTag.FollowUp),
-              statsRow(groupMember: "Group Member")
+              statsRow(tag: NewsTag.GroupMember),
             ],
           ),
           categoryPie(),
@@ -286,7 +286,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     );
   }
 
-  Widget statsRow({NewsTag tag, String groupMember}) {
+  Widget statsRow({@required NewsTag tag}) {
     String iconPath = "";
     String count = "";
 
@@ -302,22 +302,16 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
           .sort((a, b) => b.tagMap.map[tag].compareTo(a.tagMap.map[tag]));
       iconPath = tag.toIconPath();
       count = _newsSource.tagMap.map[tag].toString();
-    } else if (groupMember != null) {
-      _newsSourceList
-          .sort((a, b) => b.membershipCount.compareTo(a.membershipCount));
-      iconPath = "assets/other_icons/group_member.png";
-      count = _newsSource.membershipCount.toString();
     }
 
     int index = _newsSourceList
         .indexWhere((source) => source.id.startsWith(_newsSource.id));
 
-    String header = tag != null ? tag.toReadableString() : groupMember;
+    String header = tag.toReadableString();
     return StatsRow(
       header: header,
       icon: Image.asset(iconPath),
-      label:
-          count +
+      label: count +
           " times " +
           " |  " +
           utils.numberToOrdinal(index + 1) +
@@ -367,7 +361,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       Colors.lightGreen
     ];
 
-    bool noData = true;
     for (var i = 0; i < _newsSource.categoryMap.map.length; i++) {
       var category = _newsSource.categoryMap.map.keys.elementAt(i);
       var count = _newsSource.categoryMap.map[category];
@@ -380,19 +373,20 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
         rankKey: category.name,
       );
       items.add(item);
-      noData = false;
     }
+    if (items.length == 0) return Container();
 
     items.sort((a, b) => b.value.compareTo(a.value));
 
     List<CircularStackEntry> data = <CircularStackEntry>[
-      new CircularStackEntry(
-        items,
-      ),
+      CircularStackEntry(items)
     ];
-    if (noData) return Container();
 
-    return PieChartContainer(title: "Categories", data: data, count: 3);
+    return PieChartContainer(
+      title: "Categories",
+      data: data,
+      count: 3,
+    );
   }
 }
 

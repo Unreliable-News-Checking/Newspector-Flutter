@@ -25,11 +25,9 @@ dependencies:
   google_fonts: ^1.1.0
   flutter_circular_chart: ^0.1.0
   flutter_circular_text: "^0.3.0"
-  # url_launcher: ^5.4.7
   firebase_messaging: ^6.0.13
   flushbar: ^1.10.2
   eva_icons_flutter: ^2.0.0
-  # fl_chart: ^0.9.4
   webview_flutter: ^0.3.22+1
   flutter:
     sdk: flutter
@@ -64,7 +62,6 @@ flutter:
     - assets/category_icons/
     - assets/tag_icons/
     - assets/sentiment_icons/
-    - assets/other_icons/
 
   fonts:
     - family: Noticia

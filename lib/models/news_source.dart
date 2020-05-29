@@ -8,7 +8,14 @@ import 'package:newspector_flutter/models/category.dart';
 
 import 'model.dart';
 
-enum NewsTag { FirstReporter, CloseSecond, LateComer, SlowPoke, FollowUp }
+enum NewsTag {
+  FirstReporter,
+  CloseSecond,
+  LateComer,
+  SlowPoke,
+  FollowUp,
+  GroupMember
+}
 
 extension TagNaming on NewsTag {
   String toReadableString() {
@@ -21,6 +28,8 @@ extension TagNaming on NewsTag {
         return "Late Comer";
       case NewsTag.SlowPoke:
         return "Slow Poke";
+      case NewsTag.GroupMember:
+        return "Group Member";
       default:
         return "FollowUp";
     }
@@ -42,6 +51,9 @@ extension TagNaming on NewsTag {
         break;
       case NewsTag.SlowPoke:
         fileName = "slowpoke";
+        break;
+      case NewsTag.GroupMember:
+        fileName = "group_member";
         break;
       default:
         fileName = "follow_up";
@@ -93,7 +105,6 @@ class NewsSource extends Model {
   double rating;
 
   int firstInGroupCount;
-  int membershipCount;
   int reportCount;
   int newsGroupFollowerCount;
   int tweetCount;
@@ -127,7 +138,6 @@ class NewsSource extends Model {
     followerCount = data['followers_count'] ?? 0;
     tweetCount = data['tweets_count'] ?? 0;
     newsCount = data['news_count'] ?? 0;
-    membershipCount = data['news_group_membership_count'] ?? 0;
     reportCount = data['dislike_count'] ?? 0;
 
     populateCategoryMap(data['category_map']);
@@ -166,6 +176,7 @@ class NewsSource extends Model {
     map[NewsTag.LateComer] = data['late_comer'] ?? 0;
     map[NewsTag.SlowPoke] = data['slow_poke'] ?? 0;
     map[NewsTag.FollowUp] = data['follow_up'] ?? 0;
+    map[NewsTag.GroupMember] = data['news_group_membership_count'] ?? 0;
 
     tagMap.orderMap();
   }
