@@ -152,7 +152,7 @@ class _NewsFeedPageState extends State<NewsFeedPage>
   }
 
   Widget signOutButton() {
-    if (widget.feedType != FeedType.Home) return Container();
+    if (widget.feedType != FeedType.Home) return null;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
