@@ -103,6 +103,7 @@ mixin PhotoContainer {
       shadowContainer = Image.asset(
         'assets/shadow.png',
         repeat: ImageRepeat.repeatX,
+        fit: BoxFit.fitHeight,
       );
     }
 
@@ -114,17 +115,18 @@ mixin PhotoContainer {
         clipBehavior: Clip.hardEdge,
         child: Stack(
           children: <Widget>[
-            SizedBox.expand(
+            Container(
+              width: width,
+              height: height,
               child: FittedBox(
                 child: imageContainer,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox.expand(
-              child: FittedBox(
-                child: shadowContainer,
-                fit: BoxFit.fitHeight,
-              ),
+            Container(
+              width: width,
+              height: height,
+              child: shadowContainer,
             ),
           ],
         ),
