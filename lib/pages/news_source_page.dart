@@ -270,7 +270,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(20),
             childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 2.5),
+                (MediaQuery.of(context).size.height / 4),
             children: <Widget>[
               statContainer(tag: NewsTag.FirstReporter),
               statContainer(tag: NewsTag.CloseSecond),
@@ -307,20 +307,20 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
     int index = _newsSourceList
         .indexWhere((source) => source.id.startsWith(_newsSource.id));
 
-    String header = tag.toReadableString();
+    //String header = tag.toReadableString();
     return GestureDetector(
       onTap: () => showRankingSheet(tag),
       behavior: HitTestBehavior.opaque,
       child: Container(
         child: Column(
           children: [
-            Text(
-              header,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            // Text(
+            //   header,
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
