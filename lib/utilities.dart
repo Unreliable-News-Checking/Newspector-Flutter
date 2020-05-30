@@ -9,16 +9,18 @@ import 'package:newspector_flutter/services/user_service.dart';
 String timestampToMeaningfulTime(DateTime date) {
   Duration diff = DateTime.now().difference(date);
 
+  var dayDifference = DateTime.now().day - date.day;
+
   String dateString;
-  if (diff.inDays.toInt() >= 7) {
+  if (dayDifference >= 7) {
     dateString = date.day.toString() +
         "/" +
         date.month.toString() +
         "/" +
         date.year.toString();
-  } else if (diff.inDays.toInt() > 1) {
-    dateString = diff.inDays.toInt().toString() + " days ago";
-  } else if (diff.inDays.toInt() == 1) {
+  } else if (dayDifference > 1) {
+    dateString = dayDifference.toString() + " days ago";
+  } else if (dayDifference == 1) {
     dateString = "Yesterday";
   } else if (diff.inHours.toInt() > 1) {
     dateString = diff.inHours.toInt().toString() + " hours ago";
