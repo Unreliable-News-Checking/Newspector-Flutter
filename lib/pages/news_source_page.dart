@@ -119,7 +119,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
   Widget sourceHeader() {
     return SliverToBoxAdapter(
       child: Container(
-        margin: EdgeInsets.all(15),
+        margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -266,7 +266,7 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
-            mainAxisSpacing: 0,
+            mainAxisSpacing: 15,
             crossAxisSpacing: 0,
             padding: EdgeInsets.all(20),
             childAspectRatio: MediaQuery.of(context).size.width /
