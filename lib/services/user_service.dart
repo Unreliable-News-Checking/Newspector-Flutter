@@ -36,7 +36,7 @@ class UserService {
     if (hasUserWithFeed()) return _user;
 
     return await updateAndGetUserWithFeed(
-      pageSize: app_consts.followingPagePageSize,
+      pageSize: app_consts.newsFeedPageSize,
       newsGroupPageSize: app_consts.newsGroupPageSize,
     );
   }

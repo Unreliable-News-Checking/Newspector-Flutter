@@ -34,14 +34,14 @@ Future<FirebaseUser> signInWithGoogle() async {
   final FirebaseUser currentUser = await _firebaseAuth.currentUser();
   assert(user.uid == currentUser.uid);
 
-  await createOrGetUserFromDatabase(user.uid);
+  await createOrGetUserFromDatabase(user);
 
   return user;
 }
 
-Future<void> debugSignIn() async {
-  await createOrGetUserFromDatabase('JexMFfY4vTV33Gk60Ldu3vAVICt1');
-}
+// Future<void> debugSignIn() async {
+//   await createOrGetUserFromDatabase('JexMFfY4vTV33Gk60Ldu3vAVICt1');
+// }
 
 /// Signs out the user from both google and firebase.
 void signOutGoogle() async {
@@ -65,7 +65,8 @@ Future<bool> hasSignedInUser() async {
 /// With the given uid checks the database for a matching user,
 /// if there is no existing user creates a new user, otherwise just
 /// fetches the user from the database.
-Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
+Future<User> createOrGetUserFromDatabase(FirebaseUser firebaseUser) async {
+  var firebaseUserId = firebaseUser.uid;
   var userDocument = await firestore.getUserWithFirebaseId(firebaseUserId);
   User user;
 
@@ -75,6 +76,8 @@ Future<User> createOrGetUserFromDatabase(String firebaseUserId) async {
   } else {
     user = User.fromDocument(userDocument);
   }
+
+  user.addFirebaseInfo(firebaseUser.displayName, firebaseUser.photoUrl);
 
   UserService.assingUser(user, firebaseUserId);
 

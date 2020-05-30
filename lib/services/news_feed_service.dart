@@ -8,12 +8,14 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 
 enum FeedType {
   Home,
+  Trending,
   Following,
   Category,
 }
 
 class NewsFeedService {
   static Feed<String> _homeFeed;
+  static Feed<String> _trendingFeed;
   static Feed<String> _followingFeed;
   static Map<NewsCategory, Feed<String>> _categoryFeeds = Map();
 
@@ -27,6 +29,8 @@ class NewsFeedService {
     Feed<String> _feed;
     if (feedType == FeedType.Home) {
       _feed = _homeFeed;
+    } else if (feedType == FeedType.Trending) {
+      _feed = _trendingFeed;
     } else if (feedType == FeedType.Following) {
       _feed = _followingFeed;
     } else if (feedType == FeedType.Category) {
@@ -44,6 +48,8 @@ class NewsFeedService {
   }) {
     if (feedType == FeedType.Home) {
       _homeFeed = Feed<String>();
+    } else if (feedType == FeedType.Trending) {
+      _trendingFeed = Feed<String>();
     } else if (feedType == FeedType.Following) {
       _followingFeed = Feed<String>();
     } else if (feedType == FeedType.Category) {
@@ -71,7 +77,7 @@ class NewsFeedService {
     }
 
     return await updateAndGetNewsFeed(
-      pageSize: app_const.homePagePageSize,
+      pageSize: app_const.newsFeedPageSize,
       newsGroupPageSize: app_const.newsGroupPageSize,
       feedType: feedType,
       newsCategory: newsCategory,
@@ -82,6 +88,7 @@ class NewsFeedService {
   static void clearFeeds() {
     _homeFeed = null;
     _followingFeed = null;
+    _trendingFeed = null;
     _categoryFeeds = Map();
   }
 
@@ -113,8 +120,11 @@ class NewsFeedService {
     // get the right documents from the database
     List<DocumentSnapshot> newsGroupDocuments;
     if (refreshWanted) {
-      newsGroupDocuments =
-          await firestore.getNewsGroups(pageSize, feedType, newsCategory);
+      newsGroupDocuments = await firestore.getNewsGroups(
+        pageSize,
+        feedType,
+        newsCategory,
+      );
     } else {
       newsGroupDocuments = await firestore.getNewsGroups(
         pageSize,

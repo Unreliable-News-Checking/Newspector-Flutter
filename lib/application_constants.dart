@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-const int homePagePageSize = 8;
-const int followingPagePageSize = 8;
-const int newsGroupPageSize = 10;
+const int newsFeedPageSize = 7;
+const int newsGroupPageSize = 6;
 const int maxNewsArticleInNewsGroup = 5;
 const Color backgroundColor = Color(0xFF263140);
 const Color activeColor = Color(0xFF429AEC);

@@ -1,20 +1,23 @@
 import 'dart:async';
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/category.dart';
 import 'package:newspector_flutter/models/feed.dart';
+import 'package:newspector_flutter/pages/sign_page.dart';
 import 'package:newspector_flutter/services/news_feed_service.dart';
 import 'package:newspector_flutter/widgets/feed_container.dart';
 import 'package:newspector_flutter/widgets/news_group_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
+import 'package:newspector_flutter/services/sign_in_service.dart'
+    as sign_in_service;
 
 class NewsFeedPage extends StatefulWidget {
   final ScrollController scrollController;
   final FeedType feedType;
   final NewsCategory newsCategory;
   final String title;
-  final List<Widget> actions;
 
   NewsFeedPage({
     Key key,
@@ -22,7 +25,6 @@ class NewsFeedPage extends StatefulWidget {
     @required this.feedType,
     @required this.title,
     this.newsCategory,
-    this.actions,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,9 @@ class _NewsFeedPageState extends State<NewsFeedPage>
     with FeedContainer<NewsFeedPage, Feed<String>> {
   Feed<String> _newsFeed;
   ScrollController _scrollController;
-  var pageSize = app_const.homePagePageSize;
+  FeedType feedType;
+  SortingType sortingType;
+  var pageSize = app_const.newsFeedPageSize;
   var newsGroupPageSize = app_const.newsGroupPageSize;
   var isLoading = false;
 
@@ -41,14 +45,17 @@ class _NewsFeedPageState extends State<NewsFeedPage>
   void initState() {
     super.initState();
     _scrollController = widget.scrollController ?? ScrollController();
+    feedType = widget.feedType;
+    sortingType = SortingType.Latest;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (NewsFeedService.hasFeed(widget.feedType,
-        newsCategory: widget.newsCategory)) {
-      _newsFeed = NewsFeedService.getFeed(widget.feedType,
-          newsCategory: widget.newsCategory);
+    if (NewsFeedService.hasFeed(feedType, newsCategory: widget.newsCategory)) {
+      _newsFeed = NewsFeedService.getFeed(
+        feedType,
+        newsCategory: widget.newsCategory,
+      );
 
       return homeScaffold();
     }
@@ -89,7 +96,8 @@ class _NewsFeedPageState extends State<NewsFeedPage>
             slivers: <Widget>[
               sliverAppBar(
                 widget.title,
-                actions: widget.actions,
+                leading: signOutButton(),
+                actions: <Widget>[sortingMenu()],
               ),
               refreshControl(getFeed),
               itemList(),
@@ -98,6 +106,66 @@ class _NewsFeedPageState extends State<NewsFeedPage>
           ),
         ),
       ),
+    );
+  }
+
+  Widget sortingMenu() {
+    if (widget.feedType != FeedType.Home) return Container();
+
+    return Container(
+      padding: EdgeInsets.only(right: 15),
+      alignment: Alignment.center,
+      child: DropdownButton<SortingType>(
+        value: sortingType,
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: app_const.defaultTextColor,
+        ),
+        dropdownColor: app_const.backgroundColor,
+        elevation: 16,
+        style: TextStyle(color: app_const.defaultTextColor),
+        underline: Container(),
+        onChanged: (SortingType newValue) {
+          if (mounted) {
+            setState(() {
+              sortingType = newValue;
+              feedType = sortingType == SortingType.Latest
+                  ? FeedType.Home
+                  : FeedType.Trending;
+            });
+          }
+        },
+        items: <SortingType>[SortingType.Latest, SortingType.Trending]
+            .map<DropdownMenuItem<SortingType>>(
+          (SortingType value) {
+            var textRep = value == SortingType.Trending ? "Trending" : "Latest";
+            return DropdownMenuItem<SortingType>(
+              value: value,
+              child: Text(
+                textRep,
+              ),
+            );
+          },
+        ).toList(),
+      ),
+    );
+  }
+
+  Widget signOutButton() {
+    if (widget.feedType != FeedType.Home) return Container();
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () async {
+        await Navigator.of(context, rootNavigator: true)
+            .pushReplacement(MaterialPageRoute(
+          builder: (context) {
+            return SignPage();
+          },
+        ));
+        sign_in_service.signOutGoogle();
+      },
+      child: Icon(EvaIcons.logOut),
     );
   }
 
@@ -127,7 +195,7 @@ class _NewsFeedPageState extends State<NewsFeedPage>
     _newsFeed = await NewsFeedService.updateAndGetNewsFeed(
       pageSize: pageSize,
       newsGroupPageSize: newsGroupPageSize,
-      feedType: widget.feedType,
+      feedType: feedType,
       newsCategory: widget.newsCategory,
     );
 
@@ -143,8 +211,13 @@ class _NewsFeedPageState extends State<NewsFeedPage>
       pageSize: pageSize,
       lastDocumentId: lastDocumentId,
       newsGroupPageSize: newsGroupPageSize,
-      feedType: widget.feedType,
+      feedType: feedType,
       newsCategory: widget.newsCategory,
     );
   }
+}
+
+enum SortingType {
+  Latest,
+  Trending,
 }

@@ -531,9 +531,11 @@ class _NewsArticleFeedbackSheetState extends State<NewsArticleFeedbackSheet> {
   void giveFeedback(FeedbackOption feedbackOption) {
     var newsArticle = NewsArticleService.getNewsArticle(widget.newsArticleId);
     NewsArticleService.giveFeedbackToNewsArticle(newsArticle, feedbackOption);
-    setState(() {
-      done = true;
-    });
+    if (mounted) {
+      setState(() {
+        done = true;
+      });
+    }
   }
 }
 

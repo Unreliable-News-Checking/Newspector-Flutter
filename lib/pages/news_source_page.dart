@@ -557,8 +557,10 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
       widget.newsSourceId,
       rating,
     );
-    setState(() {
-      _newsSource.rated = true;
-    });
+    if (mounted) {
+      setState(() {
+        _newsSource.rated = true;
+      });
+    }
   }
 }

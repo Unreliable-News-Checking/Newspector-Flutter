@@ -29,8 +29,12 @@ mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
     );
   }
 
-  Widget sliverAppBar(String title, {List<Widget> actions}) {
-    return defaultSliverAppBar(titleText: title, actions: actions);
+  Widget sliverAppBar(String title, {List<Widget> actions, Widget leading}) {
+    return defaultSliverAppBar(
+      titleText: title,
+      actions: actions,
+      leading: leading,
+    );
   }
 
   Widget refreshControl(Function onRefresh) {
@@ -100,14 +104,18 @@ mixin FeedContainer<T extends StatefulWidget, E> on State<T> {
     if (!loadMoreVisible) return;
     if (isLoading) return;
 
-    setState(() {
-      setLoading(true);
-    });
+    if (mounted) {
+      setState(() {
+        setLoading(true);
+      });
+    }
 
     await fetchAdditionalItems();
 
-    setState(() {
-      setLoading(false);
-    });
+    if (mounted) {
+      setState(() {
+        setLoading(false);
+      });
+    }
   }
 }

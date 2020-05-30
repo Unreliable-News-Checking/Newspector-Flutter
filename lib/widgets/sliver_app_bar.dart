@@ -5,6 +5,7 @@ import 'package:newspector_flutter/application_constants.dart' as app_const;
 Widget defaultSliverAppBar({
   @required String titleText,
   List<Widget> actions,
+  Widget leading,
 }) {
   return SliverAppBar(
     title: Text(
@@ -20,6 +21,7 @@ Widget defaultSliverAppBar({
     elevation: 0,
     backgroundColor: app_const.backgroundColor,
     actions: actions,
+    leading: leading,
   );
 }
 

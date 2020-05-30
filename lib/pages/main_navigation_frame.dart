@@ -10,10 +10,6 @@ import 'package:newspector_flutter/services/fcm_service.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_const;
 import 'package:newspector_flutter/services/news_feed_service.dart';
-import 'package:newspector_flutter/pages/sign_page.dart';
-import 'package:newspector_flutter/services/sign_in_service.dart'
-    as sign_in_service;
-
 import 'news_feed_page.dart';
 import 'news_group_page.dart';
 
@@ -142,18 +138,6 @@ class _MainNavigationFrameState extends State<MainNavigationFrame> {
                 scrollController: scrollControllers[index],
                 feedType: FeedType.Home,
                 title: "Newspector",
-                actions: <Widget>[
-                  CloseButton(
-                    onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushReplacement(
-                              MaterialPageRoute(builder: (context) {
-                        return SignPage();
-                      }));
-                      sign_in_service.signOutGoogle();
-                    },
-                  ),
-                ],
               );
             },
             defaultTitle: 'Home',
