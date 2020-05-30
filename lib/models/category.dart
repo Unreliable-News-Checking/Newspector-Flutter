@@ -56,7 +56,7 @@ class NewsCategory extends Enumeration {
 
   String backgroundImagePath() {
     var path = "assets/backgrounds/";
-    return '$path$backgroundFileName.png';
+    return '$path$backgroundFileName.jpg';
   }
 
   String iconImagePath() {
