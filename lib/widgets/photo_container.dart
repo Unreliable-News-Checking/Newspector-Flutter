@@ -103,7 +103,9 @@ mixin PhotoContainer {
       shadowContainer = Image.asset(
         'assets/shadow.png',
         repeat: ImageRepeat.repeatX,
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.none,
+        alignment: Alignment.bottomCenter,
+        // fit: BoxFit.fitHeight,
       );
     }
 
