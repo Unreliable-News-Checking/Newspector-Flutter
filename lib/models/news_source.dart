@@ -80,7 +80,7 @@ class GenericMap<T> {
     }
 
     var sortedKeys = temp.keys.toList(growable: false)
-      ..sort((k2, k1) => temp[k1].compareTo(temp[k2]));
+      ..sort((k1, k2) => temp[k2].compareTo(temp[k1]));
     LinkedHashMap<T, int> sortedMap = LinkedHashMap.fromIterable(
       sortedKeys,
       key: (k) => k,

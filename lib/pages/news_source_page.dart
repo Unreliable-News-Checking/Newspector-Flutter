@@ -292,8 +292,10 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
 
     if (_newsSourceList == null) {
       _newsSourceList = List<NewsSource>();
-      for (var newsSource in _newsSourceFeed.getItems()) {
-        _newsSourceList.add(NewsSourceService.getNewsSource(newsSource));
+      for (var i = 0; i < _newsSourceFeed.getItemCount(); i++) {
+        var newsSourceId = _newsSourceFeed.getItem(i);
+        var newsSource = NewsSourceService.getNewsSource(newsSourceId);
+        _newsSourceList.add(newsSource);
       }
     }
 
@@ -314,13 +316,6 @@ class _NewsSourcePageState extends State<NewsSourcePage> {
       child: Container(
         child: Column(
           children: [
-            // Text(
-            //   header,
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),

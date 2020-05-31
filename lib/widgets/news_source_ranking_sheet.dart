@@ -34,8 +34,8 @@ class _NewsSourcesRankingSheetState extends State<NewsSourcesRankingSheet> {
       rankedNewsSources.add(newsSource);
     }
 
-    rankedNewsSources.sort((b, a) =>
-        a.tagMap.map[widget.newsTag].compareTo(b.tagMap.map[widget.newsTag]));
+    rankedNewsSources.sort((a, b) =>
+        b.tagMap.map[widget.newsTag].compareTo(a.tagMap.map[widget.newsTag]));
   }
 
   @override
@@ -117,6 +117,18 @@ class _NewsSourcesRankingSheetState extends State<NewsSourcesRankingSheet> {
                                         rankedNewsSources[index].name,
                                         style: TextStyle(fontSize: 16),
                                       ),
+                                      Expanded(child: Container()),
+                                      Text(
+                                        rankedNewsSources[index]
+                                            .tagMap
+                                            .map[widget.newsTag]
+                                            .toString(),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
                                     ],
                                   ),
                                 ),
