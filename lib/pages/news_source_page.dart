@@ -454,6 +454,7 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
     if (_newsSource.rated) {
       return Container(
         height: 200,
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(12),
@@ -461,10 +462,18 @@ class _NewsSourceSheetState extends State<NewsSourceSheet> {
           ),
           color: app_const.backgroundColor,
         ),
-        padding: EdgeInsets.all(10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            Container(
+              height: 4,
+              width: 40,
+              margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
+              decoration: BoxDecoration(
+                color: app_const.inactiveColor,
+                borderRadius: BorderRadius.circular(360),
+              ),
+            ),
             Text(
               "Thank you for your feedback!",
               style: TextStyle(
