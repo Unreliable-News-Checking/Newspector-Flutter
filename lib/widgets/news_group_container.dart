@@ -25,8 +25,8 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
   static const _kCurve = Curves.ease;
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
   static const double containerSize = 240;
-  static const double borderRadius = 10.0;
-  static const double horizontalMargin = 20.0;
+  static const double borderRadius = 0.0;
+  static const double horizontalMargin = 0.0;
   NewsGroup _newsGroup;
 
   @override
@@ -45,18 +45,19 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
-      decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(borderRadius),
-          ),
+      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       child: Stack(
         children: <Widget>[
-          Container(
-            height: containerSize,
-            child: PageView(
-              children: listViewItems,
-              controller: _controller,
-              pageSnapping: true,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            clipBehavior: Clip.hardEdge,
+            child: Container(
+              height: containerSize,
+              child: PageView(
+                children: listViewItems,
+                controller: _controller,
+                pageSnapping: true,
+              ),
             ),
           ),
           dotsIndicator(itemCount),
@@ -86,7 +87,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget fullCoverageButton(int itemCount) {
     Widget button = Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
       child: FlatButton(
         onPressed: goToNewsGroupPage,
         child: Text(
@@ -119,7 +120,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       top: 0,
       right: 0,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        margin: EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 5),
         child: IconButton(
           icon: Icon(
             icon,
