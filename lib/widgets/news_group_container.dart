@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:newspector_flutter/models/news_group.dart';
 import 'package:newspector_flutter/pages/news_group_page.dart';
 import 'package:newspector_flutter/services/news_group_service.dart';
-import 'package:newspector_flutter/widgets/dots_indicator.dart';
 import 'package:newspector_flutter/widgets/home_page/hp_news_article_container.dart';
 import 'package:newspector_flutter/application_constants.dart' as app_consts;
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+// import 'package:transformer_page_view/transformer_page_view.dart';
+import 'page_transformer.dart';
 
 class NewsGroupContainer extends StatefulWidget {
   final String newsGroupId;
@@ -21,8 +23,6 @@ class NewsGroupContainer extends StatefulWidget {
 
 class _NewsGroupContainerState extends State<NewsGroupContainer> {
   final _controller = PageController();
-  static const _kDuration = const Duration(milliseconds: 300);
-  static const _kCurve = Curves.ease;
   static const int maxNewsArticleCount = app_consts.maxNewsArticleInNewsGroup;
   static const double containerSize = 240;
   static const double borderRadius = 0.0;
@@ -48,23 +48,45 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       margin: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       child: Stack(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            clipBehavior: Clip.hardEdge,
-            child: Container(
-              height: containerSize,
-              child: PageView(
-                children: listViewItems,
-                controller: _controller,
-                pageSnapping: true,
-              ),
-            ),
-          ),
+          pageView(listViewItems),
           dotsIndicator(itemCount),
           fullCoverageButton(itemCount),
           followButton(),
           categoryLabel(),
         ],
+      ),
+    );
+  }
+
+  Widget pageView(List<Widget> listViewItems) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      clipBehavior: Clip.hardEdge,
+      child: Container(
+        height: containerSize,
+        child: PageTransformer(
+          pageViewBuilder: (context, pageVisibilityResolver) {
+            return PageView.builder(
+              controller: _controller,
+              itemCount: listViewItems.length,
+              itemBuilder: (context, index) {
+                final pageVisibility =
+                    pageVisibilityResolver.resolvePageVisibility(index);
+
+                // Use these two properties to transform your "Hello World" text widget!
+                // In this example, the text widget fades in and out of view, since we use
+                // the visibleFraction property, which can be between 0.0 - 1.0.
+                // final position = pageVisibility.pagePosition;
+                final visibleFraction = pageVisibility.visibleFraction;
+
+                return Opacity(
+                  opacity: visibleFraction,
+                  child: listViewItems[index],
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -146,7 +168,7 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          color: Color(0xFF3484F0),
+          color: app_consts.activeColor,//Color(0xFF3484F0),
         ),
         margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
         child: Center(
@@ -166,17 +188,17 @@ class _NewsGroupContainerState extends State<NewsGroupContainer> {
 
   Widget dotsIndicator(int itemCount) {
     var dots = Container(
+      alignment: Alignment.bottomCenter,
       margin: EdgeInsets.all(5),
-      child: DotsIndicator(
-        controller: _controller,
-        itemCount: itemCount + 1,
-        onPageSelected: (page) {
-          _controller.animateToPage(
-            page,
-            duration: _kDuration,
-            curve: _kCurve,
-          );
-        },
+      child: SmoothPageIndicator(
+        controller: _controller, // PageController
+        count: itemCount + 1,
+        effect: ExpandingDotsEffect(
+          activeDotColor: app_consts.activeColor,
+          dotColor: app_consts.defaultTextColor,
+          dotWidth: 5,
+          dotHeight: 5,
+        ),
       ),
     );
 
