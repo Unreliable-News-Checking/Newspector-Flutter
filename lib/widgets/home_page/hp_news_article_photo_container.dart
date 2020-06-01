@@ -75,7 +75,6 @@ class _HpNewsArticlePhotoContainerState
   Widget getDefaultPhotoImage() {
     var _newsGroupId = widget.newsArticle.newsGroupId;
     var _newsGroup = NewsGroupService.getNewsGroup(_newsGroupId);
-
     var imagePath = _newsGroup.category.backgroundImagePath();
 
     return Image.asset(imagePath);

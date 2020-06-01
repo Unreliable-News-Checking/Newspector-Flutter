@@ -105,7 +105,6 @@ mixin PhotoContainer {
         repeat: ImageRepeat.repeatX,
         fit: BoxFit.none,
         alignment: Alignment.bottomCenter,
-        // fit: BoxFit.fitHeight,
       );
     }
 
