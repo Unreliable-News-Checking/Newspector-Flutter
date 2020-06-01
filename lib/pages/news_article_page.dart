@@ -325,12 +325,9 @@ class _NewsArticlePageState extends State<NewsArticlePage> {
     NewsTag tag;
     if (_newsGroup.firstReporterId == _newsArticle.id) {
       tag = NewsTag.FirstReporter;
-    } else if (_newsGroup.closeSecondId == _newsArticle.id &&
-        _newsGroup.closeSecondId != _newsGroup.firstReporterId) {
+    } else if (_newsGroup.closeSecondId == _newsArticle.id) {
       tag = NewsTag.CloseSecond;
-    } else if (_newsGroup.lateComerId == _newsArticle.id &&
-        _newsGroup.lateComerId != _newsGroup.firstReporterId &&
-        _newsGroup.lateComerId != _newsGroup.closeSecondId) {
+    } else if (_newsGroup.lateComerId == _newsArticle.id) {
       tag = NewsTag.LateComer;
     } else if (newsFromSourceNo != null && newsFromSourceNo > 1) {
       tag = NewsTag.FollowUp;
