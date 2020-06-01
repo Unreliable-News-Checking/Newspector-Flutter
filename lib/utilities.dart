@@ -10,6 +10,7 @@ String timestampToMeaningfulTime(DateTime date) {
   Duration diff = DateTime.now().difference(date);
 
   var dayDifference = DateTime.now().day - date.day;
+  dayDifference = dayDifference.abs();
 
   String dateString;
   if (dayDifference >= 7) {
@@ -55,11 +56,19 @@ const months = <String>[
 String numberToOrdinal(int number) {
   int lastDigit = number % 10;
 
+  if (number == 11 || number == 12 || number == 13) {
+    return number.toString() + "th";
+  }
+
   if (lastDigit == 1) {
     return number.toString() + "st";
-  } else if (lastDigit == 2) {
+  }
+
+  if (lastDigit == 2) {
     return number.toString() + "nd";
-  } else if (lastDigit == 3) {
+  }
+
+  if (lastDigit == 3) {
     return number.toString() + "rd";
   }
 
