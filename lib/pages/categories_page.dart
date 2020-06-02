@@ -22,20 +22,20 @@ class CategoriesPage extends StatefulWidget {
 class _CategoriesPageState extends State<CategoriesPage> {
   ScrollController _scrollController;
   var categories = [
+    NewsCategory.general,
+    NewsCategory.peopleSociety,
+    NewsCategory.businessIndustrial,
+    NewsCategory.lawGovernment,
     NewsCategory.finance,
     NewsCategory.jobsEducation,
-    NewsCategory.travel,
-    NewsCategory.petsAnimals,
-    NewsCategory.foodDrink,
     NewsCategory.science,
-    NewsCategory.artEntertainment,
-    NewsCategory.peopleSociety,
     NewsCategory.computersElectronics,
-    NewsCategory.businessIndustrial,
+    NewsCategory.travel,
     NewsCategory.health,
-    NewsCategory.lawGovernment,
     NewsCategory.sports,
-    NewsCategory.general,
+    NewsCategory.foodDrink,
+    NewsCategory.petsAnimals,
+    NewsCategory.artEntertainment,
   ];
 
   @override
@@ -77,6 +77,9 @@ class _CategoriesPageState extends State<CategoriesPage> {
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
+        childAspectRatio: 1,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -101,34 +104,39 @@ class _CategoriesPageState extends State<CategoriesPage> {
         }));
       },
       child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 120,
-                width: 120,
+        margin: EdgeInsets.all(3),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          clipBehavior: Clip.hardEdge,
+          child: Stack(
+            children: [
+              SizedBox.expand(
                 child: FittedBox(
                   child: Image.asset(
-                    categories[index].iconImagePath(),
-                    color: app_const.defaultTextColor,
+                    categories[index].backgroundImagePath(),
+                    // color: app_const.defaultTextColor,
                   ),
                   fit: BoxFit.cover,
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '${categories[index].name}',
-              style: TextStyle(
-                color: app_const.defaultTextColor,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  child: Text(
+                    '${categories[index].name}',
+                    style: TextStyle(
+                      color: app_const.defaultTextColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      shadows: app_const.shadowsForWhiteWidgets(),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
