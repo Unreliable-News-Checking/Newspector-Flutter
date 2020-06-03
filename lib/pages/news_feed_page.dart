@@ -156,17 +156,20 @@ class _NewsFeedPageState extends State<NewsFeedPage>
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () async {
-        await Navigator.of(context, rootNavigator: true)
-            .pushReplacement(MaterialPageRoute(
-          builder: (context) {
-            return SignPage();
-          },
-        ));
-        sign_in_service.signOutGoogle();
-      },
+      onTap: () async => await hellwtf(),
       child: Icon(EvaIcons.logOut),
     );
+  }
+
+  Future<void> hellwtf() async {
+    var signPageRoute = MaterialPageRoute(
+      builder: (context) {
+        return SignPage();
+      },
+    );
+
+    Navigator.of(context, rootNavigator: true).pushReplacement(signPageRoute);
+    signPageRoute.didPush().whenComplete(() => sign_in_service.signOutGoogle());
   }
 
   Widget itemList() {

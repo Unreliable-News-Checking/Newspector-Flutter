@@ -51,8 +51,11 @@ class _SignPageState extends State<SignPage> {
   }
 
   Future<void> signIn() async {
-    await sign_in_service.signInWithGoogle();
     clearStoresAndServices();
+
+    var signedInUser = await sign_in_service.signInWithGoogle();
+    if (signedInUser == null) return;
+
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) {
       return MainNavigationFrame();

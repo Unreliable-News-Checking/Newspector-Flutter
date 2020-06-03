@@ -15,7 +15,15 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 /// After that the firebase authentication will be completed using the google sign in authentication.
 /// Finally, a user will be created by [createOrGetUserFromDatabase] in firestore.
 Future<FirebaseUser> signInWithGoogle() async {
-  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  GoogleSignInAccount googleSignInAccount;
+  try {
+    googleSignInAccount = await googleSignIn.signIn();
+  } catch (err) {
+    return null;
+  }
+
+  if (googleSignInAccount == null) return null;
+
   final GoogleSignInAuthentication googleSignInAuthentication =
       await googleSignInAccount.authentication;
 
@@ -28,11 +36,11 @@ Future<FirebaseUser> signInWithGoogle() async {
       await _firebaseAuth.signInWithCredential(credential);
   final FirebaseUser user = authResult.user;
 
-  assert(!user.isAnonymous);
-  assert(await user.getIdToken() != null);
+  if (user.isAnonymous) return null;
+  if (await user.getIdToken() == null) return null;
 
   final FirebaseUser currentUser = await _firebaseAuth.currentUser();
-  assert(user.uid == currentUser.uid);
+  if (user.uid != currentUser.uid) return null;
 
   await createOrGetUserFromDatabase(user);
 
@@ -44,18 +52,18 @@ Future<FirebaseUser> signInWithGoogle() async {
 // }
 
 /// Signs out the user from both google and firebase.
-void signOutGoogle() async {
-  var googleSignOut = googleSignIn.signOut();
-  var firebaseSignOut = _firebaseAuth.signOut();
-  await Future.wait([googleSignOut, firebaseSignOut]);
+Future<void> signOutGoogle() async {
+  await _firebaseAuth.signOut();
+  await googleSignIn.signOut();
 
   clearStoresAndServices();
 }
 
 /// Returns `true` if there is signed in firebase user.
 Future<bool> hasSignedInUser() async {
+  var hasGoogleUser = await googleSignIn.isSignedIn();
   var firebaseUser = await _firebaseAuth.currentUser();
-  var hasSignedInUser = firebaseUser != null;
+  var hasSignedInUser = hasGoogleUser != null && firebaseUser != null;
 
   if (hasSignedInUser) UserService.userFirebaseId = firebaseUser.uid;
 
